@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
+- (IBAction)offSwitchTouched:(id)sender;
+- (IBAction)onSwitchTouched:(id)sender;
 
 @end

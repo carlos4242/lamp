@@ -19,6 +19,10 @@
 		8F8603DA1659C5750025A56A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603D91659C5750025A56A /* ViewController.m */; };
 		8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */; };
 		8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DE1659C5750025A56A /* ViewController_iPad.xib */; };
+		8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603EC1659C6310025A56A /* ServiceBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8F8603F41659C6890025A56A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603F31659C6890025A56A /* NSData+Base64.m */; };
+		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
+		8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +43,15 @@
 		8F8603D91659C5750025A56A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		8F8603DC1659C5750025A56A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
 		8F8603DF1659C5750025A56A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
+		8F8603EA1659C6310025A56A /* ServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceDelegate.h; sourceTree = "<group>"; };
+		8F8603EB1659C6310025A56A /* ServiceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceBase.h; sourceTree = "<group>"; };
+		8F8603EC1659C6310025A56A /* ServiceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceBase.m; sourceTree = "<group>"; };
+		8F8603F21659C6890025A56A /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		8F8603F31659C6890025A56A /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		8F86061E1659C78F0025A56A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		8F86061F1659C8310025A56A /* LampService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LampService.h; sourceTree = "<group>"; };
+		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
+		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +71,9 @@
 		8F8603B11659C5750025A56A = {
 			isa = PBXGroup;
 			children = (
+				8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */,
+				8F86061E1659C78F0025A56A /* Constants.h */,
+				8F8603F11659C6560025A56A /* Salience */,
 				8F8603C61659C5750025A56A /* Lamp */,
 				8F8603BF1659C5750025A56A /* Frameworks */,
 				8F8603BD1659C5750025A56A /* Products */,
@@ -85,6 +101,9 @@
 		8F8603C61659C5750025A56A /* Lamp */ = {
 			isa = PBXGroup;
 			children = (
+				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
+				8F8603EB1659C6310025A56A /* ServiceBase.h */,
+				8F8603EC1659C6310025A56A /* ServiceBase.m */,
 				8F8603CF1659C5750025A56A /* AppDelegate.h */,
 				8F8603D01659C5750025A56A /* AppDelegate.m */,
 				8F8603D81659C5750025A56A /* ViewController.h */,
@@ -92,6 +111,8 @@
 				8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */,
 				8F8603DE1659C5750025A56A /* ViewController_iPad.xib */,
 				8F8603C71659C5750025A56A /* Supporting Files */,
+				8F86061F1659C8310025A56A /* LampService.h */,
+				8F8606201659C8310025A56A /* LampService.m */,
 			);
 			path = Lamp;
 			sourceTree = "<group>";
@@ -108,6 +129,16 @@
 				8F8603D61659C5750025A56A /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8F8603F11659C6560025A56A /* Salience */ = {
+			isa = PBXGroup;
+			children = (
+				8F8603F21659C6890025A56A /* NSData+Base64.h */,
+				8F8603F31659C6890025A56A /* NSData+Base64.m */,
+			);
+			name = Salience;
+			path = ../Salience;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,6 +176,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				de,
 			);
 			mainGroup = 8F8603B11659C5750025A56A;
 			productRefGroup = 8F8603BD1659C5750025A56A /* Products */;
@@ -167,6 +199,7 @@
 				8F8603D71659C5750025A56A /* Default-568h@2x.png in Resources */,
 				8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */,
 				8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */,
+				8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +213,9 @@
 				8F8603CD1659C5750025A56A /* main.m in Sources */,
 				8F8603D11659C5750025A56A /* AppDelegate.m in Sources */,
 				8F8603DA1659C5750025A56A /* ViewController.m in Sources */,
+				8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */,
+				8F8603F41659C6890025A56A /* NSData+Base64.m in Sources */,
+				8F8606211659C8310025A56A /* LampService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,9 +304,18 @@
 		8F8603E41659C5750025A56A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Salience/ThirdParty/atlassian-jiraconnect-ios-cf0856c5a257/JIRAConnect/JMCClasses/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Lamp/Lamp-Prefix.pch";
 				INFOPLIST_FILE = "Lamp/Lamp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryAnalytics\"",
+					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryLib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -279,9 +324,18 @@
 		8F8603E51659C5750025A56A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Salience/ThirdParty/atlassian-jiraconnect-ios-cf0856c5a257/JIRAConnect/JMCClasses/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Lamp/Lamp-Prefix.pch";
 				INFOPLIST_FILE = "Lamp/Lamp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryAnalytics\"",
+					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryLib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -306,6 +360,7 @@
 				8F8603E51659C5750025A56A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

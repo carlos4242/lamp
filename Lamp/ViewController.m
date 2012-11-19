@@ -7,23 +7,17 @@
 //
 
 #import "ViewController.h"
-
-@interface ViewController ()
-
-@end
+#import "LampService.h"
 
 @implementation ViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+- (IBAction)offSwitchTouched:(id)sender {
+    LampService *lamp = [LampService new];
+    [lamp setLampOnOff:NO];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)onSwitchTouched:(id)sender {
+    LampService *lamp = [LampService new];
+    [lamp setLampOnOff:YES];
 }
-
 @end
