@@ -23,6 +23,7 @@
 		8F8603F41659C6890025A56A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603F31659C6890025A56A /* NSData+Base64.m */; };
 		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */; };
+		8FE8800A165C60320023B2FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FE88009165C60320023B2FB /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		8F86061F1659C8310025A56A /* LampService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LampService.h; sourceTree = "<group>"; };
 		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
 		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
+		8FE88009165C60320023B2FB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FE8800A165C60320023B2FB /* QuartzCore.framework in Frameworks */,
 				8F8603C11659C5750025A56A /* UIKit.framework in Frameworks */,
 				8F8603C31659C5750025A56A /* Foundation.framework in Frameworks */,
 				8F8603C51659C5750025A56A /* CoreGraphics.framework in Frameworks */,
@@ -91,6 +94,7 @@
 		8F8603BF1659C5750025A56A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8FE88009165C60320023B2FB /* QuartzCore.framework */,
 				8F8603C01659C5750025A56A /* UIKit.framework */,
 				8F8603C21659C5750025A56A /* Foundation.framework */,
 				8F8603C41659C5750025A56A /* CoreGraphics.framework */,

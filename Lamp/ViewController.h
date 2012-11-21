@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
-- (IBAction)offSwitchTouched:(id)sender;
-- (IBAction)onSwitchTouched:(id)sender;
+- (IBAction)tubeLampOff:(id)sender;
+- (IBAction)tubeLampOn:(id)sender;
+- (IBAction)roundLampOff:(id)sender;
+- (IBAction)roundLampOn:(id)sender;
 
 @end

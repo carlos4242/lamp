@@ -8,10 +8,9 @@
 
 #import "ServiceBase.h"
 
-@interface LampService : ServiceBase {
-    BOOL lampOnOff;
-}
+@interface LampService : ServiceBase
 
--(void)setLampOnOff:(BOOL)onOff;
+-(void)lampOneSetState:(BOOL)onOff;
+-(void)lampTwoSetState:(BOOL)onOff;
 
 @end
