@@ -24,6 +24,7 @@
 		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */; };
 		8FE8800A165C60320023B2FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FE88009165C60320023B2FB /* QuartzCore.framework */; };
+		8FEE00F01675079300437A19 /* UIDevice+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE00EF1675079300437A19 /* UIDevice+Extensions.m */; };
 		8FFD454E1674D4F800412104 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45431674D4F800412104 /* NSObject+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8FFD454F1674D4F800412104 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45451674D4F800412104 /* NSString+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8FFD45501674D4F800412104 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45471674D4F800412104 /* SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -61,6 +62,8 @@
 		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
 		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
 		8FE88009165C60320023B2FB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		8FEE00EE1675078B00437A19 /* UIDevice+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Extensions.h"; sourceTree = "<group>"; };
+		8FEE00EF1675079300437A19 /* UIDevice+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Extensions.m"; sourceTree = "<group>"; };
 		8FFD45411674D4F800412104 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = "ThirdParty/facebook-ios-sdk/src/JSON/JSON.h"; sourceTree = "<group>"; };
 		8FFD45421674D4F800412104 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+SBJSON.h"; path = "ThirdParty/facebook-ios-sdk/src/JSON/NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		8FFD45431674D4F800412104 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SBJSON.m"; path = "ThirdParty/facebook-ios-sdk/src/JSON/NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -128,20 +131,20 @@
 		8F8603C61659C5750025A56A /* Lamp */ = {
 			isa = PBXGroup;
 			children = (
-				8FFD45551674D55500412104 /* JsonServiceBase.h */,
-				8FFD45561674D55500412104 /* JsonServiceBase.m */,
-				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
-				8F8603EB1659C6310025A56A /* ServiceBase.h */,
-				8F8603EC1659C6310025A56A /* ServiceBase.m */,
 				8F8603CF1659C5750025A56A /* AppDelegate.h */,
 				8F8603D01659C5750025A56A /* AppDelegate.m */,
-				8F8603D81659C5750025A56A /* ViewController.h */,
-				8F8603D91659C5750025A56A /* ViewController.m */,
-				8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */,
-				8F8603DE1659C5750025A56A /* ViewController_iPad.xib */,
-				8F8603C71659C5750025A56A /* Supporting Files */,
+				8FFD45551674D55500412104 /* JsonServiceBase.h */,
+				8FFD45561674D55500412104 /* JsonServiceBase.m */,
 				8F86061F1659C8310025A56A /* LampService.h */,
 				8F8606201659C8310025A56A /* LampService.m */,
+				8F8603EB1659C6310025A56A /* ServiceBase.h */,
+				8F8603EC1659C6310025A56A /* ServiceBase.m */,
+				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
+				8F8603C71659C5750025A56A /* Supporting Files */,
+				8F8603D81659C5750025A56A /* ViewController.h */,
+				8F8603D91659C5750025A56A /* ViewController.m */,
+				8F8603DE1659C5750025A56A /* ViewController_iPad.xib */,
+				8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */,
 			);
 			path = Lamp;
 			sourceTree = "<group>";
@@ -163,6 +166,8 @@
 		8F8603F11659C6560025A56A /* Salience */ = {
 			isa = PBXGroup;
 			children = (
+				8FEE00EF1675079300437A19 /* UIDevice+Extensions.m */,
+				8FEE00EE1675078B00437A19 /* UIDevice+Extensions.h */,
 				8FFD45581674D7E200412104 /* Logger.h */,
 				8FFD45411674D4F800412104 /* JSON.h */,
 				8FFD45421674D4F800412104 /* NSObject+SBJSON.h */,
@@ -266,6 +271,7 @@
 				8FFD45521674D4F800412104 /* SBJsonParser.m in Sources */,
 				8FFD45531674D4F800412104 /* SBJsonWriter.m in Sources */,
 				8FFD45571674D55500412104 /* JsonServiceBase.m in Sources */,
+				8FEE00F01675079300437A19 /* UIDevice+Extensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,7 +327,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -343,7 +349,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

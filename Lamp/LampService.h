@@ -12,5 +12,10 @@
 
 -(void)lampOneSetState:(BOOL)onOff;
 -(void)lampTwoSetState:(BOOL)onOff;
+-(void)checkState;
+-(void)refreshState;
+
+-(BOOL)lampOneIsOn;
+-(BOOL)lampTwoIsOn;
 
 @end
