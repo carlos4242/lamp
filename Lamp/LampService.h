@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Carl Peto. All rights reserved.
 //
 
-#import "ServiceBase.h"
+#import "JsonServiceBase.h"
 
-@interface LampService : ServiceBase
+@interface LampService : JsonServiceBase
 
 -(void)lampOneSetState:(BOOL)onOff;
 -(void)lampTwoSetState:(BOOL)onOff;

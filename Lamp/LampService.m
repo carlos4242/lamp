@@ -11,15 +11,19 @@
 @implementation LampService
 
 -(void)lampOneSetState:(BOOL)onOff {
-    [super callService:[NSString stringWithFormat:@"lamp.php?onOff=%@",onOff?@"a":@"b"]];
+    [super callService:[NSString stringWithFormat:@"lamp.php?type=set&lamp=1&on=%d",onOff]];
 }
 
 -(void)lampTwoSetState:(BOOL)onOff {
-    [super callService:[NSString stringWithFormat:@"lamp.php?onOff=%@",onOff?@"c":@"d"]];
+    [super callService:[NSString stringWithFormat:@"lamp.php?type=set&lamp=2&on=%d",onOff]];
 }
 
 -(NSString*)requestBody {
 	return @"dummy=1";
+}
+
+-(BOOL)lampOneIsOn {
+    
 }
 
 @end

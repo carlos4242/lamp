@@ -73,7 +73,7 @@
     }
 }
 -(void)loginRequired {
-    [[NSNotificationCenter defaultCenter] postNotificationName:LOGIN_REQUIRED_NOTIFICATION object:self];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:LOGIN_REQUIRED_NOTIFICATION object:self];
 }
 -                (void)connection:(NSURLConnection *)connection
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
