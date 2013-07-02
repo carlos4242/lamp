@@ -9,6 +9,6 @@
 #ifndef Lamp_Constants_h
 #define Lamp_Constants_h
 
-#define serviceRoot @"http://10.0.1.102/Pootle/"
+#define serviceRoot @"http://10.0.1.160/"
 
 #endif

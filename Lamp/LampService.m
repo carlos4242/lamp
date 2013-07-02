@@ -10,24 +10,32 @@
 
 @implementation LampService
 
+
+-(NSMutableURLRequest*)requestForService:(NSString*)service {
+    
+    serviceCallName = [[NSString alloc] initWithString:service];
+	NSString *urlString = [NSString stringWithFormat:@"%@%@",serviceRoot,service];
+	
+    NSURL *url = [NSURL URLWithString:urlString];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+    [urlRequest setHTTPShouldHandleCookies:YES];
+    return urlRequest;
+}
+
 -(void)lampOneSetState:(BOOL)onOff {
-    [super callService:[NSString stringWithFormat:@"lamp.php?type=set&lamp=1&on=%d",onOff]];
+    [super callService:onOff?@"a":@"b"];
 }
 
 -(void)lampTwoSetState:(BOOL)onOff {
-    [super callService:[NSString stringWithFormat:@"lamp.php?type=set&lamp=2&on=%d",onOff]];
+    [super callService:onOff?@"c":@"d"];
 }
 
 -(void)checkState {
-    [super callService:[NSString stringWithFormat:@"lamp.php?type=show"]];
+    [super callService:@""];
 }
 
 -(void)refreshState {
-    [super callService:[NSString stringWithFormat:@"lamp.php?type=refresh"]];
-}
-
--(NSString*)requestBody {
-	return @"dummy=1";
+    [super callService:@""];
 }
 
 -(BOOL)lampOneIsOn {

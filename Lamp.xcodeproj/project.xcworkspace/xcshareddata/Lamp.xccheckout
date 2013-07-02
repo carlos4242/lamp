@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>8EE942B4-1C97-409A-A5BD-090C54E694E0</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Lamp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>294728E9-1A69-45BC-81EB-313E684AA208</key>
+		<string>ssh://bitbucket.org/Dennis_Media_Factory/ios-global.git</string>
+		<key>828ECF15-33C5-45F9-92A2-B86554DB6816</key>
+		<string>carl@git.petosoft.com:lamp.git</string>
+		<key>E312EE3F-F42C-435B-87A0-F878F8EEC3E2</key>
+		<string>carl@git.petosoft.com:/home/carl/salience.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Lamp.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>294728E9-1A69-45BC-81EB-313E684AA208</key>
+		<string>../../../iOS-Global</string>
+		<key>828ECF15-33C5-45F9-92A2-B86554DB6816</key>
+		<string>../..</string>
+		<key>E312EE3F-F42C-435B-87A0-F878F8EEC3E2</key>
+		<string>../../../Salience</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>carl@git.petosoft.com:lamp.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>828ECF15-33C5-45F9-92A2-B86554DB6816</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E312EE3F-F42C-435B-87A0-F878F8EEC3E2</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Salience</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>828ECF15-33C5-45F9-92A2-B86554DB6816</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Lamp</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>294728E9-1A69-45BC-81EB-313E684AA208</string>
+			<key>IDESourceControlWCCName</key>
+			<string>iOS-Global</string>
+		</dict>
+	</array>
+</dict>
+</plist>
