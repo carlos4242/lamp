@@ -7,6 +7,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewController">
             <connections>
+                <outlet property="cornerLampOffButton" destination="y6G-Zj-QTg" id="x4q-mD-qHO"/>
+                <outlet property="cornerLampOnButton" destination="xBf-ea-rNN" id="A0S-IU-DMh"/>
                 <outlet property="roundLampOffButton" destination="30" id="2qR-RR-kbs"/>
                 <outlet property="roundLampOnButton" destination="28" id="kve-rd-E5o"/>
                 <outlet property="tubeLampOffButton" destination="20" id="kFO-wS-9nb"/>
@@ -106,6 +108,9 @@
                     <state key="selected">
                         <color key="titleColor" red="1" green="0.033457794970000003" blue="0.078837076179999993" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
+                    <connections>
+                        <action selector="cornerLampOn:" destination="-1" eventType="touchUpInside" id="9O6-d4-CAF"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="y6G-Zj-QTg" userLabel="CornerLampOffButton">
                     <rect key="frame" x="172" y="449" width="94" height="44"/>
@@ -117,6 +122,9 @@
                     <state key="selected">
                         <color key="titleColor" red="1" green="0.033457794970000003" blue="0.078837076179999993" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
+                    <connections>
+                        <action selector="cornerLampOff:" destination="-1" eventType="touchUpInside" id="jxR-OE-LGi"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

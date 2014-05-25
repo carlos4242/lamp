@@ -10,14 +10,11 @@
 
 @interface ViewController : UIViewController
 
-- (IBAction)tubeLampOff:(id)sender;
-- (IBAction)tubeLampOn:(id)sender;
-- (IBAction)roundLampOff:(id)sender;
-- (IBAction)roundLampOn:(id)sender;
-
-@property (strong, nonatomic) IBOutlet UIButton *tubeLampOnButton;
-@property (strong, nonatomic) IBOutlet UIButton *tubeLampOffButton;
-@property (strong, nonatomic) IBOutlet UIButton *roundLampOnButton;
-@property (strong, nonatomic) IBOutlet UIButton *roundLampOffButton;
+@property (weak, nonatomic) IBOutlet UIButton *tubeLampOnButton;
+@property (weak, nonatomic) IBOutlet UIButton *tubeLampOffButton;
+@property (weak, nonatomic) IBOutlet UIButton *roundLampOnButton;
+@property (weak, nonatomic) IBOutlet UIButton *roundLampOffButton;
+@property (weak, nonatomic) IBOutlet UIButton *cornerLampOnButton;
+@property (weak, nonatomic) IBOutlet UIButton *cornerLampOffButton;
 
 @end

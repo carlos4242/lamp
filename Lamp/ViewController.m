@@ -27,6 +27,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLampState) name:UIApplicationDidBecomeActiveNotification object:nil];
     [NSTimer scheduledTimerWithTimeInterval:600 target:self selector:@selector(refreshLampState) userInfo:nil repeats:YES];
 }
+
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -41,10 +42,17 @@
     _tubeLampOffButton.selected = !state;
 }
 
+-(void)setLamp3UIState:(BOOL)state {
+    _cornerLampOnButton.selected = state;
+    _cornerLampOffButton.selected = !state;
+}
+
 -(void)updateButtonStateFromLampService:(LampService*)lamp {
     [self setLamp1UIState:[lamp lampOneIsOn]];
     [self setLamp2UIState:[lamp lampTwoIsOn]];
+    [self setLamp3UIState:[lamp lampThreeIsOn]];
 }
+
 -(void)refreshLampState {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
@@ -102,5 +110,29 @@
         return YES;
     };
     [lamp lampOneSetState:YES];
+}
+
+- (IBAction)cornerLampOn:(id)sender {
+    LampService *lamp = [LampService new];
+    __weak LampService *ls = lamp;
+    lamp.completionFunction = ^(BOOL result,NSString *error) {
+        if (result) {
+            [self updateButtonStateFromLampService:ls];
+        }
+        return YES;
+    };
+    [lamp lampThreeSetState:YES];
+}
+
+- (IBAction)cornerLampOff:(id)sender {
+    LampService *lamp = [LampService new];
+    __weak LampService *ls = lamp;
+    lamp.completionFunction = ^(BOOL result,NSString *error) {
+        if (result) {
+            [self updateButtonStateFromLampService:ls];
+        }
+        return YES;
+    };
+    [lamp lampThreeSetState:NO];
 }
 @end
