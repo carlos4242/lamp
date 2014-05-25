@@ -15,9 +15,9 @@
 - (IBAction)roundLampOff:(id)sender;
 - (IBAction)roundLampOn:(id)sender;
 
-@property (strong, nonatomic) IBOutlet UIButton *tubeLampOn;
-@property (strong, nonatomic) IBOutlet UIButton *tubeLampOff;
-@property (strong, nonatomic) IBOutlet UIButton *roundLampOn;
-@property (strong, nonatomic) IBOutlet UIButton *roundLampOff;
+@property (strong, nonatomic) IBOutlet UIButton *tubeLampOnButton;
+@property (strong, nonatomic) IBOutlet UIButton *tubeLampOffButton;
+@property (strong, nonatomic) IBOutlet UIButton *roundLampOnButton;
+@property (strong, nonatomic) IBOutlet UIButton *roundLampOffButton;
 
 @end

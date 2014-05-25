@@ -32,13 +32,13 @@
 }
 
 -(void)setLamp1UIState:(BOOL)state {
-    _roundLampOn.selected = state;
-    _roundLampOff.selected = !state;
+    _roundLampOnButton.selected = state;
+    _roundLampOffButton.selected = !state;
 }
 
 -(void)setLamp2UIState:(BOOL)state {
-    _tubeLampOn.selected = state;
-    _tubeLampOff.selected = !state;
+    _tubeLampOnButton.selected = state;
+    _tubeLampOffButton.selected = !state;
 }
 
 -(void)updateButtonStateFromLampService:(LampService*)lamp {

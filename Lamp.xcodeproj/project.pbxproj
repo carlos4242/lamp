@@ -225,6 +225,11 @@
 			attributes = {
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Carl Peto";
+				TargetAttributes = {
+					8F8603BB1659C5750025A56A = {
+						DevelopmentTeam = SWDC5K54B7;
+					};
+				};
 			};
 			buildConfigurationList = 8F8603B61659C5750025A56A /* Build configuration list for PBXProject "Lamp" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -368,6 +373,7 @@
 		8F8603E41659C5750025A56A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Salience/ThirdParty/atlassian-jiraconnect-ios-cf0856c5a257/JIRAConnect/JMCClasses/Libraries\"",
@@ -381,7 +387,6 @@
 					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryLib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8B2C83EF-822C-4BB4-AAC1-70193BAAB038";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -389,6 +394,7 @@
 		8F8603E51659C5750025A56A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Salience/ThirdParty/atlassian-jiraconnect-ios-cf0856c5a257/JIRAConnect/JMCClasses/Libraries\"",
@@ -402,7 +408,6 @@
 					"\"$(SRCROOT)/../Salience/ThirdParty/FlurryLib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8B2C83EF-822C-4BB4-AAC1-70193BAAB038";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

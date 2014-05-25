@@ -30,6 +30,10 @@
     [super callService:onOff?@"c":@"d"];
 }
 
+-(void)lampThreeSetState:(BOOL)onOff {
+    [super callService:onOff?@"f":@"d"];
+}
+
 -(void)checkState {
     [super callService:@""];
 }
@@ -44,6 +48,10 @@
 
 -(BOOL)lampTwoIsOn {
     return [[output objectForKey:@"lamp2"] isKindOfClass:[NSNumber class]]&&[[output objectForKey:@"lamp2"] boolValue];
+}
+
+-(BOOL)lampThreeIsOn {
+    return [[output objectForKey:@"lampd"] isKindOfClass:[NSNumber class]]&&![[output objectForKey:@"lamp3"] boolValue];
 }
 
 @end

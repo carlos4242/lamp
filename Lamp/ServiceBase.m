@@ -294,7 +294,7 @@ static dispatch_queue_t wsQ;
 - (void)connection:(NSURLConnection *)connection
 didReceiveResponse:(NSURLResponse *)response {
 	NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-	NSLog(@"(%d) response - web service %@ with status %d, data may follow",serviceCallId,serviceCallName,[httpResponse statusCode]);
+	NSLog(@"(%d) response - web service %@ with status %ld, data may follow",serviceCallId,serviceCallName,(long)[httpResponse statusCode]);
 	
 	expectedContentLength = [response expectedContentLength];
 	lastStatusCode = [httpResponse statusCode];
@@ -347,7 +347,7 @@ didReceiveResponse:(NSURLResponse *)response {
 
 -                (void)connection:(NSURLConnection *)connection
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-	NSLog(@"(%d) challenge received: %@ with failure count %d",serviceCallId,challenge,[challenge previousFailureCount]);
+	NSLog(@"(%d) challenge received: %@ with failure count %ld",serviceCallId,challenge,(long)[challenge previousFailureCount]);
 	if ([challenge previousFailureCount]<3&&username) {
 		NSLog(@"(%d) responding with username %@ and password %@ with session persistence",serviceCallId,username,[password md5hash]);
 		[[challenge sender] useCredential:[NSURLCredential
@@ -371,7 +371,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	
 	if ([serviceOutput length]<expectedContentLength) {
-		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%d",serviceCallId,expectedContentLength,[serviceOutput length]);
+		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%lu",serviceCallId,expectedContentLength,(unsigned long)[serviceOutput length]);
 	}
 	
 	if (lastStatusCode<300) {
