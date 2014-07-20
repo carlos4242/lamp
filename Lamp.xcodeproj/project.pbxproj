@@ -19,10 +19,14 @@
 		8F8603DA1659C5750025A56A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603D91659C5750025A56A /* ViewController.m */; };
 		8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */; };
 		8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DE1659C5750025A56A /* ViewController_iPad.xib */; };
-		8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603EC1659C6310025A56A /* ServiceBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603EC1659C6310025A56A /* ServiceBase.m */; };
 		8F8603F41659C6890025A56A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603F31659C6890025A56A /* NSData+Base64.m */; };
 		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */; };
+		8FC4DFDB197BCF2800E94968 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */; };
+		8FC4DFE1197BCF2800E94968 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE0197BCF2800E94968 /* TodayViewController.m */; };
+		8FC4DFE3197BCF2800E94968 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */; };
+		8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */; };
 		8FD22354178225CA007CF319 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD22349178225CA007CF319 /* NSObject+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8FD22355178225CA007CF319 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD2234B178225CA007CF319 /* NSString+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8FD22356178225CA007CF319 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD2234D178225CA007CF319 /* SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -31,8 +35,39 @@
 		8FD22359178225CA007CF319 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FD22353178225CA007CF319 /* SBJsonWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		8FE8800A165C60320023B2FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FE88009165C60320023B2FB /* QuartzCore.framework */; };
 		8FEE00F01675079300437A19 /* UIDevice+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FEE00EF1675079300437A19 /* UIDevice+Extensions.m */; };
-		8FFD45571674D55500412104 /* JsonServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45561674D55500412104 /* JsonServiceBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		8FFD45571674D55500412104 /* JsonServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45561674D55500412104 /* JsonServiceBase.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8FC4DFE4197BCF2800E94968 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F8603B31659C5750025A56A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8FC4DFD8197BCF2800E94968;
+			remoteInfo = LampToday;
+		};
+		8FC4DFE7197BCF2800E94968 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F8603B31659C5750025A56A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8FC4DFD8197BCF2800E94968;
+			remoteInfo = LampToday;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8FC4DFEC197BCF2800E94968 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8F8603BC1659C5750025A56A /* Lamp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lamp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +96,12 @@
 		8F86061F1659C8310025A56A /* LampService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LampService.h; sourceTree = "<group>"; };
 		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
 		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
+		8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = com.petosoft.Lamp.LampToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		8FC4DFDE197BCF2800E94968 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8FC4DFDF197BCF2800E94968 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
+		8FC4DFE0197BCF2800E94968 /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
+		8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		8FD22347178225CA007CF319 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/JSON.h"; sourceTree = "<group>"; };
 		8FD22348178225CA007CF319 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+SBJSON.h"; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		8FD22349178225CA007CF319 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SBJSON.m"; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -94,6 +135,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8FC4DFD6197BCF2800E94968 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC4DFDB197BCF2800E94968 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -105,6 +154,7 @@
 				8F86061E1659C78F0025A56A /* Constants.h */,
 				8F8603F11659C6560025A56A /* Salience */,
 				8F8603C61659C5750025A56A /* Lamp */,
+				8FC4DFDC197BCF2800E94968 /* LampToday */,
 				8F8603BF1659C5750025A56A /* Frameworks */,
 				8F8603BD1659C5750025A56A /* Products */,
 			);
@@ -114,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				8F8603BC1659C5750025A56A /* Lamp.app */,
+				8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,6 +176,7 @@
 				8F8603C01659C5750025A56A /* UIKit.framework */,
 				8F8603C21659C5750025A56A /* Foundation.framework */,
 				8F8603C41659C5750025A56A /* CoreGraphics.framework */,
+				8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -177,6 +229,25 @@
 			path = ../Salience;
 			sourceTree = "<group>";
 		};
+		8FC4DFDC197BCF2800E94968 /* LampToday */ = {
+			isa = PBXGroup;
+			children = (
+				8FC4DFDF197BCF2800E94968 /* TodayViewController.h */,
+				8FC4DFE0197BCF2800E94968 /* TodayViewController.m */,
+				8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */,
+				8FC4DFDD197BCF2800E94968 /* Supporting Files */,
+			);
+			path = LampToday;
+			sourceTree = "<group>";
+		};
+		8FC4DFDD197BCF2800E94968 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8FC4DFDE197BCF2800E94968 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		8FD22346178225AA007CF319 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,15 +278,35 @@
 				8F8603B81659C5750025A56A /* Sources */,
 				8F8603B91659C5750025A56A /* Frameworks */,
 				8F8603BA1659C5750025A56A /* Resources */,
+				8FC4DFEC197BCF2800E94968 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8FC4DFE5197BCF2800E94968 /* PBXTargetDependency */,
+				8FC4DFE8197BCF2800E94968 /* PBXTargetDependency */,
 			);
 			name = Lamp;
 			productName = Lamp;
 			productReference = 8F8603BC1659C5750025A56A /* Lamp.app */;
 			productType = "com.apple.product-type.application";
+		};
+		8FC4DFD8197BCF2800E94968 /* LampToday */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "LampToday" */;
+			buildPhases = (
+				8FC4DFD5197BCF2800E94968 /* Sources */,
+				8FC4DFD6197BCF2800E94968 /* Frameworks */,
+				8FC4DFD7197BCF2800E94968 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LampToday;
+			productName = LampToday;
+			productReference = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -227,6 +318,10 @@
 				ORGANIZATIONNAME = "Carl Peto";
 				TargetAttributes = {
 					8F8603BB1659C5750025A56A = {
+						DevelopmentTeam = SWDC5K54B7;
+					};
+					8FC4DFD8197BCF2800E94968 = {
+						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = SWDC5K54B7;
 					};
 				};
@@ -245,6 +340,7 @@
 			projectRoot = "";
 			targets = (
 				8F8603BB1659C5750025A56A /* Lamp */,
+				8FC4DFD8197BCF2800E94968 /* LampToday */,
 			);
 		};
 /* End PBXProject section */
@@ -261,6 +357,14 @@
 				8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */,
 				8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */,
 				8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8FC4DFD7197BCF2800E94968 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC4DFE3197BCF2800E94968 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +392,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8FC4DFD5197BCF2800E94968 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FC4DFE1197BCF2800E94968 /* TodayViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8FC4DFE5197BCF2800E94968 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8FC4DFD8197BCF2800E94968 /* LampToday */;
+			targetProxy = 8FC4DFE4197BCF2800E94968 /* PBXContainerItemProxy */;
+		};
+		8FC4DFE8197BCF2800E94968 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8FC4DFD8197BCF2800E94968 /* LampToday */;
+			targetProxy = 8FC4DFE7197BCF2800E94968 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8F8603C91659C5750025A56A /* InfoPlist.strings */ = {
@@ -412,6 +537,65 @@
 			};
 			name = Release;
 		};
+		8FC4DFE9197BCF2800E94968 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = LampToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "com.petosoft.Lamp.$(TARGET_NAME:rfc1034identifier)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		8FC4DFEA197BCF2800E94968 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = LampToday/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "com.petosoft.Lamp.$(TARGET_NAME:rfc1034identifier)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -432,6 +616,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "LampToday" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FC4DFE9197BCF2800E94968 /* Debug */,
+				8FC4DFEA197BCF2800E94968 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

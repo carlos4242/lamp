@@ -43,15 +43,15 @@
 }
 
 -(BOOL)lampOneIsOn {
-    return [[output objectForKey:@"lamp1"] isKindOfClass:[NSNumber class]]&&[[output objectForKey:@"lamp1"] boolValue];
+    return [self.output[@"lamp1"] isKindOfClass:[NSNumber class]]&&[self.output[@"lamp1"] boolValue];
 }
 
 -(BOOL)lampTwoIsOn {
-    return [[output objectForKey:@"lamp2"] isKindOfClass:[NSNumber class]]&&[[output objectForKey:@"lamp2"] boolValue];
+    return [self.output[@"lamp2"] isKindOfClass:[NSNumber class]]&&[self.output[@"lamp2"] boolValue];
 }
 
 -(BOOL)lampThreeIsOn {
-    return [[output objectForKey:@"lamp3"] isKindOfClass:[NSNumber class]]&&![[output objectForKey:@"lamp3"] boolValue];
+    return [self.output[@"lamp3"] isKindOfClass:[NSNumber class]]&&![self.output[@"lamp3"] boolValue];
 }
 
 @end

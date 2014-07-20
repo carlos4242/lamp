@@ -18,38 +18,20 @@ struct timeval lastSuccessfulNetworkCall;
 @end
 
 @interface ServiceBase : NSObject {
-	NSString *username;
-	NSString *password;
 	NSString *serviceCallName;
 	NSString *serviceOutput;
 	NSString *outputEncoding;
 	long long expectedContentLength;
-	int lastStatusCode;
-	
-	BOOL forceSynchronous;
-    BOOL parallelised;
-	
-	NSArray *errors;
-	NSArray *warnings;
-	
 	NSURLConnection *connection;
-		
 	BOOL inProgress;
 	BOOL complete;
 	BOOL succeededHTTP;
 	BOOL serviceCallResult;
 	BOOL authFailed;
-	
-	id<ServiceDelegate> delegate;
-	
 	BOOL dataReceived; //debug variable
 	uint serviceCallId; //debug variable
-	
-	// returning YES means error was handled, do no further action (don't report in UI alert)
-	BOOL (^completionFunction) (BOOL result, NSString *error);
 }
 
-//-(id)initWithUserDetails:(UserDetails*)userDetails;
 -(id)initWithUsername:(NSString*)usn andPassword:(NSString*)pwd;
 -(id)initWithUsername:(NSString*)usn andPassword:(NSString*)pwd isAdmin:(BOOL)isAdmin;
 -(BOOL)callService:(NSString*)service;
@@ -59,12 +41,11 @@ struct timeval lastSuccessfulNetworkCall;
 @property (nonatomic,copy) NSString *username;
 @property (nonatomic,copy) NSString *password;
 @property (nonatomic,retain) id<ServiceDelegate> delegate;
-@property (nonatomic,readonly) NSArray *errors;
-@property (nonatomic,readonly) NSArray *warnings;
-@property (nonatomic,readonly) int lastStatusCode;
+@property (nonatomic) NSArray *errors;
+@property (nonatomic) NSArray *warnings;
+@property (nonatomic,readonly) NSInteger lastStatusCode;
 @property (nonatomic) BOOL forceSynchronous;
 @property (nonatomic) BOOL parallelised;
-
 @property (copy) BOOL (^completionFunction) (BOOL result, NSString *error);
 
 @end

@@ -17,7 +17,7 @@
 -(NSString*)md5hash {
 	const char* str = [self UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(str, strlen(str), result);
+    CC_MD5(str, (CC_LONG)strlen(str), result);
 	
     NSMutableString *ret = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
     for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
@@ -27,17 +27,9 @@
 }
 @end
 
-@interface ServiceBase ()
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
-@end
-
 @implementation ServiceBase
 
 #pragma mark - properties
-
-@synthesize username,password,delegate,errors,warnings,lastStatusCode,forceSynchronous,completionFunction,parallelised;
 
 #pragma mark - constructors/dealloc
 
@@ -70,26 +62,11 @@
 		complete = NO;
 		succeededHTTP = YES; // until we know otherwise
 		serviceCallResult = NO; //until we know better
-		forceSynchronous = NO;
+		_forceSynchronous = NO;
 		serviceCallId = random()%1000;
 		authFailed = NO;
     }
 	return self;
-}
-
--(void)dealloc {
-	[username release];
-	[password release];
-	[serviceCallName release];
-	[(id)delegate release];
-	[serviceOutput release];
-	[outputEncoding release];
-	[connection release];
-	[errors release];
-	[warnings release];
-	[completionFunction release];
-	[super dealloc];
-	NSLog(@"(%d) finished service base dealloc",serviceCallId);
 }
 
 #pragma mark - serialised requests
@@ -113,13 +90,14 @@ static dispatch_queue_t wsQ;
 }
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
     NSURL *url = [self getServiceUrlFromService:service];
-	NSMutableURLRequest *urlRequest = [[[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0] autorelease];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
     [urlRequest setHTTPShouldHandleCookies:YES];
 	[urlRequest setHTTPMethod:@"POST"];
+    [urlRequest setTimeoutInterval:3];
     return urlRequest;
 }
 -(void)setupSecurityForRequest:(NSMutableURLRequest*)urlRequest {
-    NSString *tmp = [NSString stringWithFormat:@"%@:%@", username, [password md5hash]];
+    NSString *tmp = [NSString stringWithFormat:@"%@:%@", _username, [_password md5hash]];
     NSString *basicAuthHeader = [NSString stringWithFormat:@"Basic %@",
                                  [[NSData dataWithBytes:[tmp cStringUsingEncoding:NSUTF8StringEncoding]
                                                  length:[tmp length]] base64EncodedString]];
@@ -132,7 +110,7 @@ static dispatch_queue_t wsQ;
     return 18.0F;
 }
 -(BOOL)callService:(NSString*)service  {
-	if (!forceSynchronous&&parallelised) {
+	if (!_forceSynchronous&&_parallelised) {
         NSMutableURLRequest *urlRequest = [self requestForService:service];
         [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
         if (![NSURLConnection canHandleRequest:urlRequest]) return NO;
@@ -157,7 +135,7 @@ static dispatch_queue_t wsQ;
             
             NSURLResponse *response = nil;
             NSError *error = nil;
-            if (forceSynchronous) {
+            if (_forceSynchronous) {
                 urlRequest.timeoutInterval = [self getSynchronousTimeoutValue];
             }
             NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
@@ -205,7 +183,7 @@ static dispatch_queue_t wsQ;
                 return NO;
             }
         };
-		if (forceSynchronous) {
+		if (_forceSynchronous) {
             // run on the current (GUI/main) thread
             return webService();
         } else {
@@ -213,7 +191,6 @@ static dispatch_queue_t wsQ;
             // run on the background, serialised queue (standard)
             dispatch_async(wsQ, ^{
                 serialisedWebService();
-                [serialisedWebService release];
                 serialisedWebService = nil;
             });
             return YES; // assume it was queued OK
@@ -234,15 +211,15 @@ static dispatch_queue_t wsQ;
     gettimeofday(&lastSuccessfulNetworkCall,NULL);
 }
 -(void)handleErrorsInCompletedResult:(NSString**)lastErrorParsed {
-    if ([(id)delegate respondsToSelector:@selector(errorsOccurred:forService:)]) {
-        [delegate errorsOccurred:errors forService:self];
+    if ([_delegate respondsToSelector:@selector(errorsOccurred:forService:)]) {
+        [_delegate errorsOccurred:_errors forService:self];
     }
 }
 -(void)handleWarningsInCompletedResult {
-    if ([(id)delegate respondsToSelector:@selector(warningsOccured:forService:)]) {
-        [delegate warningsOccured:warnings forService:self];
+    if ([_delegate respondsToSelector:@selector(warningsOccured:forService:)]) {
+        [_delegate warningsOccured:_warnings forService:self];
     } else {
-        NSLog(@"unlogged warnings on service %@",warnings);
+        NSLog(@"unlogged warnings on service %@",_warnings);
     }
 }
 -(void)parseSuccessfulCompletionOfService:(NSString**)lastErrorParsed {
@@ -252,38 +229,38 @@ static dispatch_queue_t wsQ;
 		[self serviceCompletedSuccessfully]; // this is overridden in subclasses to finalise processing of the service
 	}
 
-    BOOL handled = completionFunction&&completionFunction(serviceCallResult,*lastErrorParsed);
+    BOOL handled = _completionFunction&&_completionFunction(serviceCallResult,*lastErrorParsed);
 
-    if (!delegate&&!handled) {
+    if (!_delegate&&!handled) {
         NSLog(@"service finished with no delegate set, errors and warnings will not show");
     }
     
-    if (delegate&&!handled) {
+    if (_delegate&&!handled) {
 		NSLog(@"(%d) Service complete, calling the delegate with result %d",serviceCallId,serviceCallResult);
-		[delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
+		[_delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
 	}
 }
 -(void)parseErrorCompletionOfService:(NSString**)lastErrorParsed {
     NSString *error = nil;
     serviceCallResult = NO;
     
-    if (lastStatusCode==500) {
+    if (_lastStatusCode==500) {
         error = @"Internal server error.";
-    } else if (lastStatusCode==401) {
+    } else if (_lastStatusCode==401) {
         error = @"Authentication failed (try again or check your username and password)";
     } else {
-        error = [NSString stringWithFormat:@"server failed with error code %d",lastStatusCode];
+        error = [NSString stringWithFormat:@"server failed with error code %ld",(long)_lastStatusCode];
     }
     
-    BOOL handled = completionFunction&&completionFunction(serviceCallResult,*lastErrorParsed);
+    BOOL handled = _completionFunction&&_completionFunction(serviceCallResult,*lastErrorParsed);
     
-    if (error&&delegate&&[(id)delegate respondsToSelector:@selector(reportError:forService:)]&&!handled) {
-        [delegate reportError:error forService:self];
+    if (error&&_delegate&&[_delegate respondsToSelector:@selector(reportError:forService:)]&&!handled) {
+        [_delegate reportError:error forService:self];
     }
     
-    if (delegate) {
+    if (_delegate) {
 		NSLog(@"(%d) Service complete, calling the delegate with result %d",serviceCallId,serviceCallResult);
-		[delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
+		[_delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
 	}
     
     *lastErrorParsed = error;
@@ -297,10 +274,10 @@ didReceiveResponse:(NSURLResponse *)response {
 	NSLog(@"(%d) response - web service %@ with status %ld, data may follow",serviceCallId,serviceCallName,(long)[httpResponse statusCode]);
 	
 	expectedContentLength = [response expectedContentLength];
-	lastStatusCode = [httpResponse statusCode];
+	_lastStatusCode = [httpResponse statusCode];
 	
-	if (delegate&&[(id)delegate respondsToSelector:@selector(responseHeaderReceivedWithStatusCode:forService:)]) {
-		[delegate responseHeaderReceivedWithStatusCode:lastStatusCode forService:self];			
+	if (_delegate&&[_delegate respondsToSelector:@selector(responseHeaderReceivedWithStatusCode:forService:)]) {
+		[_delegate responseHeaderReceivedWithStatusCode:_lastStatusCode forService:self];
 	}
 	
 	if ([httpResponse textEncodingName]) {
@@ -313,7 +290,7 @@ didReceiveResponse:(NSURLResponse *)response {
 	didReceiveData:(NSData *)data {
     
 	NSString *connectionDataNextPacket = nil;
-	if (lastStatusCode==401) {
+	if (_lastStatusCode==401) {
 		return; // not authenticated, error message to follow
 	}
     
@@ -334,10 +311,7 @@ didReceiveResponse:(NSURLResponse *)response {
 	
 	if (dataReceived) { // we already have data
 		NSString *newServiceOutput = [serviceOutput stringByAppendingString:connectionDataNextPacket];
-		NSString *oldServiceOutput = serviceOutput;
-		serviceOutput = [newServiceOutput retain];
-		[oldServiceOutput release];
-		[connectionDataNextPacket release];
+		serviceOutput = newServiceOutput;
 	} else {
 		serviceOutput = connectionDataNextPacket;
 	}
@@ -348,11 +322,11 @@ didReceiveResponse:(NSURLResponse *)response {
 -                (void)connection:(NSURLConnection *)connection
 didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	NSLog(@"(%d) challenge received: %@ with failure count %ld",serviceCallId,challenge,(long)[challenge previousFailureCount]);
-	if ([challenge previousFailureCount]<3&&username) {
-		NSLog(@"(%d) responding with username %@ and password %@ with session persistence",serviceCallId,username,[password md5hash]);
+	if ([challenge previousFailureCount]<3&&_username) {
+		NSLog(@"(%d) responding with username %@ and password %@ with session persistence",serviceCallId,_username,[_password md5hash]);
 		[[challenge sender] useCredential:[NSURLCredential
-										   credentialWithUser:[NSString stringWithString:username]
-                                           password:[password md5hash]
+										   credentialWithUser:[NSString stringWithString:_username]
+                                           password:[_password md5hash]
                                            persistence:NSURLCredentialPersistenceNone]
                forAuthenticationChallenge:challenge];
 	} else {
@@ -362,7 +336,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	NSLog(@"(%d) finished service load with status code %d", serviceCallId, lastStatusCode);
+	NSLog(@"(%d) finished service load with status code %ld", serviceCallId, (long)_lastStatusCode);
 	
 	inProgress = NO;
 	complete = YES;
@@ -374,7 +348,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%lu",serviceCallId,expectedContentLength,(unsigned long)[serviceOutput length]);
 	}
 	
-	if (lastStatusCode<300) {
+	if (_lastStatusCode<300) {
         [self parseSuccessfulCompletionOfService:&lastErrorParsed];
 	} else {
         [self parseErrorCompletionOfService:&lastErrorParsed];
@@ -394,28 +368,28 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 
-	if (delegate) {
-		[delegate serviceHasFinishedWithResult:NO forService:self];
+	if (_delegate) {
+		[_delegate serviceHasFinishedWithResult:NO forService:self];
 	}
 
-	if (completionFunction) {
-		if (completionFunction(NO,[error localizedDescription])) {
+	if (_completionFunction) {
+		if (_completionFunction(NO,[error localizedDescription])) {
 			return;
 		}
 	}
 
-	if (delegate&&[(id)delegate respondsToSelector:@selector(reportError:forService:)]) {
+	if (_delegate&&[_delegate respondsToSelector:@selector(reportError:forService:)]) {
 		reported = YES;
 
         if (authFailed) {
-			[delegate reportError:@"Authentication failed (check your username and password)" forService:self];
+			[_delegate reportError:@"Authentication failed (check your username and password)" forService:self];
 			NSLog(@"authfail error detail : %@",[error localizedDescription]);
 		} else {
-			[delegate reportError:[error localizedDescription] forService:self];			
+			[_delegate reportError:[error localizedDescription] forService:self];
 		}
-	} else if (delegate&&[(id)delegate respondsToSelector:@selector(httpErrorOccurred:forService:)]) {
+	} else if (_delegate&&[_delegate respondsToSelector:@selector(httpErrorOccurred:forService:)]) {
 		reported = YES;
-		[delegate httpErrorOccurred:[error localizedDescription] forService:self];
+		[_delegate httpErrorOccurred:[error localizedDescription] forService:self];
 	}
 	
 

@@ -19,7 +19,7 @@
 -(BOOL)httpErrorOccurred:(NSString*)localizedErrorDescription forService:(ServiceBase*)service;
 -(BOOL)errorsOccurred:(NSArray*)errors forService:(ServiceBase*)service;
 -(BOOL)warningsOccured:(NSArray*)warnings forService:(ServiceBase*)service;
--(BOOL)responseHeaderReceivedWithStatusCode:(int)statusCode forService:(ServiceBase*)service;
+-(BOOL)responseHeaderReceivedWithStatusCode:(NSInteger)statusCode forService:(ServiceBase*)service;
 -(BOOL)reportError:(NSString*)error forService:(ServiceBase*)service;
 
 @end

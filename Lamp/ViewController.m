@@ -25,7 +25,7 @@
     [self.view.layer insertSublayer:gradient atIndex:0];
     [self refreshLampState]; 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLampState) name:UIApplicationDidBecomeActiveNotification object:nil];
-    [NSTimer scheduledTimerWithTimeInterval:600 target:self selector:@selector(refreshLampState) userInfo:nil repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refreshLampState) userInfo:nil repeats:YES];
 }
 
 -(void)dealloc {
@@ -52,11 +52,21 @@
     [self setLamp2UIState:[lamp lampTwoIsOn]];
     [self setLamp3UIState:[lamp lampThreeIsOn]];
 }
+-(void)updateButtonVisibility:(BOOL)enabled {
+    CGFloat alpha = enabled?1.0:0.2;
+    _roundLampOnButton.alpha = alpha;
+    _roundLampOffButton.alpha = alpha;
+    _tubeLampOnButton.alpha = alpha;
+    _tubeLampOffButton.alpha = alpha;
+    _cornerLampOnButton.alpha = alpha;
+    _cornerLampOffButton.alpha = alpha;
+}
 
 -(void)refreshLampState {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
+        [self updateButtonVisibility:result];
         if (result) {
             [self updateButtonStateFromLampService:ls];
         }
