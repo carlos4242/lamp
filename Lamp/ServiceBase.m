@@ -33,9 +33,11 @@
 
 #pragma mark - constructors/dealloc
 
-//-(id)initWithUserDetails:(UserDetails*)userDetails {
-//	return [self initWithUsername:userDetails.username andPassword:userDetails.password];
-//}
+-(void)setNetworkActivityIndicator:(BOOL)on {
+#if (!SUPPRESS_NETWORK_ACTIVITY_INDICATOR)
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = on;
+#endif
+}
 
 -(id)initWithUsername:(NSString*)usn
 		  andPassword:(NSString*)pwd {
@@ -115,7 +117,7 @@ static dispatch_queue_t wsQ;
         [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
         if (![NSURLConnection canHandleRequest:urlRequest]) return NO;
         
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [self setNetworkActivityIndicator:YES];
         
 		connection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:NO];
 
@@ -131,7 +133,7 @@ static dispatch_queue_t wsQ;
             [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
             if (![NSURLConnection canHandleRequest:urlRequest]) return NO;
             
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+            [self setNetworkActivityIndicator:YES];
             
             NSURLResponse *response = nil;
             NSError *error = nil;
@@ -139,7 +141,7 @@ static dispatch_queue_t wsQ;
                 urlRequest.timeoutInterval = [self getSynchronousTimeoutValue];
             }
             NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [self setNetworkActivityIndicator:NO];
             
             if (error) {
                 if ([NSThread isMainThread]) {
@@ -342,7 +344,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	complete = YES;
 	NSString *lastErrorParsed = nil;
 
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self setNetworkActivityIndicator:NO];
 	
 	if ([serviceOutput length]<expectedContentLength) {
 		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%lu",serviceCallId,expectedContentLength,(unsigned long)[serviceOutput length]);
@@ -354,7 +356,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
         [self parseErrorCompletionOfService:&lastErrorParsed];
 	}
 
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self setNetworkActivityIndicator:NO];
 }
 
 - (void)connection:(NSURLConnection *)connection
@@ -365,8 +367,7 @@ didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	BOOL reported = NO;
     inProgress = NO;
 
-	
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [self setNetworkActivityIndicator:NO];
 
 	if (_delegate) {
 		[_delegate serviceHasFinishedWithResult:NO forService:self];

@@ -10,7 +10,6 @@
 
 @implementation LampService
 
-
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
     
     serviceCallName = [[NSString alloc] initWithString:service];
