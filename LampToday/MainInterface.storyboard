@@ -59,7 +59,6 @@
                             <constraint firstAttribute="trailing" secondItem="Gct-4y-G9W" secondAttribute="trailing" constant="20" id="731-Q1-rbJ"/>
                             <constraint firstItem="rLg-z5-arF" firstAttribute="leading" secondItem="qlg-bN-WZ3" secondAttribute="trailing" constant="26" id="Cp7-JK-iFV"/>
                             <constraint firstItem="U15-wX-yfk" firstAttribute="top" secondItem="GcN-lo-r42" secondAttribute="bottom" constant="18" id="DBw-2u-k5U"/>
-                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" secondItem="qlg-bN-WZ3" secondAttribute="bottom" constant="26" id="J7r-bv-bQX"/>
                             <constraint firstItem="rLg-z5-arF" firstAttribute="centerY" secondItem="qlg-bN-WZ3" secondAttribute="centerY" id="LDu-rM-LB2"/>
                             <constraint firstItem="qlg-bN-WZ3" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leading" constant="20" id="VBl-fS-d3i"/>
                             <constraint firstItem="qlg-bN-WZ3" firstAttribute="top" secondItem="U15-wX-yfk" secondAttribute="bottom" constant="18" id="ZwC-wr-kYz"/>
@@ -79,8 +78,11 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="150"/>
                     <connections>
+                        <outlet property="cornerLampLabel" destination="qlg-bN-WZ3" id="Us4-Q9-0Dj"/>
                         <outlet property="cornerLampSwitch" destination="rLg-z5-arF" id="2MZ-nz-eXa"/>
+                        <outlet property="roundLampLabel" destination="U15-wX-yfk" id="K2d-d1-jsv"/>
                         <outlet property="roundLampSwitch" destination="Gct-4y-G9W" id="Z9R-om-edl"/>
+                        <outlet property="tubeLampLabel" destination="GcN-lo-r42" id="T6D-eG-JmD"/>
                         <outlet property="tubeLampSwitch" destination="lOl-Lj-GCp" id="yWp-SZ-kVR"/>
                     </connections>
                 </viewController>

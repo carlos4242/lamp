@@ -13,8 +13,8 @@
 -(void)lampOneSetState:(BOOL)onOff;
 -(void)lampTwoSetState:(BOOL)onOff;
 -(void)lampThreeSetState:(BOOL)onOff;
--(void)checkState;
--(void)refreshState;
+-(BOOL)checkState;
+-(BOOL)refreshState;
 
 -(BOOL)lampOneIsOn;
 -(BOOL)lampTwoIsOn;

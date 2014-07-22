@@ -33,12 +33,12 @@
     [super callService:onOff?@"f":@"e"];
 }
 
--(void)checkState {
-    [super callService:@""];
+-(BOOL)checkState {
+    return [super callService:@""];
 }
 
--(void)refreshState {
-    [super callService:@""];
+-(BOOL)refreshState {
+    return [super callService:@""];
 }
 
 -(BOOL)lampOneIsOn {

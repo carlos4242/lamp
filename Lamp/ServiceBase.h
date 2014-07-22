@@ -32,8 +32,6 @@ struct timeval lastSuccessfulNetworkCall;
 	uint serviceCallId; //debug variable
 }
 
--(id)initWithUsername:(NSString*)usn andPassword:(NSString*)pwd;
--(id)initWithUsername:(NSString*)usn andPassword:(NSString*)pwd isAdmin:(BOOL)isAdmin;
 -(BOOL)callService:(NSString*)service;
 -(void)cancel;
 -(void)serviceCompletedSuccessfully;
