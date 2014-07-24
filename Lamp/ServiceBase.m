@@ -55,7 +55,10 @@
 -(BOOL)callService:(NSString*)service  {
     NSMutableURLRequest *urlRequest = [self requestForService:service];
     [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
-    if (![NSURLConnection canHandleRequest:urlRequest]) return NO;
+    if (![NSURLConnection canHandleRequest:urlRequest]) {
+        NSLog(@"*** WARNING!! callservice cannot handle request for %@ (%@, url = %@) in ",urlRequest,service,[self getServiceUrlFromService:service],self);
+        return NO;
+    }
     
     [self setNetworkActivityIndicator:YES];
     
@@ -64,9 +67,15 @@
     if (connection) {
         [connection start];
         inProgress = YES;
+    } else {
+        NSLog(@"*** WARNING!! callservice failed to create connection for %@ (%@, url = %@) in %@",urlRequest,service,[self getServiceUrlFromService:service],self);
+        return NO;
     }
     
-    return (!!connection);
+#if (SUPPRESS_NETWORK_ACTIVITY_INDICATOR)
+    NSLog(@"successfully created and started service %@, (%@)",self,service);
+#endif
+    return YES; // success
 }
 
 - (void)cancel {
@@ -159,6 +168,9 @@ didReceiveResponse:(NSURLResponse *)response {
 
 - (void)connection:(NSURLConnection *)connection
 	didReceiveData:(NSData *)data {
+#if (SUPPRESS_NETWORK_ACTIVITY_INDICATOR)
+    NSLog(@"data received on %@, (%@)",self,data);
+#endif
     
 	NSString *connectionDataNextPacket = nil;
 	if (_lastStatusCode==401) {
@@ -250,6 +262,10 @@ didReceiveResponse:(NSURLResponse *)response {
 	if (!reported) {
 		NSLog(@"(%d) possibly unlogged/unshown error %@ on service type %@",serviceCallId,[error localizedDescription],self);
 	}
+}
+
+- (NSString*)description {
+    return [NSString stringWithFormat:@"service class %@ call id %d",[self class],serviceCallId];
 }
 
 @end
