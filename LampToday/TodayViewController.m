@@ -18,44 +18,63 @@
 
 @interface TodayViewController () <NCWidgetProviding>
 
+@property (strong, nonatomic) IBOutlet UIVisualEffectView *visualEffectView;
 @property (weak, nonatomic) IBOutlet UISwitch *tubeLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *roundLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *cornerLampSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *tubeLampLabel;
 @property (weak, nonatomic) IBOutlet UILabel *roundLampLabel;
 @property (weak, nonatomic) IBOutlet UILabel *cornerLampLabel;
+@property (weak, nonatomic) IBOutlet UILabel *arduinoNotContactable;
 
-@property BOOL lastResultVisible;
+@property (nonatomic) BOOL controlsVisible;
 @property BOOL lastResultLamp1On;
 @property BOOL lastResultLamp2On;
 @property BOOL lastResultLamp3On;
+
+@property (strong) LampService *currentLampService;
 
 @end
 
 @implementation TodayViewController
 
 -(void)viewDidLoad {
-    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(heartbeat) userInfo:nil repeats:YES];
-    self.preferredContentSize = CGSizeMake(self.view.frame.size.width,150.0);
+    self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIVibrancyEffect notificationCenterVibrancyEffect]];
+    self.visualEffectView.frame = CGRectMake(0, 0, self.view.frame.size.width, 150);
+    [self.view addSubview:self.visualEffectView];
+    NSLog(@"visual effect view %@",self.visualEffectView);
+
+    [self.visualEffectView.contentView addSubview:self.roundLampLabel];
+    [self.visualEffectView.contentView addSubview:self.tubeLampLabel];
+    [self.visualEffectView.contentView addSubview:self.cornerLampLabel];
+    [self.visualEffectView.contentView addSubview:self.roundLampSwitch];
+    [self.visualEffectView.contentView addSubview:self.tubeLampSwitch];
+    [self.visualEffectView.contentView addSubview:self.cornerLampSwitch];
+    [self.visualEffectView.contentView addSubview:self.arduinoNotContactable];
+    
     [self loadLastResults];
-    [self updateSwitchVisibility:self.lastResultVisible];
     [self setSwitchesEnabled];
     
     LampService *lamp = [self lampService:nil];
     BOOL ran = [lamp checkState];
     NSLog(@"widget view did load %d",ran);
 }
--(void)heartbeat {
-    NSLog(@"heartbeat");
-}
--(void)updateSwitchVisibility:(BOOL)visible {
-    self.tubeLampLabel.textColor = visible?[UIColor whiteColor]:[UIColor redColor];
-    self.roundLampLabel.textColor = visible?[UIColor whiteColor]:[UIColor redColor];
-    self.cornerLampLabel.textColor = visible?[UIColor whiteColor]:[UIColor redColor];
-    
+-(void)setControlsVisible:(BOOL)visible {
+    _controlsVisible = visible;
+    self.tubeLampLabel.hidden = !visible;
+    self.roundLampLabel.hidden = !visible;
+    self.cornerLampLabel.hidden = !visible;
     self.tubeLampSwitch.hidden = !visible;
-    self.roundLampSwitch.alpha = !visible;
-    self.cornerLampSwitch.alpha = !visible;
+    self.roundLampSwitch.hidden = !visible;
+    self.cornerLampSwitch.hidden = !visible;
+    self.arduinoNotContactable.hidden = visible;
+    if (visible) {
+        self.preferredContentSize = CGSizeMake(self.view.frame.size.width,150);
+        NSLog(@"set preferred content size height to 150");
+    } else {
+        self.preferredContentSize = CGSizeMake(self.view.frame.size.width,70);
+        NSLog(@"set preferred content size height to 70");
+    }
 }
 -(void)setSwitchesEnabled {
     self.roundLampSwitch.on = self.lastResultLamp1On;
@@ -75,18 +94,18 @@
 }
 -(LampService*)lampService:(void (^)(NCUpdateResult))completionHandler {
     LampService *lamp = [LampService new];
+    self.currentLampService = lamp;
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
-        self.lastResultVisible = result;
+        self.controlsVisible = result;
         NSLog(@"widget webservice completed with result %d",result);
-        [self updateSwitchVisibility:result];
         if (result) {
             [self updateSwitchesEnabled:ls];
         }
         [self saveLastResults];
         if (completionHandler) {
             NSLog(@"widget snapshot callback");
-            completionHandler(result?NCUpdateResultNewData:NCUpdateResultFailed);
+            completionHandler(NCUpdateResultNewData);
         }
         return YES;
     };
@@ -101,15 +120,14 @@
 - (IBAction)cornerLampSwitched:(id)sender {
     [[self lampService:nil] lampThreeSetState:self.cornerLampSwitch.on];
 }
-
 -(void)saveLastResults {
-    [[NSUserDefaults standardUserDefaults] setBool:self.lastResultVisible forKey:kLastResultVisible];
+    [[NSUserDefaults standardUserDefaults] setBool:self.controlsVisible forKey:kLastResultVisible];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp1On forKey:kLastResultLamp1On];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp2On forKey:kLastResultLamp2On];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp3On forKey:kLastResultLamp3On];
 }
 -(void)loadLastResults {
-    self.lastResultVisible = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultVisible];
+    self.controlsVisible = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultVisible];
     self.lastResultLamp1On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp1On];
     self.lastResultLamp2On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp2On];
     self.lastResultLamp3On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp3On];
