@@ -33,6 +33,10 @@
     [super callService:onOff?@"f":@"e"];
 }
 
+-(void)beedoBeedoSetState:(BOOL)onOff {
+    [super callService:onOff?@"g":@"h"];
+}
+
 -(BOOL)checkState {
     return [super callService:@""];
 }
@@ -51,6 +55,10 @@
 
 -(BOOL)lampThreeIsOn {
     return [self.output[@"lamp3"] isKindOfClass:[NSNumber class]]&&![self.output[@"lamp3"] boolValue];
+}
+
+-(BOOL)beedoBeedoIsOn {
+    return [self.output[@"beedoBeedo"] isKindOfClass:[NSNumber class]]&&[self.output[@"beedoBeedo"] boolValue];
 }
 
 @end

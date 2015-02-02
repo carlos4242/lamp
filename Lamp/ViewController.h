@@ -10,11 +10,4 @@
 
 @interface ViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIButton *tubeLampOnButton;
-@property (weak, nonatomic) IBOutlet UIButton *tubeLampOffButton;
-@property (weak, nonatomic) IBOutlet UIButton *roundLampOnButton;
-@property (weak, nonatomic) IBOutlet UIButton *roundLampOffButton;
-@property (weak, nonatomic) IBOutlet UIButton *cornerLampOnButton;
-@property (weak, nonatomic) IBOutlet UIButton *cornerLampOffButton;
-
 @end

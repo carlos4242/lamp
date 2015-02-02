@@ -11,21 +11,47 @@
 #import "UIDevice+Extensions.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface ViewController ()
+
+@property (strong) CAGradientLayer *gradient;
+
+@property (weak, nonatomic) IBOutlet UISwitch *tubeLampSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *roundLampSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *cornerLampSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *beedoBeedoSwitch;
+
+@end
+
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.colors = [NSArray arrayWithObjects:(id)[UIColor clearColor].CGColor,(id)[UIColor blackColor].CGColor, nil]; //[UIColor colorWithWhite:0 alpha:0.2]
+    _gradient = [CAGradientLayer layer];
+    UIColor *colour1 = [UIColor clearColor];
+    UIColor *colour2 = [UIColor colorWithWhite:0.5 alpha:1];//[UIColor blackColor];
+    
+    _gradient.colors = [NSArray arrayWithObjects:(id)colour1.CGColor,(id)colour2.CGColor, nil];
     if ([UIDevice isIpad]) {
-        gradient.frame = CGRectMake(0,0,1024,1024);
+        _gradient.frame = CGRectMake(0,0,1024,1024);
     } else {
-        gradient.frame = self.view.bounds;
+        _gradient.frame = self.view.bounds;
     }
-    [self.view.layer insertSublayer:gradient atIndex:0];
+    [self.view.layer insertSublayer:_gradient atIndex:0];
     [self refreshLampState]; 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshLampState) name:UIApplicationDidBecomeActiveNotification object:nil];
-    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refreshLampState) userInfo:nil repeats:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshLampState)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    [NSTimer scheduledTimerWithTimeInterval:10
+                                     target:self
+                                   selector:@selector(refreshLampState)
+                                   userInfo:nil
+                                    repeats:YES];
+}
+
+-(void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    _gradient.frame = self.view.bounds;
 }
 
 -(void)dealloc {
@@ -33,33 +59,34 @@
 }
 
 -(void)setLamp1UIState:(BOOL)state {
-    _roundLampOnButton.selected = state;
-    _roundLampOffButton.selected = !state;
+    _roundLampSwitch.on = state;
 }
 
 -(void)setLamp2UIState:(BOOL)state {
-    _tubeLampOnButton.selected = state;
-    _tubeLampOffButton.selected = !state;
+    _tubeLampSwitch.on = state;
 }
 
 -(void)setLamp3UIState:(BOOL)state {
-    _cornerLampOnButton.selected = state;
-    _cornerLampOffButton.selected = !state;
+    _cornerLampSwitch.on = state;
+}
+
+-(void)setFlasherUIState:(BOOL)state {
+    _beedoBeedoSwitch.on = state;
 }
 
 -(void)updateButtonStateFromLampService:(LampService*)lamp {
     [self setLamp1UIState:[lamp lampOneIsOn]];
     [self setLamp2UIState:[lamp lampTwoIsOn]];
     [self setLamp3UIState:[lamp lampThreeIsOn]];
+    [self setFlasherUIState:[lamp beedoBeedoIsOn]];
 }
+
 -(void)updateButtonVisibility:(BOOL)enabled {
     CGFloat alpha = enabled?1.0:0.2;
-    _roundLampOnButton.alpha = alpha;
-    _roundLampOffButton.alpha = alpha;
-    _tubeLampOnButton.alpha = alpha;
-    _tubeLampOffButton.alpha = alpha;
-    _cornerLampOnButton.alpha = alpha;
-    _cornerLampOffButton.alpha = alpha;
+    _roundLampSwitch.alpha = alpha;
+    _tubeLampSwitch.alpha = alpha;
+    _cornerLampSwitch.alpha = alpha;
+    _beedoBeedoSwitch.alpha = alpha;
 }
 
 -(void)refreshLampState {
@@ -74,7 +101,8 @@
     };
     [lamp checkState];
 }
-- (IBAction)tubeLampOff:(id)sender {
+
+- (IBAction)tubeLampChanged:(UISwitch*)sender {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
@@ -83,10 +111,10 @@
         }
         return YES;
     };
-    [lamp lampTwoSetState:NO];
+    [lamp lampTwoSetState:sender.on];
 }
 
-- (IBAction)tubeLampOn:(id)sender {
+- (IBAction)roundLampChanged:(UISwitch*)sender {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
@@ -95,10 +123,10 @@
         }
         return YES;
     };
-    [lamp lampTwoSetState:YES];
+    [lamp lampOneSetState:sender.on];
 }
 
-- (IBAction)roundLampOff:(id)sender {
+- (IBAction)cornerLampChanged:(UISwitch*)sender {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
@@ -107,10 +135,10 @@
         }
         return YES;
     };
-    [lamp lampOneSetState:NO];
+    [lamp lampThreeSetState:sender.on];
 }
 
-- (IBAction)roundLampOn:(id)sender {
+- (IBAction)beedoBeedoChanged:(UISwitch*)sender {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
@@ -119,30 +147,7 @@
         }
         return YES;
     };
-    [lamp lampOneSetState:YES];
+    [lamp beedoBeedoSetState:sender.on];
 }
 
-- (IBAction)cornerLampOn:(id)sender {
-    LampService *lamp = [LampService new];
-    __weak LampService *ls = lamp;
-    lamp.completionFunction = ^(BOOL result,NSString *error) {
-        if (result) {
-            [self updateButtonStateFromLampService:ls];
-        }
-        return YES;
-    };
-    [lamp lampThreeSetState:YES];
-}
-
-- (IBAction)cornerLampOff:(id)sender {
-    LampService *lamp = [LampService new];
-    __weak LampService *ls = lamp;
-    lamp.completionFunction = ^(BOOL result,NSString *error) {
-        if (result) {
-            [self updateButtonStateFromLampService:ls];
-        }
-        return YES;
-    };
-    [lamp lampThreeSetState:NO];
-}
 @end

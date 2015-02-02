@@ -13,11 +13,13 @@
 -(void)lampOneSetState:(BOOL)onOff;
 -(void)lampTwoSetState:(BOOL)onOff;
 -(void)lampThreeSetState:(BOOL)onOff;
+-(void)beedoBeedoSetState:(BOOL)onOff;
 -(BOOL)checkState;
 -(BOOL)refreshState;
 
 -(BOOL)lampOneIsOn;
 -(BOOL)lampTwoIsOn;
 -(BOOL)lampThreeIsOn;
+-(BOOL)beedoBeedoIsOn;
 
 @end
