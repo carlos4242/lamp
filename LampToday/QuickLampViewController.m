@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Carl Peto. All rights reserved.
 //
 
-#import "TodayViewController.h"
+#import "QuickLampViewController.h"
 #import "LampService.h"
 
 #import <NotificationCenter/NotificationCenter.h>
@@ -17,7 +17,7 @@
 #define kLastResultLamp3On @"kLastResultLamp3On"
 #define kLastResultSirenOn @"kLastResultSirenOn"
 
-@interface TodayViewController () <NCWidgetProviding>
+@interface QuickLampViewController () <NCWidgetProviding>
 
 @property (strong, nonatomic) IBOutlet UIVisualEffectView *visualEffectView;
 @property (weak, nonatomic) IBOutlet UISwitch *tubeLampSwitch;
@@ -41,7 +41,7 @@
 
 @end
 
-@implementation TodayViewController
+@implementation QuickLampViewController
 
 -(void)viewDidLoad {
     self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIVibrancyEffect notificationCenterVibrancyEffect]];

@@ -24,8 +24,8 @@
 		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */; };
 		8FC4DFDB197BCF2800E94968 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */; };
-		8FC4DFE1197BCF2800E94968 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE0197BCF2800E94968 /* TodayViewController.m */; };
-		8FC4DFE3197BCF2800E94968 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */; };
+		8FC4DFE1197BCF2800E94968 /* QuickLampViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE0197BCF2800E94968 /* QuickLampViewController.m */; };
+		8FC4DFE3197BCF2800E94968 /* QuickLamp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE2197BCF2800E94968 /* QuickLamp.storyboard */; };
 		8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */; };
 		8FC4DFED197BDB3700E94968 /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8FC4DFEE197BDB3B00E94968 /* JsonServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45561674D55500412104 /* JsonServiceBase.m */; };
@@ -104,9 +104,9 @@
 		8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "com.petosoft.Lamp.Quick-Lamp.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		8FC4DFDE197BCF2800E94968 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8FC4DFDF197BCF2800E94968 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
-		8FC4DFE0197BCF2800E94968 /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
-		8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		8FC4DFDF197BCF2800E94968 /* QuickLampViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuickLampViewController.h; sourceTree = "<group>"; };
+		8FC4DFE0197BCF2800E94968 /* QuickLampViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickLampViewController.m; sourceTree = "<group>"; };
+		8FC4DFE2197BCF2800E94968 /* QuickLamp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = QuickLamp.storyboard; sourceTree = "<group>"; };
 		8FD22347178225CA007CF319 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/JSON.h"; sourceTree = "<group>"; };
 		8FD22348178225CA007CF319 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+SBJSON.h"; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		8FD22349178225CA007CF319 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+SBJSON.m"; path = "../iOS-Global/Third Party/Facebook With SDK 2/FacebookConnect/src/JSON/NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -221,7 +221,7 @@
 		8F8603C61659C5750025A56A /* Lamp */ = {
 			isa = PBXGroup;
 			children = (
-				8FC4DFDC197BCF2800E94968 /* Today Extension */,
+				8FC4DFDC197BCF2800E94968 /* QuickLamp Extension */,
 				8F67C51B1AB5EBE600958BDB /* Watch */,
 				8F67C51A1AB5EBE000958BDB /* Base */,
 				8F67C5191AB5EBDA00958BDB /* UI */,
@@ -262,14 +262,14 @@
 			path = ../../Salience;
 			sourceTree = "<group>";
 		};
-		8FC4DFDC197BCF2800E94968 /* Today Extension */ = {
+		8FC4DFDC197BCF2800E94968 /* QuickLamp Extension */ = {
 			isa = PBXGroup;
 			children = (
-				8FC4DFDF197BCF2800E94968 /* TodayViewController.h */,
-				8FC4DFE0197BCF2800E94968 /* TodayViewController.m */,
-				8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */,
+				8FC4DFDF197BCF2800E94968 /* QuickLampViewController.h */,
+				8FC4DFE0197BCF2800E94968 /* QuickLampViewController.m */,
+				8FC4DFE2197BCF2800E94968 /* QuickLamp.storyboard */,
 			);
-			name = "Today Extension";
+			name = "QuickLamp Extension";
 			path = LampToday;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -399,7 +399,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FC4DFE3197BCF2800E94968 /* MainInterface.storyboard in Resources */,
+				8FC4DFE3197BCF2800E94968 /* QuickLamp.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,7 +433,7 @@
 			files = (
 				8FC4DFEF197BDB4100E94968 /* ServiceBase.m in Sources */,
 				8FC4DFF1197BDDB900E94968 /* SBJsonBase.m in Sources */,
-				8FC4DFE1197BCF2800E94968 /* TodayViewController.m in Sources */,
+				8FC4DFE1197BCF2800E94968 /* QuickLampViewController.m in Sources */,
 				8FC4DFED197BDB3700E94968 /* LampService.m in Sources */,
 				8FC4DFF0197BDDB500E94968 /* SBJsonParser.m in Sources */,
 				8FC4DFEE197BDB3B00E94968 /* JsonServiceBase.m in Sources */,
