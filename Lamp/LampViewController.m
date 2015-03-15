@@ -6,12 +6,12 @@
 //  Copyright (c) 2012 Carl Peto. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "LampViewController.h"
 #import "LampService.h"
 #import "UIDevice+Extensions.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface ViewController ()
+@interface LampViewController ()
 
 @property (strong) CAGradientLayer *gradient;
 
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation ViewController
+@implementation LampViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

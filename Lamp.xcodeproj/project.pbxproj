@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F67C5181AB5E4CE00958BDB /* LampWatch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */; };
+		8F67C51D1AB5EC2700958BDB /* Lamp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */; };
 		8F8603C11659C5750025A56A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F8603C01659C5750025A56A /* UIKit.framework */; };
 		8F8603C31659C5750025A56A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F8603C21659C5750025A56A /* Foundation.framework */; };
 		8F8603C51659C5750025A56A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F8603C41659C5750025A56A /* CoreGraphics.framework */; };
@@ -16,9 +18,7 @@
 		8F8603D31659C5750025A56A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603D21659C5750025A56A /* Default.png */; };
 		8F8603D51659C5750025A56A /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603D41659C5750025A56A /* Default@2x.png */; };
 		8F8603D71659C5750025A56A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603D61659C5750025A56A /* Default-568h@2x.png */; };
-		8F8603DA1659C5750025A56A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603D91659C5750025A56A /* ViewController.m */; };
-		8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */; };
-		8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F8603DE1659C5750025A56A /* ViewController_iPad.xib */; };
+		8F8603DA1659C5750025A56A /* LampViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603D91659C5750025A56A /* LampViewController.m */; };
 		8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603EC1659C6310025A56A /* ServiceBase.m */; };
 		8F8603F41659C6890025A56A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603F31659C6890025A56A /* NSData+Base64.m */; };
 		8F8606211659C8310025A56A /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
@@ -26,7 +26,7 @@
 		8FC4DFDB197BCF2800E94968 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */; };
 		8FC4DFE1197BCF2800E94968 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE0197BCF2800E94968 /* TodayViewController.m */; };
 		8FC4DFE3197BCF2800E94968 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */; };
-		8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */; };
+		8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */; };
 		8FC4DFED197BDB3700E94968 /* LampService.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8606201659C8310025A56A /* LampService.m */; };
 		8FC4DFEE197BDB3B00E94968 /* JsonServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8FFD45561674D55500412104 /* JsonServiceBase.m */; };
 		8FC4DFEF197BDB4100E94968 /* ServiceBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F8603EC1659C6310025A56A /* ServiceBase.m */; };
@@ -67,7 +67,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex in Embed App Extensions */,
+				8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +75,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LampWatch.storyboard; sourceTree = "<group>"; };
+		8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lamp.storyboard; sourceTree = "<group>"; };
 		8F8603BC1659C5750025A56A /* Lamp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lamp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F8603C01659C5750025A56A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8F8603C21659C5750025A56A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -88,20 +90,18 @@
 		8F8603D21659C5750025A56A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		8F8603D41659C5750025A56A /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		8F8603D61659C5750025A56A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		8F8603D81659C5750025A56A /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		8F8603D91659C5750025A56A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		8F8603DC1659C5750025A56A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
-		8F8603DF1659C5750025A56A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
+		8F8603D81659C5750025A56A /* LampViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LampViewController.h; sourceTree = "<group>"; };
+		8F8603D91659C5750025A56A /* LampViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LampViewController.m; sourceTree = "<group>"; };
 		8F8603EA1659C6310025A56A /* ServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceDelegate.h; sourceTree = "<group>"; };
 		8F8603EB1659C6310025A56A /* ServiceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceBase.h; sourceTree = "<group>"; };
 		8F8603EC1659C6310025A56A /* ServiceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceBase.m; sourceTree = "<group>"; };
 		8F8603F21659C6890025A56A /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		8F8603F31659C6890025A56A /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
-		8F86061E1659C78F0025A56A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		8F86061E1659C78F0025A56A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		8F86061F1659C8310025A56A /* LampService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LampService.h; sourceTree = "<group>"; };
 		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
-		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
-		8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = com.petosoft.Lamp.LampToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ilovelamp_fullpic_artwork.png; path = ../ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
+		8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "com.petosoft.Lamp.Quick-Lamp.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		8FC4DFDE197BCF2800E94968 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8FC4DFDF197BCF2800E94968 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
@@ -151,17 +151,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F67C5191AB5EBDA00958BDB /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */,
+				8F8603D81659C5750025A56A /* LampViewController.h */,
+				8F8603D91659C5750025A56A /* LampViewController.m */,
+				8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		8F67C51A1AB5EBE000958BDB /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				8F86061E1659C78F0025A56A /* Constants.h */,
+				8F8603CF1659C5750025A56A /* AppDelegate.h */,
+				8F8603D01659C5750025A56A /* AppDelegate.m */,
+				8FFD45551674D55500412104 /* JsonServiceBase.h */,
+				8FFD45561674D55500412104 /* JsonServiceBase.m */,
+				8F86061F1659C8310025A56A /* LampService.h */,
+				8F8606201659C8310025A56A /* LampService.m */,
+				8F8603EB1659C6310025A56A /* ServiceBase.h */,
+				8F8603EC1659C6310025A56A /* ServiceBase.m */,
+				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		8F67C51B1AB5EBE600958BDB /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */,
+			);
+			name = Watch;
+			sourceTree = "<group>";
+		};
 		8F8603B11659C5750025A56A = {
 			isa = PBXGroup;
 			children = (
-				8FD22346178225AA007CF319 /* JSON */,
-				8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */,
-				8F86061E1659C78F0025A56A /* Constants.h */,
-				8F8603F11659C6560025A56A /* Salience */,
+				8F8603C71659C5750025A56A /* Supporting Files */,
 				8F8603C61659C5750025A56A /* Lamp */,
-				8FC4DFDC197BCF2800E94968 /* LampToday */,
-				8F8603BF1659C5750025A56A /* Frameworks */,
-				8F8603BD1659C5750025A56A /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -169,9 +199,10 @@
 			isa = PBXGroup;
 			children = (
 				8F8603BC1659C5750025A56A /* Lamp.app */,
-				8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */,
+				8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		8F8603BF1659C5750025A56A /* Frameworks */ = {
@@ -184,25 +215,16 @@
 				8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		8F8603C61659C5750025A56A /* Lamp */ = {
 			isa = PBXGroup;
 			children = (
-				8F8603CF1659C5750025A56A /* AppDelegate.h */,
-				8F8603D01659C5750025A56A /* AppDelegate.m */,
-				8FFD45551674D55500412104 /* JsonServiceBase.h */,
-				8FFD45561674D55500412104 /* JsonServiceBase.m */,
-				8F86061F1659C8310025A56A /* LampService.h */,
-				8F8606201659C8310025A56A /* LampService.m */,
-				8F8603EB1659C6310025A56A /* ServiceBase.h */,
-				8F8603EC1659C6310025A56A /* ServiceBase.m */,
-				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
-				8F8603C71659C5750025A56A /* Supporting Files */,
-				8F8603D81659C5750025A56A /* ViewController.h */,
-				8F8603D91659C5750025A56A /* ViewController.m */,
-				8F8603DE1659C5750025A56A /* ViewController_iPad.xib */,
-				8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */,
+				8FC4DFDC197BCF2800E94968 /* Today Extension */,
+				8F67C51B1AB5EBE600958BDB /* Watch */,
+				8F67C51A1AB5EBE000958BDB /* Base */,
+				8F67C5191AB5EBDA00958BDB /* UI */,
 			);
 			path = Lamp;
 			sourceTree = "<group>";
@@ -210,6 +232,11 @@
 		8F8603C71659C5750025A56A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8F8603BD1659C5750025A56A /* Products */,
+				8FC4DFDD197BCF2800E94968 /* Today extension Supporting Files */,
+				8F8603BF1659C5750025A56A /* Frameworks */,
+				8F8603F11659C6560025A56A /* Salience */,
+				8FD22346178225AA007CF319 /* JSON */,
 				8F8603C81659C5750025A56A /* Lamp-Info.plist */,
 				8F8603C91659C5750025A56A /* InfoPlist.strings */,
 				8F8603CC1659C5750025A56A /* main.m */,
@@ -219,6 +246,7 @@
 				8F8603D61659C5750025A56A /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			path = Lamp;
 			sourceTree = "<group>";
 		};
 		8F8603F11659C6560025A56A /* Salience */ = {
@@ -231,27 +259,28 @@
 				8F8603F31659C6890025A56A /* NSData+Base64.m */,
 			);
 			name = Salience;
-			path = ../Salience;
+			path = ../../Salience;
 			sourceTree = "<group>";
 		};
-		8FC4DFDC197BCF2800E94968 /* LampToday */ = {
+		8FC4DFDC197BCF2800E94968 /* Today Extension */ = {
 			isa = PBXGroup;
 			children = (
 				8FC4DFDF197BCF2800E94968 /* TodayViewController.h */,
 				8FC4DFE0197BCF2800E94968 /* TodayViewController.m */,
 				8FC4DFE2197BCF2800E94968 /* MainInterface.storyboard */,
-				8FC4DFDD197BCF2800E94968 /* Supporting Files */,
 			);
+			name = "Today Extension";
 			path = LampToday;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
-		8FC4DFDD197BCF2800E94968 /* Supporting Files */ = {
+		8FC4DFDD197BCF2800E94968 /* Today extension Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				8FC4DFDE197BCF2800E94968 /* Info.plist */,
 			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
+			name = "Today extension Supporting Files";
+			path = LampToday;
+			sourceTree = SOURCE_ROOT;
 		};
 		8FD22346178225AA007CF319 /* JSON */ = {
 			isa = PBXGroup;
@@ -271,6 +300,7 @@
 				8FD22353178225CA007CF319 /* SBJsonWriter.m */,
 			);
 			name = JSON;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,9 +326,9 @@
 			productReference = 8F8603BC1659C5750025A56A /* Lamp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8FC4DFD8197BCF2800E94968 /* LampToday */ = {
+		8FC4DFD8197BCF2800E94968 /* Quick Lamp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "LampToday" */;
+			buildConfigurationList = 8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "Quick Lamp" */;
 			buildPhases = (
 				8FC4DFD5197BCF2800E94968 /* Sources */,
 				8FC4DFD6197BCF2800E94968 /* Frameworks */,
@@ -308,9 +338,9 @@
 			);
 			dependencies = (
 			);
-			name = LampToday;
+			name = "Quick Lamp";
 			productName = LampToday;
-			productReference = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.LampToday.appex */;
+			productReference = 8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -345,7 +375,7 @@
 			projectRoot = "";
 			targets = (
 				8F8603BB1659C5750025A56A /* Lamp */,
-				8FC4DFD8197BCF2800E94968 /* LampToday */,
+				8FC4DFD8197BCF2800E94968 /* Quick Lamp */,
 			);
 		};
 /* End PBXProject section */
@@ -359,8 +389,8 @@
 				8F8603D31659C5750025A56A /* Default.png in Resources */,
 				8F8603D51659C5750025A56A /* Default@2x.png in Resources */,
 				8F8603D71659C5750025A56A /* Default-568h@2x.png in Resources */,
-				8F8603DD1659C5750025A56A /* ViewController_iPhone.xib in Resources */,
-				8F8603E01659C5750025A56A /* ViewController_iPad.xib in Resources */,
+				8F67C51D1AB5EC2700958BDB /* Lamp.storyboard in Resources */,
+				8F67C5181AB5E4CE00958BDB /* LampWatch.storyboard in Resources */,
 				8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,7 +415,7 @@
 				8F8603CD1659C5750025A56A /* main.m in Sources */,
 				8F8603D11659C5750025A56A /* AppDelegate.m in Sources */,
 				8FD22358178225CA007CF319 /* SBJsonParser.m in Sources */,
-				8F8603DA1659C5750025A56A /* ViewController.m in Sources */,
+				8F8603DA1659C5750025A56A /* LampViewController.m in Sources */,
 				8F8603EF1659C6310025A56A /* ServiceBase.m in Sources */,
 				8FD22359178225CA007CF319 /* SBJsonWriter.m in Sources */,
 				8FD22354178225CA007CF319 /* NSObject+SBJSON.m in Sources */,
@@ -415,12 +445,12 @@
 /* Begin PBXTargetDependency section */
 		8FC4DFE5197BCF2800E94968 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8FC4DFD8197BCF2800E94968 /* LampToday */;
+			target = 8FC4DFD8197BCF2800E94968 /* Quick Lamp */;
 			targetProxy = 8FC4DFE4197BCF2800E94968 /* PBXContainerItemProxy */;
 		};
 		8FC4DFE8197BCF2800E94968 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8FC4DFD8197BCF2800E94968 /* LampToday */;
+			target = 8FC4DFD8197BCF2800E94968 /* Quick Lamp */;
 			targetProxy = 8FC4DFE7197BCF2800E94968 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -432,22 +462,6 @@
 				8F8603CA1659C5750025A56A /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		8F8603DB1659C5750025A56A /* ViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8F8603DC1659C5750025A56A /* en */,
-			);
-			name = ViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		8F8603DE1659C5750025A56A /* ViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				8F8603DF1659C5750025A56A /* en */,
-			);
-			name = ViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -476,7 +490,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -499,7 +513,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -639,7 +653,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "LampToday" */ = {
+		8FC4DFEB197BCF2800E94968 /* Build configuration list for PBXNativeTarget "Quick Lamp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FC4DFE9197BCF2800E94968 /* Debug */,
