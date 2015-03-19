@@ -7,9 +7,7 @@
 //
 
 #import "JsonServiceBase.h"
-#import "SBJSON.h"
 #import "Constants.h"
-#import "Logger.h"
 
 @interface ServiceBase (Private)
 -(void)handleErrorsInCompletedResult:(NSString**)lastErrorParsed;
@@ -32,8 +30,9 @@
 -(void)parseSuccessfulCompletionOfService:(NSString**)lastErrorParsed {
     serviceCallResult = NO; // no answer means no
     if (serviceOutput) {
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        _output = [parser objectWithString:serviceOutput];
+        NSData *serviceOutputData = [serviceOutput dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *error = nil;
+        _output = [NSJSONSerialization JSONObjectWithData:serviceOutputData options:NSJSONReadingAllowFragments error:&error];
         if ([_output isKindOfClass:[NSDictionary class]]) {
             NSNumber *resultValue = [_output objectForKey:@"result"];
             BOOL result = [resultValue isKindOfClass:[NSNumber class]]&&[resultValue boolValue];
@@ -68,7 +67,7 @@
             }
         } else {
             _output = nil;
-            NSString *erroar = [NSString stringWithFormat:@"failed to parse json string %@, possible parse errors %@",serviceOutput,[parser errorTrace]];
+            NSString *erroar = [NSString stringWithFormat:@"failed to parse json string %@, possible parse errors %@",serviceOutput,error.localizedDescription];
             NSLog(@"%@",erroar);
             *lastErrorParsed = erroar;
             [self handleErrorsInCompletedResult:lastErrorParsed];

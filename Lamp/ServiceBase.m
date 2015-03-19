@@ -8,7 +8,6 @@
 
 #import "ServiceBase.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "NSData+Base64.h"
 #include <sys/time.h>
 
 @implementation ServiceBase

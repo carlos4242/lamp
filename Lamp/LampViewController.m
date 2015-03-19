@@ -8,7 +8,6 @@
 
 #import "LampViewController.h"
 #import "LampService.h"
-#import "UIDevice+Extensions.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface LampViewController ()
@@ -31,7 +30,7 @@
     UIColor *colour2 = [UIColor colorWithWhite:0.5 alpha:1];//[UIColor blackColor];
     
     _gradient.colors = [NSArray arrayWithObjects:(id)colour1.CGColor,(id)colour2.CGColor, nil];
-    if ([UIDevice isIpad]) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         _gradient.frame = CGRectMake(0,0,1024,1024);
     } else {
         _gradient.frame = self.view.bounds;
