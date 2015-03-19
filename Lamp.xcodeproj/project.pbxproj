@@ -102,10 +102,10 @@
 		8F8603C01659C5750025A56A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8F8603C21659C5750025A56A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8F8603C41659C5750025A56A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		8F8603C81659C5750025A56A /* Lamp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Lamp-Info.plist"; sourceTree = "<group>"; };
+		8F8603C81659C5750025A56A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F8603CA1659C5750025A56A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8F8603CC1659C5750025A56A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		8F8603CE1659C5750025A56A /* Lamp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Lamp-Prefix.pch"; sourceTree = "<group>"; };
+		8F8603CE1659C5750025A56A /* Lamp.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lamp.pch; sourceTree = "<group>"; };
 		8F8603CF1659C5750025A56A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8F8603D01659C5750025A56A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		8F8603D21659C5750025A56A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -116,7 +116,6 @@
 		8F8603EA1659C6310025A56A /* ServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceDelegate.h; sourceTree = "<group>"; };
 		8F8603EB1659C6310025A56A /* ServiceBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceBase.h; sourceTree = "<group>"; };
 		8F8603EC1659C6310025A56A /* ServiceBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceBase.m; sourceTree = "<group>"; };
-		8F86061E1659C78F0025A56A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		8F86061F1659C8310025A56A /* LampService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LampService.h; sourceTree = "<group>"; };
 		8F8606201659C8310025A56A /* LampService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LampService.m; sourceTree = "<group>"; };
 		8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ilovelamp_fullpic_artwork.png; path = ../ilovelamp_fullpic_artwork.png; sourceTree = "<group>"; };
@@ -161,49 +160,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8F569FD21ABA4CD800EE8A46 /* Lamp WatchKit Extension */ = {
+		8F569FD21ABA4CD800EE8A46 /* WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
 				8F569FD51ABA4CD800EE8A46 /* InterfaceController.h */,
 				8F569FD61ABA4CD800EE8A46 /* InterfaceController.m */,
 				8F569FD81ABA4CD800EE8A46 /* GlanceController.h */,
 				8F569FD91ABA4CD800EE8A46 /* GlanceController.m */,
-				8F569FDB1ABA4CD800EE8A46 /* Images.xcassets */,
-				8F569FD31ABA4CD800EE8A46 /* Supporting Files */,
 			);
+			name = "WatchKit Extension";
 			path = "Lamp WatchKit Extension";
 			sourceTree = SOURCE_ROOT;
 		};
-		8F569FD31ABA4CD800EE8A46 /* Supporting Files */ = {
+		8F569FD31ABA4CD800EE8A46 /* WatchKit Extension Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8F569FDB1ABA4CD800EE8A46 /* Images.xcassets */,
 				8F569FD41ABA4CD800EE8A46 /* Info.plist */,
 			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
+			name = "WatchKit Extension Supporting Files";
+			path = "Lamp WatchKit Extension";
+			sourceTree = SOURCE_ROOT;
 		};
-		8F569FE31ABA4CD800EE8A46 /* Lamp WatchKit App */ = {
+		8F569FE31ABA4CD800EE8A46 /* WatchKit App */ = {
 			isa = PBXGroup;
 			children = (
 				8F569FE61ABA4CD800EE8A46 /* Interface.storyboard */,
-				8F569FE91ABA4CD800EE8A46 /* Images.xcassets */,
-				8F569FE41ABA4CD800EE8A46 /* Supporting Files */,
 			);
+			name = "WatchKit App";
 			path = "Lamp WatchKit App";
 			sourceTree = SOURCE_ROOT;
 		};
-		8F569FE41ABA4CD800EE8A46 /* Supporting Files */ = {
+		8F569FE41ABA4CD800EE8A46 /* WatchKit Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8F569FE91ABA4CD800EE8A46 /* Images.xcassets */,
 				8F569FE51ABA4CD800EE8A46 /* Info.plist */,
 			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
+			name = "WatchKit Supporting Files";
+			path = "Lamp WatchKit App";
+			sourceTree = SOURCE_ROOT;
 		};
 		8F67C5191AB5EBDA00958BDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */,
 				8F8603D81659C5750025A56A /* LampViewController.h */,
 				8F8603D91659C5750025A56A /* LampViewController.m */,
 				8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */,
@@ -211,28 +211,22 @@
 			name = UI;
 			sourceTree = "<group>";
 		};
-		8F67C51A1AB5EBE000958BDB /* Base */ = {
+		8F67C51A1AB5EBE000958BDB /* Non UI */ = {
 			isa = PBXGroup;
 			children = (
-				8F86061E1659C78F0025A56A /* Constants.h */,
 				8F8603CF1659C5750025A56A /* AppDelegate.h */,
 				8F8603D01659C5750025A56A /* AppDelegate.m */,
-				8FFD45551674D55500412104 /* JsonServiceBase.h */,
-				8FFD45561674D55500412104 /* JsonServiceBase.m */,
 				8F86061F1659C8310025A56A /* LampService.h */,
 				8F8606201659C8310025A56A /* LampService.m */,
-				8F8603EB1659C6310025A56A /* ServiceBase.h */,
-				8F8603EC1659C6310025A56A /* ServiceBase.m */,
-				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
 			);
-			name = Base;
+			name = "Non UI";
 			sourceTree = "<group>";
 		};
 		8F67C51B1AB5EBE600958BDB /* Watch */ = {
 			isa = PBXGroup;
 			children = (
-				8F569FE31ABA4CD800EE8A46 /* Lamp WatchKit App */,
-				8F569FD21ABA4CD800EE8A46 /* Lamp WatchKit Extension */,
+				8F569FE31ABA4CD800EE8A46 /* WatchKit App */,
+				8F569FD21ABA4CD800EE8A46 /* WatchKit Extension */,
 			);
 			name = Watch;
 			sourceTree = "<group>";
@@ -275,7 +269,7 @@
 			children = (
 				8FC4DFDC197BCF2800E94968 /* QuickLamp Extension */,
 				8F67C51B1AB5EBE600958BDB /* Watch */,
-				8F67C51A1AB5EBE000958BDB /* Base */,
+				8F67C51A1AB5EBE000958BDB /* Non UI */,
 				8F67C5191AB5EBDA00958BDB /* UI */,
 			);
 			path = Lamp;
@@ -284,13 +278,21 @@
 		8F8603C71659C5750025A56A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8F569FD31ABA4CD800EE8A46 /* WatchKit Extension Supporting Files */,
+				8F569FE41ABA4CD800EE8A46 /* WatchKit Supporting Files */,
 				8F8603BD1659C5750025A56A /* Products */,
 				8FC4DFDD197BCF2800E94968 /* Today extension Supporting Files */,
 				8F8603BF1659C5750025A56A /* Frameworks */,
-				8F8603C81659C5750025A56A /* Lamp-Info.plist */,
+				8F8603C81659C5750025A56A /* Info.plist */,
 				8F8603C91659C5750025A56A /* InfoPlist.strings */,
 				8F8603CC1659C5750025A56A /* main.m */,
-				8F8603CE1659C5750025A56A /* Lamp-Prefix.pch */,
+				8F8603CE1659C5750025A56A /* Lamp.pch */,
+				8FFD45551674D55500412104 /* JsonServiceBase.h */,
+				8FFD45561674D55500412104 /* JsonServiceBase.m */,
+				8F8603EB1659C6310025A56A /* ServiceBase.h */,
+				8F8603EC1659C6310025A56A /* ServiceBase.m */,
+				8F8603EA1659C6310025A56A /* ServiceDelegate.h */,
+				8F8606261659CC690025A56A /* ilovelamp_fullpic_artwork.png */,
 				8F8603D21659C5750025A56A /* Default.png */,
 				8F8603D41659C5750025A56A /* Default@2x.png */,
 				8F8603D61659C5750025A56A /* Default-568h@2x.png */,
@@ -709,7 +711,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = "Lamp/Lamp-Prefix.pch";
+				GCC_PREFIX_HEADER = Lamp/Lamp.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -737,7 +739,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREFIX_HEADER = "Lamp/Lamp-Prefix.pch";
+				GCC_PREFIX_HEADER = Lamp/Lamp.pch;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -755,7 +757,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "Lamp/Lamp-Info.plist";
+				INFOPLIST_FILE = Lamp/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -768,7 +770,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "Lamp/Lamp-Info.plist";
+				INFOPLIST_FILE = Lamp/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

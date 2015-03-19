@@ -9,6 +9,8 @@
 #import "JsonServiceBase.h"
 #import "Constants.h"
 
+extern NSString *serviceRoot;
+
 @interface ServiceBase (Private)
 -(void)handleErrorsInCompletedResult:(NSString**)lastErrorParsed;
 -(void)parseErrorCompletionOfService:(NSString**)lastErrorParsed;

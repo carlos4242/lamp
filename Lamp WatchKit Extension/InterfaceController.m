@@ -25,10 +25,11 @@
 
     // Configure interface objects here.
     [WKInterfaceController openParentApplication:@{@"action":@"refresh"} reply:^(NSDictionary *replyInfo, NSError *error) {
-        [self.tubeSwitch setAlpha:1];
-        [self.roundSwitch setAlpha:1];
-        [self.cornerSwitch setAlpha:1];
-        [self.bedoSwitch setAlpha:1];
+        
+        [self.tubeSwitch setEnabled:YES];
+        [self.roundSwitch setEnabled:YES];
+        [self.cornerSwitch setEnabled:YES];
+        [self.bedoSwitch setEnabled:YES];
         [self.tubeSwitch setOn:[replyInfo[@"tube"] boolValue]];
         [self.roundSwitch setOn:[replyInfo[@"round"] boolValue]];
         [self.cornerSwitch setOn:[replyInfo[@"corner"] boolValue]];

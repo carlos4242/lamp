@@ -7,8 +7,11 @@
 //
 
 #import "ServiceBase.h"
+
 #import <CommonCrypto/CommonDigest.h>
 #include <sys/time.h>
+
+extern NSString *serviceRoot;
 
 @implementation ServiceBase
 

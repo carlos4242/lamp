@@ -8,6 +8,8 @@
 
 #import "LampService.h"
 
+NSString *serviceRoot = @"http://10.0.1.160/";
+
 @implementation LampService
 
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
