@@ -1,5 +1,5 @@
 //
-//  ViewController.m
+//  LampViewController.m
 //  Lamp
 //
 //  Created by Carl Peto on 19/11/2012.

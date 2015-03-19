@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7525" systemVersion="14C109" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7516"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="3737"/>
+    </dependencies>
+    <scenes>
+        <!--Interface Controller-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller id="AgC-eL-Hgc" customClass="InterfaceController">
+                    <items>
+                        <switch width="1" alignment="left" alpha="0.20000000000000001" title="Tube" id="N6u-83-t5B">
+                            <connections>
+                                <action selector="tubeSwitchChanged:" destination="AgC-eL-Hgc" id="E9O-Aw-XAv"/>
+                            </connections>
+                        </switch>
+                        <switch width="1" alignment="left" alpha="0.20000000000000001" title="Round" id="vdH-Ab-7C0">
+                            <connections>
+                                <action selector="roundSwitchChanged:" destination="AgC-eL-Hgc" id="1zE-BW-nUu"/>
+                            </connections>
+                        </switch>
+                        <switch width="1" alignment="left" alpha="0.20000000000000001" title="Corner" id="8QQ-Ap-RHT">
+                            <connections>
+                                <action selector="cornerSwitchChanged:" destination="AgC-eL-Hgc" id="3Iq-1H-dvs"/>
+                            </connections>
+                        </switch>
+                        <switch width="1" alignment="left" alpha="0.20000000000000001" title="Bedo" id="6hG-JM-zJC">
+                            <connections>
+                                <action selector="bedoSwitchChanged:" destination="AgC-eL-Hgc" id="PUs-Yd-ecM"/>
+                            </connections>
+                        </switch>
+                    </items>
+                    <connections>
+                        <outlet property="bedoSwitch" destination="6hG-JM-zJC" id="HG6-a2-upF"/>
+                        <outlet property="cornerSwitch" destination="8QQ-Ap-RHT" id="QSE-jF-eTT"/>
+                        <outlet property="roundSwitch" destination="vdH-Ab-7C0" id="AmC-ed-PxE"/>
+                        <outlet property="tubeSwitch" destination="N6u-83-t5B" id="abu-cT-mci"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="164" y="217"/>
+        </scene>
+        <!--Glance Interface Controller-->
+        <scene sceneID="rjY-Ar-IMT">
+            <objects>
+                <glanceController spacing="0.0" topTemplateType="body1Large" bottomTemplateType="body6Footer" id="Sv0-Ai-Zie" customClass="GlanceController">
+                    <items>
+                        <label alignment="left" text="Status" id="zym-Mt-bDU"/>
+                        <label alignment="left" alpha="0.29999999999999999" text="..." id="IMb-Mk-9nk"/>
+                        <label alignment="left" alpha="0.0" id="8Pe-E5-cpT">
+                            <string key="text">Label∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙</string>
+                        </label>
+                        <label alignment="left" text="tap to change" id="kRy-un-hI7"/>
+                    </items>
+                    <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
+                    <connections>
+                        <outlet property="detailedStatus" destination="8Pe-E5-cpT" id="qYX-lW-mN3"/>
+                        <outlet property="mainStatus" destination="IMb-Mk-9nk" id="b1j-lp-RyF"/>
+                    </connections>
+                </glanceController>
+            </objects>
+            <point key="canvasLocation" x="164" y="514"/>
+        </scene>
+    </scenes>
+</document>

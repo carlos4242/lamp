@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F67C5181AB5E4CE00958BDB /* LampWatch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */; };
+		8F569FD71ABA4CD800EE8A46 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F569FD61ABA4CD800EE8A46 /* InterfaceController.m */; };
+		8F569FDA1ABA4CD800EE8A46 /* GlanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F569FD91ABA4CD800EE8A46 /* GlanceController.m */; };
+		8F569FDC1ABA4CD800EE8A46 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F569FDB1ABA4CD800EE8A46 /* Images.xcassets */; };
+		8F569FE01ABA4CD800EE8A46 /* Lamp WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 8F569FDF1ABA4CD800EE8A46 /* Lamp WatchKit App.app */; };
+		8F569FE81ABA4CD800EE8A46 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F569FE61ABA4CD800EE8A46 /* Interface.storyboard */; };
+		8F569FEA1ABA4CD800EE8A46 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F569FE91ABA4CD800EE8A46 /* Images.xcassets */; };
+		8F569FED1ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8F569FD11ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8F67C51D1AB5EC2700958BDB /* Lamp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */; };
 		8F8603C11659C5750025A56A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F8603C01659C5750025A56A /* UIKit.framework */; };
 		8F8603C31659C5750025A56A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F8603C21659C5750025A56A /* Foundation.framework */; };
@@ -44,6 +50,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8F569FE11ABA4CD800EE8A46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F8603B31659C5750025A56A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F569FDE1ABA4CD800EE8A46;
+			remoteInfo = "Lamp WatchKit App";
+		};
+		8F569FEB1ABA4CD800EE8A46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8F8603B31659C5750025A56A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F569FD01ABA4CD800EE8A46;
+			remoteInfo = "Lamp WatchKit Extension";
+		};
 		8FC4DFE4197BCF2800E94968 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8F8603B31659C5750025A56A /* Project object */;
@@ -68,6 +88,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				8FC4DFE6197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex in Embed App Extensions */,
+				8F569FED1ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,7 +96,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LampWatch.storyboard; sourceTree = "<group>"; };
+		8F569FD11ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Lamp WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F569FD41ABA4CD800EE8A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8F569FD51ABA4CD800EE8A46 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
+		8F569FD61ABA4CD800EE8A46 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
+		8F569FD81ABA4CD800EE8A46 /* GlanceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlanceController.h; sourceTree = "<group>"; };
+		8F569FD91ABA4CD800EE8A46 /* GlanceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlanceController.m; sourceTree = "<group>"; };
+		8F569FDB1ABA4CD800EE8A46 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		8F569FDF1ABA4CD800EE8A46 /* Lamp WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lamp WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F569FE51ABA4CD800EE8A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8F569FE71ABA4CD800EE8A46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		8F569FE91ABA4CD800EE8A46 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lamp.storyboard; sourceTree = "<group>"; };
 		8F8603BC1659C5750025A56A /* Lamp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lamp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F8603C01659C5750025A56A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -129,6 +160,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8F569FCE1ABA4CD800EE8A46 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F8603B91659C5750025A56A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -151,6 +189,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F569FD21ABA4CD800EE8A46 /* Lamp WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				8F569FD51ABA4CD800EE8A46 /* InterfaceController.h */,
+				8F569FD61ABA4CD800EE8A46 /* InterfaceController.m */,
+				8F569FD81ABA4CD800EE8A46 /* GlanceController.h */,
+				8F569FD91ABA4CD800EE8A46 /* GlanceController.m */,
+				8F569FDB1ABA4CD800EE8A46 /* Images.xcassets */,
+				8F569FD31ABA4CD800EE8A46 /* Supporting Files */,
+			);
+			path = "Lamp WatchKit Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+		8F569FD31ABA4CD800EE8A46 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8F569FD41ABA4CD800EE8A46 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8F569FE31ABA4CD800EE8A46 /* Lamp WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				8F569FE61ABA4CD800EE8A46 /* Interface.storyboard */,
+				8F569FE91ABA4CD800EE8A46 /* Images.xcassets */,
+				8F569FE41ABA4CD800EE8A46 /* Supporting Files */,
+			);
+			path = "Lamp WatchKit App";
+			sourceTree = SOURCE_ROOT;
+		};
+		8F569FE41ABA4CD800EE8A46 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8F569FE51ABA4CD800EE8A46 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		8F67C5191AB5EBDA00958BDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -182,7 +259,8 @@
 		8F67C51B1AB5EBE600958BDB /* Watch */ = {
 			isa = PBXGroup;
 			children = (
-				8F67C5171AB5E4CE00958BDB /* LampWatch.storyboard */,
+				8F569FE31ABA4CD800EE8A46 /* Lamp WatchKit App */,
+				8F569FD21ABA4CD800EE8A46 /* Lamp WatchKit Extension */,
 			);
 			name = Watch;
 			sourceTree = "<group>";
@@ -200,6 +278,8 @@
 			children = (
 				8F8603BC1659C5750025A56A /* Lamp.app */,
 				8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */,
+				8F569FD11ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex */,
+				8F569FDF1ABA4CD800EE8A46 /* Lamp WatchKit App.app */,
 			);
 			name = Products;
 			path = ..;
@@ -306,6 +386,39 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8F569FD01ABA4CD800EE8A46 /* Lamp WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F569FF31ABA4CD800EE8A46 /* Build configuration list for PBXNativeTarget "Lamp WatchKit Extension" */;
+			buildPhases = (
+				8F569FCD1ABA4CD800EE8A46 /* Sources */,
+				8F569FCE1ABA4CD800EE8A46 /* Frameworks */,
+				8F569FCF1ABA4CD800EE8A46 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8F569FE21ABA4CD800EE8A46 /* PBXTargetDependency */,
+			);
+			name = "Lamp WatchKit Extension";
+			productName = "Lamp WatchKit Extension";
+			productReference = 8F569FD11ABA4CD800EE8A46 /* Lamp WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		8F569FDE1ABA4CD800EE8A46 /* Lamp WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F569FF21ABA4CD800EE8A46 /* Build configuration list for PBXNativeTarget "Lamp WatchKit App" */;
+			buildPhases = (
+				8F569FDD1ABA4CD800EE8A46 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Lamp WatchKit App";
+			productName = "Lamp WatchKit App";
+			productReference = 8F569FDF1ABA4CD800EE8A46 /* Lamp WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
 		8F8603BB1659C5750025A56A /* Lamp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8F8603E31659C5750025A56A /* Build configuration list for PBXNativeTarget "Lamp" */;
@@ -320,6 +433,7 @@
 			dependencies = (
 				8FC4DFE5197BCF2800E94968 /* PBXTargetDependency */,
 				8FC4DFE8197BCF2800E94968 /* PBXTargetDependency */,
+				8F569FEC1ABA4CD800EE8A46 /* PBXTargetDependency */,
 			);
 			name = Lamp;
 			productName = Lamp;
@@ -352,6 +466,13 @@
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Carl Peto";
 				TargetAttributes = {
+					8F569FD01ABA4CD800EE8A46 = {
+						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = SWDC5K54B7;
+					};
+					8F569FDE1ABA4CD800EE8A46 = {
+						CreatedOnToolsVersion = 6.3;
+					};
 					8F8603BB1659C5750025A56A = {
 						DevelopmentTeam = SWDC5K54B7;
 					};
@@ -368,6 +489,7 @@
 			knownRegions = (
 				en,
 				de,
+				Base,
 			);
 			mainGroup = 8F8603B11659C5750025A56A;
 			productRefGroup = 8F8603BD1659C5750025A56A /* Products */;
@@ -376,11 +498,31 @@
 			targets = (
 				8F8603BB1659C5750025A56A /* Lamp */,
 				8FC4DFD8197BCF2800E94968 /* Quick Lamp */,
+				8F569FD01ABA4CD800EE8A46 /* Lamp WatchKit Extension */,
+				8F569FDE1ABA4CD800EE8A46 /* Lamp WatchKit App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8F569FCF1ABA4CD800EE8A46 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F569FE01ABA4CD800EE8A46 /* Lamp WatchKit App.app in Resources */,
+				8F569FDC1ABA4CD800EE8A46 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8F569FDD1ABA4CD800EE8A46 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F569FE81ABA4CD800EE8A46 /* Interface.storyboard in Resources */,
+				8F569FEA1ABA4CD800EE8A46 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F8603BA1659C5750025A56A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -390,7 +532,6 @@
 				8F8603D51659C5750025A56A /* Default@2x.png in Resources */,
 				8F8603D71659C5750025A56A /* Default-568h@2x.png in Resources */,
 				8F67C51D1AB5EC2700958BDB /* Lamp.storyboard in Resources */,
-				8F67C5181AB5E4CE00958BDB /* LampWatch.storyboard in Resources */,
 				8F8606271659CC690025A56A /* ilovelamp_fullpic_artwork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,6 +547,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8F569FCD1ABA4CD800EE8A46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F569FD71ABA4CD800EE8A46 /* InterfaceController.m in Sources */,
+				8F569FDA1ABA4CD800EE8A46 /* GlanceController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8F8603B81659C5750025A56A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -443,6 +593,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8F569FE21ABA4CD800EE8A46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8F569FDE1ABA4CD800EE8A46 /* Lamp WatchKit App */;
+			targetProxy = 8F569FE11ABA4CD800EE8A46 /* PBXContainerItemProxy */;
+		};
+		8F569FEC1ABA4CD800EE8A46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8F569FD01ABA4CD800EE8A46 /* Lamp WatchKit Extension */;
+			targetProxy = 8F569FEB1ABA4CD800EE8A46 /* PBXContainerItemProxy */;
+		};
 		8FC4DFE5197BCF2800E94968 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8FC4DFD8197BCF2800E94968 /* Quick Lamp */;
@@ -456,6 +616,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		8F569FE61ABA4CD800EE8A46 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8F569FE71ABA4CD800EE8A46 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		8F8603C91659C5750025A56A /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -467,6 +635,140 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8F569FEE1ABA4CD800EE8A46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Lamp WatchKit Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		8F569FEF1ABA4CD800EE8A46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Lamp WatchKit Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		8F569FF01ABA4CD800EE8A46 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				IBSC_MODULE = Lamp_WatchKit_Extension;
+				INFOPLIST_FILE = "Lamp WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		8F569FF11ABA4CD800EE8A46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				IBSC_MODULE = Lamp_WatchKit_Extension;
+				INFOPLIST_FILE = "Lamp WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
 		8F8603E11659C5750025A56A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -635,6 +937,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8F569FF21ABA4CD800EE8A46 /* Build configuration list for PBXNativeTarget "Lamp WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8F569FF01ABA4CD800EE8A46 /* Debug */,
+				8F569FF11ABA4CD800EE8A46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8F569FF31ABA4CD800EE8A46 /* Build configuration list for PBXNativeTarget "Lamp WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8F569FEE1ABA4CD800EE8A46 /* Debug */,
+				8F569FEF1ABA4CD800EE8A46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8F8603B61659C5750025A56A /* Build configuration list for PBXProject "Lamp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
