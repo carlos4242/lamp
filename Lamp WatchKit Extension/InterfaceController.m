@@ -22,10 +22,7 @@
 
 - (void)awakeWithContext:(id)context {
     [super awakeWithContext:context];
-
-    // Configure interface objects here.
     [WKInterfaceController openParentApplication:@{@"action":@"refresh"} reply:^(NSDictionary *replyInfo, NSError *error) {
-        
         [self.tubeSwitch setEnabled:YES];
         [self.roundSwitch setEnabled:YES];
         [self.cornerSwitch setEnabled:YES];
@@ -36,14 +33,10 @@
         [self.bedoSwitch setOn:[replyInfo[@"bedo"] boolValue]];
     }];
 }
-
 - (void)willActivate {
-    // This method is called when watch view controller is about to be visible to user
     [super willActivate];
 }
-
 - (void)didDeactivate {
-    // This method is called when watch view controller is no longer visible
     [super didDeactivate];
 }
 - (IBAction)tubeSwitchChanged:(BOOL)value {
