@@ -58,7 +58,7 @@ extern NSString *serviceRoot;
     NSMutableURLRequest *urlRequest = [self requestForService:service];
     [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
     if (![NSURLConnection canHandleRequest:urlRequest]) {
-        NSLog(@"*** WARNING!! callservice cannot handle request for %@ (%@, url = %@) in ",urlRequest,service,[self getServiceUrlFromService:service],self);
+        NSLog(@"*** WARNING!! callservice cannot handle request for %@ (%@, url = %@) in ",urlRequest,service,[self getServiceUrlFromService:service]);
         return NO;
     }
     
