@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ServiceDelegate.h"
 
 struct timeval lastSuccessfulNetworkCall;
 
@@ -38,7 +37,6 @@ struct timeval lastSuccessfulNetworkCall;
 
 @property (nonatomic,copy) NSString *username;
 @property (nonatomic,copy) NSString *password;
-@property (nonatomic,retain) id<ServiceDelegate> delegate;
 @property (nonatomic) NSArray *errors;
 @property (nonatomic) NSArray *warnings;
 @property (nonatomic,readonly) NSInteger lastStatusCode;

@@ -7,9 +7,13 @@
 //
 
 #import "AppDelegate.h"
-
 #import "LampViewController.h"
 #import "LampService.h"
+
+@interface AppDelegate ()
+@property (strong) LampService *lampService;
+@property UIBackgroundTaskIdentifier watchkitBackgroundTask;
+@end
 
 @implementation AppDelegate
 
@@ -26,35 +30,50 @@
              };
 }
 
-- (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo reply:(void (^)(NSDictionary *))reply {
-    LampService *lampService = [LampService new];
-    __weak LampService *ls = lampService;
-    lampService.completionFunction = ^(BOOL result,NSString *error) {
-        if (ls) {
-            reply([self resultFromService:ls]);
+- (void)application:(UIApplication *)application
+handleWatchKitExtensionRequest:(NSDictionary *)userInfo
+              reply:(void (^)(NSDictionary *))reply {
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+        if (!self.watchkitBackgroundTask || self.watchkitBackgroundTask == UIBackgroundTaskInvalid) {
+            // run a new background task
+            self.watchkitBackgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"watchkit service"
+                                                                                       expirationHandler:^{
+                [[UIApplication sharedApplication] endBackgroundTask:self.watchkitBackgroundTask];
+            }];
+        }
+    }
+    
+    self.lampService = [LampService new];
+    __weak AppDelegate *weakSelf = self;
+    self.lampService.completionFunction = ^(BOOL result,NSString *error) {
+        if (weakSelf) {
+            reply([weakSelf resultFromService:weakSelf.lampService]);
+            [[UIApplication sharedApplication] endBackgroundTask:weakSelf.watchkitBackgroundTask];
         } else {
             reply(@{@"problem":@"service died"});
+            [[UIApplication sharedApplication] endBackgroundTask:weakSelf.watchkitBackgroundTask];
         }
         return YES;
     };
     
     NSString *action = userInfo[@"action"];
     if ([action isEqualToString:@"refresh"]) {
-        [lampService checkState];
+        [_lampService checkState];
     } else if ([action isEqualToString:@"set"]) {
         NSString *lamp = userInfo[@"lamp"];
         BOOL value = [userInfo[@"value"] boolValue];
         if ([lamp isEqualToString:@"tube"]) {
-            [lampService lampTwoSetState:value];
+            [_lampService lampTwoSetState:value];
         } else if ([lamp isEqualToString:@"round"]) {
-            [lampService lampOneSetState:value];
+            [_lampService lampOneSetState:value];
         } else if ([lamp isEqualToString:@"corner"]) {
-            [lampService lampThreeSetState:value];
+            [_lampService lampThreeSetState:value];
         } else if ([lamp isEqualToString:@"bedo"]) {
-            [lampService beedoBeedoSetState:value];
+            [_lampService beedoBeedoSetState:value];
         }
     } else {
         reply(@{@"problem":@"unknown action"});
+        [[UIApplication sharedApplication] endBackgroundTask:self.watchkitBackgroundTask];
     }
 }
 

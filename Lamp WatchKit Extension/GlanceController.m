@@ -31,7 +31,11 @@
         [self.detailedStatus setAlpha:1];
         [self.mainStatus setText:anyOn?@"ON":@"OFF"];
         if (!anyOn) {
-            [self.detailedStatus setText:@"All lamps are off"];
+            if (error) {
+                [self.detailedStatus setText:error.description];
+            } else {
+                [self.detailedStatus setText:@"All lamps are off"];
+            }
         } else {
             int lampCount = tubeOn+roundOn+cornerOn+bedoOn;
             NSMutableString *lampsOn = [@"" mutableCopy];

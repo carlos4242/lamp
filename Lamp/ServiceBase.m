@@ -36,10 +36,6 @@ extern NSString *serviceRoot;
 	return self;
 }
 
--(NSString*)requestBody {
-	return @"";
-}
-
 -(NSURL*)getServiceUrlFromService:(NSString*)service {
 	serviceCallName = [[NSString alloc] initWithString:service];
 	NSString *urlString = [NSString stringWithFormat:@"%@%@",serviceRoot,service];
@@ -48,17 +44,17 @@ extern NSString *serviceRoot;
 }
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
     NSURL *url = [self getServiceUrlFromService:service];
-	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
     [urlRequest setHTTPShouldHandleCookies:YES];
-	[urlRequest setHTTPMethod:@"POST"];
+	[urlRequest setHTTPMethod:@"GET"];
     [urlRequest setTimeoutInterval:3];
     return urlRequest;
 }
 -(BOOL)callService:(NSString*)service  {
     NSMutableURLRequest *urlRequest = [self requestForService:service];
-    [urlRequest setHTTPBody:[[self requestBody] dataUsingEncoding:NSASCIIStringEncoding]];
     if (![NSURLConnection canHandleRequest:urlRequest]) {
         NSLog(@"*** WARNING!! callservice cannot handle request for %@ (%@, url = %@) in %@",urlRequest,service,[self getServiceUrlFromService:service],self);
+        self.completionFunction(NO,@"cannot handle request");
         return NO;
     }
     
@@ -71,6 +67,7 @@ extern NSString *serviceRoot;
         inProgress = YES;
     } else {
         NSLog(@"*** WARNING!! callservice failed to create connection for %@ (%@, url = %@) in %@",urlRequest,service,[self getServiceUrlFromService:service],self);
+        self.completionFunction(NO,@"cannot create request");
         return NO;
     }
     
@@ -84,43 +81,20 @@ extern NSString *serviceRoot;
 	if (connection) {
 		[connection cancel];
 		NSLog(@"(%d) cancelled",serviceCallId);
+        _completionFunction(NO,@"cancelled");
 	}
-	
 	inProgress = NO;
 }
 
 -(void)serviceCompletedSuccessfully {
     gettimeofday(&lastSuccessfulNetworkCall,NULL);
 }
--(void)handleErrorsInCompletedResult:(NSString**)lastErrorParsed {
-    if ([_delegate respondsToSelector:@selector(errorsOccurred:forService:)]) {
-        [_delegate errorsOccurred:_errors forService:self];
-    }
-}
--(void)handleWarningsInCompletedResult {
-    if ([_delegate respondsToSelector:@selector(warningsOccured:forService:)]) {
-        [_delegate warningsOccured:_warnings forService:self];
-    } else {
-        NSLog(@"unlogged warnings on service %@",_warnings);
-    }
-}
 -(void)parseSuccessfulCompletionOfService:(NSString**)lastErrorParsed {
     serviceCallResult = NO; // no answer means no
-    
     if (serviceCallResult) {
 		[self serviceCompletedSuccessfully]; // this is overridden in subclasses to finalise processing of the service
 	}
-
-    BOOL handled = _completionFunction&&_completionFunction(serviceCallResult,*lastErrorParsed);
-
-    if (!_delegate&&!handled) {
-        NSLog(@"service finished with no delegate set, errors and warnings will not show");
-    }
-    
-    if (_delegate&&!handled) {
-		NSLog(@"(%d) Service complete, calling the delegate with result %d",serviceCallId,serviceCallResult);
-		[_delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
-	}
+    _completionFunction(serviceCallResult,*lastErrorParsed);
 }
 -(void)parseErrorCompletionOfService:(NSString**)lastErrorParsed {
     NSString *error = nil;
@@ -133,18 +107,7 @@ extern NSString *serviceRoot;
     } else {
         error = [NSString stringWithFormat:@"server failed with error code %ld",(long)_lastStatusCode];
     }
-    
-    BOOL handled = _completionFunction&&_completionFunction(serviceCallResult,*lastErrorParsed);
-    
-    if (error&&_delegate&&[_delegate respondsToSelector:@selector(reportError:forService:)]&&!handled) {
-        [_delegate reportError:error forService:self];
-    }
-    
-    if (_delegate) {
-		NSLog(@"(%d) Service complete, calling the delegate with result %d",serviceCallId,serviceCallResult);
-		[_delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
-	}
-    
+    _completionFunction(serviceCallResult,*lastErrorParsed);
     *lastErrorParsed = error;
 }
 
@@ -157,10 +120,6 @@ didReceiveResponse:(NSURLResponse *)response {
 	
 	expectedContentLength = [response expectedContentLength];
 	_lastStatusCode = [httpResponse statusCode];
-	
-	if (_delegate&&[_delegate respondsToSelector:@selector(responseHeaderReceivedWithStatusCode:forService:)]) {
-		[_delegate responseHeaderReceivedWithStatusCode:_lastStatusCode forService:self];
-	}
 	
 	if ([httpResponse textEncodingName]) {
 		NSLog(@"(%d) encoding %@",serviceCallId,[httpResponse textEncodingName]);
@@ -206,64 +165,28 @@ didReceiveResponse:(NSURLResponse *)response {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 	NSLog(@"(%d) finished service load with status code %ld", serviceCallId, (long)_lastStatusCode);
-	
 	inProgress = NO;
 	complete = YES;
 	NSString *lastErrorParsed = nil;
-
     [self setNetworkActivityIndicator:NO];
-	
 	if ([serviceOutput length]<expectedContentLength) {
 		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%lu",serviceCallId,expectedContentLength,(unsigned long)[serviceOutput length]);
 	}
-	
 	if (_lastStatusCode<300) {
         [self parseSuccessfulCompletionOfService:&lastErrorParsed];
 	} else {
         [self parseErrorCompletionOfService:&lastErrorParsed];
 	}
-
     [self setNetworkActivityIndicator:NO];
 }
 
 - (void)connection:(NSURLConnection *)connection
   didFailWithError:(NSError *)error {
 	NSLog(@"(%d) received connection fail",serviceCallId);
-	
 	succeededHTTP = NO;
-	BOOL reported = NO;
     inProgress = NO;
-
     [self setNetworkActivityIndicator:NO];
-
-	if (_delegate) {
-		[_delegate serviceHasFinishedWithResult:NO forService:self];
-	}
-
-	if (_completionFunction) {
-		if (_completionFunction(NO,[error localizedDescription])) {
-			return;
-		}
-	}
-
-	if (_delegate&&[_delegate respondsToSelector:@selector(reportError:forService:)]) {
-		reported = YES;
-
-        if (authFailed) {
-			[_delegate reportError:@"Authentication failed (check your username and password)" forService:self];
-			NSLog(@"authfail error detail : %@",[error localizedDescription]);
-		} else {
-			[_delegate reportError:[error localizedDescription] forService:self];
-		}
-	} else if (_delegate&&[_delegate respondsToSelector:@selector(httpErrorOccurred:forService:)]) {
-		reported = YES;
-		[_delegate httpErrorOccurred:[error localizedDescription] forService:self];
-	}
-	
-
-	if (!reported) {
-		NSLog(@"(%d) possibly unlogged/unshown error %@ on service type %@",serviceCallId,[error localizedDescription],self);
-	}
+	_completionFunction(NO,[error localizedDescription]);
 }
 
 - (NSString*)description {
