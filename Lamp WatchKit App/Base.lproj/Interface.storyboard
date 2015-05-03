@@ -10,6 +10,20 @@
             <objects>
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController">
                     <items>
+                        <group width="1" alignment="left" id="bsr-dJ-adb">
+                            <items>
+                                <button width="67" alignment="left" title="All OFF" id="PHj-4h-CzZ">
+                                    <connections>
+                                        <action selector="allOffPressed" destination="AgC-eL-Hgc" id="bAQ-0n-ybt"/>
+                                    </connections>
+                                </button>
+                                <button width="65" alignment="left" title="All ON" id="Ree-dp-FuT">
+                                    <connections>
+                                        <action selector="allOnPressed" destination="AgC-eL-Hgc" id="Gnk-rp-D46"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
                         <switch width="1" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Tube" id="N6u-83-t5B">
                             <connections>
                                 <action selector="tubeSwitchChanged:" destination="AgC-eL-Hgc" id="E9O-Aw-XAv"/>
@@ -41,7 +55,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="164" y="215.5"/>
+            <point key="canvasLocation" x="164" y="215"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="rjY-Ar-IMT">

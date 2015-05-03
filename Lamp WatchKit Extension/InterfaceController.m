@@ -92,5 +92,15 @@
 - (IBAction)bedoSwitchChanged:(BOOL)value {
     [WKInterfaceController openParentApplication:@{@"action":@"set",@"lamp":@"bedo",@"value":@(value)} reply:nil];
 }
+- (IBAction)allOffPressed {
+    [WKInterfaceController openParentApplication:@{@"action":@"allOff"} reply:^(NSDictionary *replyInfo, NSError *error) {
+        [self refreshSwitchesEnable:NO];
+    }];
+}
+- (IBAction)allOnPressed {
+    [WKInterfaceController openParentApplication:@{@"action":@"allOn"} reply:^(NSDictionary *replyInfo, NSError *error) {
+       [self refreshSwitchesEnable:NO];
+    }];
+}
 
 @end

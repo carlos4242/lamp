@@ -29,8 +29,13 @@
              };
 }
 
-- (void)application:(UIApplication *)application
-handleWatchKitExtensionRequest:(NSDictionary *)userInfo
+-(LampService*)service {
+    __weak AppDelegate *weakSelf = self;
+    LampService *serv = [LampService new];
+    return serv;
+}
+
+- (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo
               reply:(void (^)(NSDictionary *))reply {
     __block UIBackgroundTaskIdentifier backgroundTask = UIBackgroundTaskInvalid;
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
@@ -47,12 +52,11 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         if (weakSelf) {
             reply([weakSelf resultFromService:weakSelf.lampService]);
             NSLog(@"background task finished cleanly (service completed correctly)");
-            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         } else {
             reply(@{@"problem":@"service died"});
             NSLog(@"background task finished cleanly (but service had died)");
-            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         }
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         return YES;
     };
     
@@ -71,6 +75,16 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         } else if ([lamp isEqualToString:@"bedo"]) {
             [_lampService beedoBeedoSetState:value];
         }
+    } else if ([action isEqualToString:@"allOff"]) {
+        [_lampService lampOneSetState:NO];
+        [_lampService lampTwoSetState:NO];
+        [_lampService lampThreeSetState:NO];
+        [_lampService beedoBeedoSetState:NO];
+    } else if ([action isEqualToString:@"allOn"]) {
+        [_lampService lampOneSetState:YES];
+        [_lampService lampTwoSetState:YES];
+        [_lampService lampThreeSetState:YES];
+        [_lampService beedoBeedoSetState:NO];
     } else {
         reply(@{@"problem":@"unknown action"});
         NSLog(@"background task finished cleanly (unknown service request)");
