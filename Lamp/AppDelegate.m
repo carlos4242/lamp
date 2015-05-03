@@ -12,7 +12,6 @@
 
 @interface AppDelegate ()
 @property (strong) LampService *lampService;
-@property UIBackgroundTaskIdentifier watchkitBackgroundTask;
 @end
 
 @implementation AppDelegate
@@ -33,25 +32,26 @@
 - (void)application:(UIApplication *)application
 handleWatchKitExtensionRequest:(NSDictionary *)userInfo
               reply:(void (^)(NSDictionary *))reply {
+    __block UIBackgroundTaskIdentifier backgroundTask = UIBackgroundTaskInvalid;
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
-        if (!self.watchkitBackgroundTask || self.watchkitBackgroundTask == UIBackgroundTaskInvalid) {
-            // run a new background task
-            self.watchkitBackgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"watchkit service"
-                                                                                       expirationHandler:^{
-                [[UIApplication sharedApplication] endBackgroundTask:self.watchkitBackgroundTask];
-            }];
-        }
+        backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"watchkit service" expirationHandler:^{
+            NSLog(@"background task expired");
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+        }];
+        NSLog(@"started background task for watchkit %lu",(unsigned long)backgroundTask);
     }
-    
+
     self.lampService = [LampService new];
     __weak AppDelegate *weakSelf = self;
     self.lampService.completionFunction = ^(BOOL result,NSString *error) {
         if (weakSelf) {
             reply([weakSelf resultFromService:weakSelf.lampService]);
-            [[UIApplication sharedApplication] endBackgroundTask:weakSelf.watchkitBackgroundTask];
+            NSLog(@"background task finished cleanly (service completed correctly)");
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         } else {
             reply(@{@"problem":@"service died"});
-            [[UIApplication sharedApplication] endBackgroundTask:weakSelf.watchkitBackgroundTask];
+            NSLog(@"background task finished cleanly (but service had died)");
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         }
         return YES;
     };
@@ -73,7 +73,8 @@ handleWatchKitExtensionRequest:(NSDictionary *)userInfo
         }
     } else {
         reply(@{@"problem":@"unknown action"});
-        [[UIApplication sharedApplication] endBackgroundTask:self.watchkitBackgroundTask];
+        NSLog(@"background task finished cleanly (unknown service request)");
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
     }
 }
 

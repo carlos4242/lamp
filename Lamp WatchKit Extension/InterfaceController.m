@@ -15,7 +15,7 @@
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *cornerSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *bedoSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceLabel *errorLabel;
-
+@property BOOL awoke;
 @end
 
 
@@ -45,13 +45,14 @@
     [self.errorLabel setText:message];
 }
 
-- (void)awakeWithContext:(id)context {
-    [super awakeWithContext:context];
+-(void)refreshSwitchesEnable:(BOOL)enable {
     [WKInterfaceController openParentApplication:@{@"action":@"refresh"} reply:^(NSDictionary *replyInfo, NSError *error) {
         if (error) {
             [self showErrorMessage:error.description];
         } else {
-            [self setSwitchesEnabled:YES];
+            if (enable) {
+                [self setSwitchesEnabled:YES];
+            }
             [self.tubeSwitch setOn:[replyInfo[@"tube"] boolValue]];
             [self.roundSwitch setOn:[replyInfo[@"round"] boolValue]];
             [self.cornerSwitch setOn:[replyInfo[@"corner"] boolValue]];
@@ -59,10 +60,24 @@
         }
     }];
 }
+
+- (void)awakeWithContext:(id)context {
+    [super awakeWithContext:context];
+    NSLog(@"awake with context %@",context);
+    [self refreshSwitchesEnable:YES];
+    self.awoke = YES;
+}
 - (void)willActivate {
+    NSLog(@"activated...");
+    if (self.awoke) {
+        self.awoke = NO; // prevent double hit on the service at startup
+    } else {
+        [self refreshSwitchesEnable:NO];
+    }
     [super willActivate];
 }
 - (void)didDeactivate {
+    NSLog(@"deactivated");
     [super didDeactivate];
 }
 - (IBAction)tubeSwitchChanged:(BOOL)value {
