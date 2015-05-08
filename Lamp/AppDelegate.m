@@ -7,9 +7,12 @@
 //
 
 #import "AppDelegate.h"
-
 #import "LampViewController.h"
 #import "LampService.h"
+
+@interface AppDelegate ()
+@property (strong) LampService *lampService;
+@end
 
 @implementation AppDelegate
 
@@ -26,35 +29,66 @@
              };
 }
 
-- (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo reply:(void (^)(NSDictionary *))reply {
-    LampService *lampService = [LampService new];
-    __weak LampService *ls = lampService;
-    lampService.completionFunction = ^(BOOL result,NSString *error) {
-        if (ls) {
-            reply([self resultFromService:ls]);
+-(LampService*)service {
+    __weak AppDelegate *weakSelf = self;
+    LampService *serv = [LampService new];
+    return serv;
+}
+
+- (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo
+              reply:(void (^)(NSDictionary *))reply {
+    __block UIBackgroundTaskIdentifier backgroundTask = UIBackgroundTaskInvalid;
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+        backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"watchkit service" expirationHandler:^{
+            NSLog(@"background task expired");
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+        }];
+        NSLog(@"started background task for watchkit %lu",(unsigned long)backgroundTask);
+    }
+
+    self.lampService = [LampService new];
+    __weak AppDelegate *weakSelf = self;
+    self.lampService.completionFunction = ^(BOOL result,NSString *error) {
+        if (weakSelf) {
+            reply([weakSelf resultFromService:weakSelf.lampService]);
+            NSLog(@"background task finished cleanly (service completed correctly)");
         } else {
             reply(@{@"problem":@"service died"});
+            NSLog(@"background task finished cleanly (but service had died)");
         }
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
         return YES;
     };
     
     NSString *action = userInfo[@"action"];
     if ([action isEqualToString:@"refresh"]) {
-        [lampService checkState];
+        [_lampService checkState];
     } else if ([action isEqualToString:@"set"]) {
         NSString *lamp = userInfo[@"lamp"];
         BOOL value = [userInfo[@"value"] boolValue];
         if ([lamp isEqualToString:@"tube"]) {
-            [lampService lampTwoSetState:value];
+            [_lampService lampTwoSetState:value];
         } else if ([lamp isEqualToString:@"round"]) {
-            [lampService lampOneSetState:value];
+            [_lampService lampOneSetState:value];
         } else if ([lamp isEqualToString:@"corner"]) {
-            [lampService lampThreeSetState:value];
+            [_lampService lampThreeSetState:value];
         } else if ([lamp isEqualToString:@"bedo"]) {
-            [lampService beedoBeedoSetState:value];
+            [_lampService beedoBeedoSetState:value];
         }
+    } else if ([action isEqualToString:@"allOff"]) {
+        [_lampService lampOneSetState:NO];
+        [_lampService lampTwoSetState:NO];
+        [_lampService lampThreeSetState:NO];
+        [_lampService beedoBeedoSetState:NO];
+    } else if ([action isEqualToString:@"allOn"]) {
+        [_lampService lampOneSetState:YES];
+        [_lampService lampTwoSetState:YES];
+        [_lampService lampThreeSetState:YES];
+        [_lampService beedoBeedoSetState:NO];
     } else {
         reply(@{@"problem":@"unknown action"});
+        NSLog(@"background task finished cleanly (unknown service request)");
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
     }
 }
 

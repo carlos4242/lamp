@@ -11,18 +11,11 @@
 extern NSString *serviceRoot;
 
 @interface ServiceBase (Private)
--(void)handleErrorsInCompletedResult:(NSString**)lastErrorParsed;
 -(void)parseErrorCompletionOfService:(NSString**)lastErrorParsed;
--(void)handleWarningsInCompletedResult;
 @end
 
 @implementation JsonServiceBase
 
--(void)callDelegateReportErrorForAllParsedErrors {
-    if (![self.errors count]) return;
-    if (![[self.errors objectAtIndex:0] respondsToSelector:@selector(initWithUTF8String:)]) return;
-    [self.delegate reportError:[self.errors objectAtIndex:0] forService:self];
-}
 -(NSString*)firstErrorInParsedErrors {
     if (![self.errors count]) return @"no array error";
     if (![[self.errors objectAtIndex:0] respondsToSelector:@selector(initWithUTF8String:)]) return @"non string error";
@@ -48,31 +41,18 @@ extern NSString *serviceRoot;
             if (errorMessage) {
                 serviceCallResult = NO;
                 self.errors = [NSArray arrayWithObject:errorMessage];
-                [self handleErrorsInCompletedResult:lastErrorParsed];
             }
             NSString *warningMessage = [_output objectForKey:@"warning"];
             if (warningMessage) {
                 self.warnings = [NSArray arrayWithObject:warningMessage];
-                [self handleWarningsInCompletedResult];
-            }
-            
-            BOOL handled = self.completionFunction&&self.completionFunction(serviceCallResult,*lastErrorParsed);
-            
-            if (!self.delegate&&!handled) {
-                NSLog(@"service finished with no delegate set, errors and warnings will not show");
-            }
-
-            if (self.delegate) {
-                NSLog(@"(%d) Service complete, calling the delegate with result %d",serviceCallId,serviceCallResult);
-                [self.delegate serviceHasFinishedWithResult:serviceCallResult forService:self];
             }
         } else {
             _output = nil;
             NSString *erroar = [NSString stringWithFormat:@"failed to parse json string %@, possible parse errors %@",serviceOutput,error.localizedDescription];
             NSLog(@"%@",erroar);
             *lastErrorParsed = erroar;
-            [self handleErrorsInCompletedResult:lastErrorParsed];
         }
     }
+    self.completionFunction(serviceCallResult,*lastErrorParsed);
 }
 @end
