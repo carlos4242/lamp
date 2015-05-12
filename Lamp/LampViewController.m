@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *roundLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *cornerLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *beedoBeedoSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *allOnButton;
+@property (weak, nonatomic) IBOutlet UIButton *allOffButton;
 
 @end
 
@@ -78,6 +80,12 @@
     [self setLamp2UIState:[lamp lampTwoIsOn]];
     [self setLamp3UIState:[lamp lampThreeIsOn]];
     [self setFlasherUIState:[lamp beedoBeedoIsOn]];
+    BOOL anyOn = [lamp lampOneIsOn] || [lamp lampTwoIsOn] || [lamp lampThreeIsOn] || [lamp beedoBeedoIsOn];
+    BOOL allOn = [lamp lampOneIsOn] && [lamp lampTwoIsOn] && [lamp lampThreeIsOn];
+    self.allOffButton.enabled = anyOn;
+    self.allOffButton.alpha = self.allOffButton.enabled?1:0.2;
+    self.allOnButton.enabled = !allOn;
+    self.allOnButton.alpha = self.allOnButton.enabled?1:0.2;
 }
 
 -(void)updateButtonVisibility:(BOOL)enabled {
@@ -147,6 +155,28 @@
         return YES;
     };
     [lamp beedoBeedoSetState:sender.on];
+}
+- (IBAction)allOnPressed:(id)sender {
+    LampService *lamp = [LampService new];
+    __weak LampService *ls = lamp;
+    lamp.completionFunction = ^(BOOL result,NSString *error) {
+        if (result) {
+            [self updateButtonStateFromLampService:ls];
+        }
+        return YES;
+    };
+    [lamp allOn];
+}
+- (IBAction)allOffPressed:(id)sender {
+    LampService *lamp = [LampService new];
+    __weak LampService *ls = lamp;
+    lamp.completionFunction = ^(BOOL result,NSString *error) {
+        if (result) {
+            [self updateButtonStateFromLampService:ls];
+        }
+        return YES;
+    };
+    [lamp allOff];
 }
 
 @end

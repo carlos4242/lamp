@@ -122,6 +122,26 @@
                                 <color key="textColor" red="0.72549019609999998" green="0.14901960780000001" blue="0.1137254902" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qem-hf-nW6">
+                                <rect key="frame" x="349" y="503" width="42" height="30"/>
+                                <state key="normal" title="All Off">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="allOffPressed:" destination="tFb-zC-fBL" eventType="touchUpInside" id="6He-Gl-y8c"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Cj-HW-qy8">
+                                <rect key="frame" x="209" y="503" width="42" height="30"/>
+                                <state key="normal" title="All On">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="allOnPressed:" destination="tFb-zC-fBL" eventType="touchUpInside" id="obr-eo-Hd3"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -129,6 +149,8 @@
                             <constraint firstItem="2ZN-sU-Kx9" firstAttribute="centerX" secondItem="NsG-Ws-t45" secondAttribute="centerX" id="3zO-RK-EnL"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerX" secondItem="QY7-AN-rWG" secondAttribute="centerX" id="479-7X-POp"/>
                             <constraint firstItem="QY7-AN-rWG" firstAttribute="centerX" secondItem="uwm-1J-GDP" secondAttribute="centerX" id="7zy-J5-aYs"/>
+                            <constraint firstItem="qem-hf-nW6" firstAttribute="centerY" secondItem="1Cj-HW-qy8" secondAttribute="centerY" id="8O8-ZF-G95"/>
+                            <constraint firstAttribute="centerX" secondItem="qem-hf-nW6" secondAttribute="centerX" constant="-70" id="8rp-Rd-CGf"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerY" secondItem="cAZ-Uh-XUF" secondAttribute="centerY" id="8xE-1U-c5l"/>
                             <constraint firstItem="VWT-YH-YBi" firstAttribute="leading" secondItem="uwm-1J-GDP" secondAttribute="trailing" constant="22" id="AOt-r4-29n"/>
                             <constraint firstItem="QlR-1D-CF2" firstAttribute="leading" secondItem="gD2-zQ-c97" secondAttribute="trailing" constant="20" id="EeJ-Dw-HFZ"/>
@@ -143,6 +165,7 @@
                             <constraint firstItem="uwm-1J-GDP" firstAttribute="top" secondItem="QY7-AN-rWG" secondAttribute="bottom" constant="10" id="Uak-ki-IuR"/>
                             <constraint firstItem="NsG-Ws-t45" firstAttribute="centerX" secondItem="cUy-G5-F64" secondAttribute="centerX" id="XNl-kv-G3C"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerY" secondItem="Qb9-8k-GXK" secondAttribute="centerY" id="Xp0-YD-Sb5"/>
+                            <constraint firstItem="qem-hf-nW6" firstAttribute="top" secondItem="QlR-1D-CF2" secondAttribute="bottom" constant="60" id="ZOI-6F-SHn"/>
                             <constraint firstItem="QlR-1D-CF2" firstAttribute="top" secondItem="2ZN-sU-Kx9" secondAttribute="bottom" constant="10" id="Zac-e3-EYx"/>
                             <constraint firstItem="B9w-AL-pbP" firstAttribute="centerY" secondItem="QlR-1D-CF2" secondAttribute="centerY" id="awb-bo-oMR"/>
                             <constraint firstAttribute="centerX" secondItem="SKo-vm-a2a" secondAttribute="centerX" id="buT-63-zZW"/>
@@ -158,6 +181,7 @@
                             <constraint firstItem="uwm-1J-GDP" firstAttribute="leading" secondItem="zpZ-rU-hnJ" secondAttribute="trailing" constant="20" id="tz8-hC-MUP"/>
                             <constraint firstItem="2ZN-sU-Kx9" firstAttribute="top" secondItem="NsG-Ws-t45" secondAttribute="bottom" constant="25" id="x4U-g5-h01"/>
                             <constraint firstItem="uwm-1J-GDP" firstAttribute="centerY" secondItem="VWT-YH-YBi" secondAttribute="centerY" id="yFO-g5-OUU"/>
+                            <constraint firstAttribute="centerX" secondItem="1Cj-HW-qy8" secondAttribute="centerX" constant="70" id="yNB-hE-Paf"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -172,6 +196,8 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="allOffButton" destination="qem-hf-nW6" id="V0A-9c-bEM"/>
+                        <outlet property="allOnButton" destination="1Cj-HW-qy8" id="D6P-Vk-yPF"/>
                         <outlet property="beedoBeedoSwitch" destination="QlR-1D-CF2" id="Nfr-o3-jyX"/>
                         <outlet property="cornerLampSwitch" destination="NsG-Ws-t45" id="xWD-kH-IpW"/>
                         <outlet property="roundLampSwitch" destination="uwm-1J-GDP" id="Bpg-ps-hUE"/>

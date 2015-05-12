@@ -70,7 +70,9 @@
             [self.cornerSwitch setOn:corner];
             [self.bedoSwitch setOn:siren];
             [self.allOffSwitch setEnabled:any];
+            [self.allOffSwitch setAlpha:any?1:0.2];
             [self.allOnSwitch setEnabled:!all];
+            [self.allOnSwitch setAlpha:all?0.2:1];
         }
     }];
 }
