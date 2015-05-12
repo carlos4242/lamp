@@ -172,7 +172,7 @@ void loop()
   
   int override = digitalRead(overrideSwitch);
   if (override == HIGH) {
-    if (lightOneState == LOW) {
+    if (lightOneState == LOW && lightTwoState == LOW && inverseLightThreeState == HIGH) {
       allOn();
     } else {
       allOff();
@@ -218,12 +218,12 @@ void listenForEthernetClients() {
         iPos++;
         if (c == '\n') {
           lineBuffer[iPos] = 0;
-          String ll1 = String("Got http line (length ");
-          String ll2 = String(")...");
-          String ll = String();
-          ll = ll1 + iPos + ll2;
-          Serial.println(ll);
-          Serial.print(lineBuffer);
+//          String ll1 = String("Got http line (length ");
+//          String ll2 = String(")...");
+//          String ll = String();
+//          ll = ll1 + iPos + ll2;
+//          Serial.println(ll);
+//          Serial.print(lineBuffer);
           if (!gotGetRequest) {
             if (iPos<6) {
               Serial.println("Invalid get request");
