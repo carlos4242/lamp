@@ -39,6 +39,14 @@ NSString *serviceRoot = @"http://10.0.1.160/";
     [super callService:onOff?@"g":@"h"];
 }
 
+-(void)allOn {
+    [super callService:@"1"];
+}
+
+-(void)allOff {
+    [super callService:@"0"];
+}
+
 -(BOOL)checkState {
     return [super callService:@""];
 }

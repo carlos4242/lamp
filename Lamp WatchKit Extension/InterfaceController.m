@@ -10,12 +10,18 @@
 
 
 @interface InterfaceController()
+
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *tubeSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *roundSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *cornerSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *bedoSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceLabel *errorLabel;
+
+@property (weak, nonatomic) IBOutlet WKInterfaceButton *allOffSwitch;
+@property (weak, nonatomic) IBOutlet WKInterfaceButton *allOnSwitch;
+
 @property BOOL awoke;
+
 @end
 
 
@@ -53,10 +59,18 @@
             if (enable) {
                 [self setSwitchesEnabled:YES];
             }
-            [self.tubeSwitch setOn:[replyInfo[@"tube"] boolValue]];
-            [self.roundSwitch setOn:[replyInfo[@"round"] boolValue]];
-            [self.cornerSwitch setOn:[replyInfo[@"corner"] boolValue]];
-            [self.bedoSwitch setOn:[replyInfo[@"bedo"] boolValue]];
+            BOOL tube = [replyInfo[@"tube"] boolValue];
+            BOOL round = [replyInfo[@"round"] boolValue];
+            BOOL corner = [replyInfo[@"corner"] boolValue];
+            BOOL siren = [replyInfo[@"bedo"] boolValue];
+            BOOL any = tube|round|corner|siren;
+            BOOL all = tube&round&corner;
+            [self.tubeSwitch setOn:tube];
+            [self.roundSwitch setOn:round];
+            [self.cornerSwitch setOn:corner];
+            [self.bedoSwitch setOn:siren];
+            [self.allOffSwitch setEnabled:any];
+            [self.allOnSwitch setEnabled:!all];
         }
     }];
 }

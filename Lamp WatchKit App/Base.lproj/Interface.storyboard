@@ -17,7 +17,7 @@
                                         <action selector="allOffPressed" destination="AgC-eL-Hgc" id="bAQ-0n-ybt"/>
                                     </connections>
                                 </button>
-                                <button width="65" alignment="left" title="All ON" id="Ree-dp-FuT">
+                                <button width="65" alignment="right" title="All ON" id="Ree-dp-FuT">
                                     <connections>
                                         <action selector="allOnPressed" destination="AgC-eL-Hgc" id="Gnk-rp-D46"/>
                                     </connections>
@@ -47,6 +47,8 @@
                         <label alignment="left" hidden="YES" text="Error Label" numberOfLines="15" id="2I6-6n-HFi"/>
                     </items>
                     <connections>
+                        <outlet property="allOffSwitch" destination="PHj-4h-CzZ" id="4fx-vN-7Cu"/>
+                        <outlet property="allOnSwitch" destination="Ree-dp-FuT" id="pwP-FH-ngh"/>
                         <outlet property="bedoSwitch" destination="6hG-JM-zJC" id="HG6-a2-upF"/>
                         <outlet property="cornerSwitch" destination="8QQ-Ap-RHT" id="QSE-jF-eTT"/>
                         <outlet property="errorLabel" destination="2I6-6n-HFi" id="qkT-eU-jcx"/>

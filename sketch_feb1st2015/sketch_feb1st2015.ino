@@ -70,10 +70,14 @@ String statusString() {
       String l3S = String();
       l3S = l3p + inverseLightThreeState;
       
+      String l4p = String(",\"beedoBeedo\":");
+      String l4S = String();
+      l4S = l4p + beedoBeedoState;
+      
       String l2t = String("}");
       
       String stat = String();
-      stat = l1S + l2S + l3S + l2t;
+      stat = l1S + l2S + l3S + l4S + l2t;
       return stat;
 }
 
@@ -86,6 +90,27 @@ void report() {
     digitalWrite(pilotLight, LOW);
   }
 }
+
+void allOn() {
+      digitalWrite(lightOne, HIGH);
+      digitalWrite(lightTwo, HIGH);
+      digitalWrite(inverseLightThree, LOW);
+      digitalWrite(beedoBeedo, LOW);
+      lightOneState = HIGH;
+      lightTwoState = HIGH;
+      inverseLightThreeState = LOW;
+      beedoBeedoState = LOW;
+}
+
+void allOff() {
+      digitalWrite(lightOne, LOW);
+      digitalWrite(lightTwo, LOW);
+      digitalWrite(inverseLightThree, HIGH);
+      digitalWrite(beedoBeedo, LOW);
+      lightOneState = LOW;
+      lightTwoState = LOW;
+      inverseLightThreeState = HIGH;
+      beedoBeedoState = LOW;}
 
 void loop()                     
 {
@@ -122,6 +147,24 @@ void loop()
       inverseLightThreeState = LOW;
      report(); 
     }
+    else if(incomingByte == 103){ // g
+      digitalWrite(beedoBeedo, HIGH);
+      beedoBeedoState = HIGH;
+      report(); 
+    }
+    else if(incomingByte == 104){ // h
+      digitalWrite(beedoBeedo, LOW);
+      beedoBeedoState = LOW;
+      report(); 
+    }
+    else if(incomingByte == 48){ // 0
+      allOff();
+      report(); 
+    }
+    else if(incomingByte == 49){ // 1
+      allOn();
+      report(); 
+    }
     else if(incomingByte == 115){ // s
      report(); 
     }
@@ -130,25 +173,16 @@ void loop()
   int override = digitalRead(overrideSwitch);
   if (override == HIGH) {
     if (lightOneState == LOW) {
-      digitalWrite(lightOne, HIGH);
-      digitalWrite(lightTwo, HIGH);
-      digitalWrite(inverseLightThree, LOW);
-      lightOneState = HIGH;
-      lightTwoState = HIGH;
-      inverseLightThreeState = LOW;
+      allOn();
     } else {
-      digitalWrite(lightOne, LOW);
-      digitalWrite(lightTwo, LOW);
-      digitalWrite(inverseLightThree, HIGH);
-      lightOneState = LOW;
-      lightTwoState = LOW;
-      inverseLightThreeState = HIGH;
+      allOff();
     }
     report();
     while (override == HIGH) {
       delay(1);
       override = digitalRead(overrideSwitch);
     }
+    delay(1);
   }
   
   listenForEthernetClients();
@@ -162,9 +196,13 @@ void loop()
 // /b turns lamp 1 off
 // /c turns lamp 2 on
 // /d turns lamp 2 off
+// /e turns lamp 3 relay high (lamp off)
+// /f turns lamp 3 relay low (lamp on)
+// /c turns flasher relay high (flasher on)
+// /d turns flasher relay low (flasher off)
 // each on/off command also returns status
 // status returns according to the format
-// "{\"result\":1,\"lamp1\":".$lamp1Status.",\"lamp2\":".$lamp2Status."}\r\n"
+// "{\"result\":1,\"lamp1\":".$lamp1Status.",\"lamp2\":".$lamp2Status."}\r\n" 
 
 void listenForEthernetClients() {
   EthernetClient client = server.available();
@@ -180,6 +218,12 @@ void listenForEthernetClients() {
         iPos++;
         if (c == '\n') {
           lineBuffer[iPos] = 0;
+          String ll1 = String("Got http line (length ");
+          String ll2 = String(")...");
+          String ll = String();
+          ll = ll1 + iPos + ll2;
+          Serial.println(ll);
+          Serial.print(lineBuffer);
           if (!gotGetRequest) {
             if (iPos<6) {
               Serial.println("Invalid get request");
@@ -222,9 +266,25 @@ void listenForEthernetClients() {
                 digitalWrite(inverseLightThree, LOW);
                 inverseLightThreeState = LOW;
               }
+              else if (request == 'g') {
+                // turn on beedo beedo
+                digitalWrite(beedoBeedo, HIGH);
+                beedoBeedoState = HIGH;
+              }
+              else if (request == 'h') {
+                // turn off beedo beedo
+                digitalWrite(beedoBeedo, LOW);
+                beedoBeedoState = LOW;
+              }
+              else if (request == '0') {
+                allOff();
+              }
+              else if (request == '1') {
+                allOn();
+              }
             }
             // send a standard http response header
-            client.println("HTTP/1.1 200 OK");
+            client.println("HTTP/1.0 200 OK");
             client.println("Content-Type: text/html");
             client.println();
             String stat = statusString();
@@ -235,10 +295,12 @@ void listenForEthernetClients() {
         }
       }
     }
+    Serial.println("client finished, waiting");
     // give the web browser time to receive the data
     delay(1);
     // close the connection:
     client.stop();
     report();
+    Serial.println("client disconnected at server");
   }
 }

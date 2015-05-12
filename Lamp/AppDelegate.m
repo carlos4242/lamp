@@ -29,12 +29,6 @@
              };
 }
 
--(LampService*)service {
-    __weak AppDelegate *weakSelf = self;
-    LampService *serv = [LampService new];
-    return serv;
-}
-
 - (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo
               reply:(void (^)(NSDictionary *))reply {
     __block UIBackgroundTaskIdentifier backgroundTask = UIBackgroundTaskInvalid;
@@ -76,15 +70,9 @@
             [_lampService beedoBeedoSetState:value];
         }
     } else if ([action isEqualToString:@"allOff"]) {
-        [_lampService lampOneSetState:NO];
-        [_lampService lampTwoSetState:NO];
-        [_lampService lampThreeSetState:NO];
-        [_lampService beedoBeedoSetState:NO];
+        [_lampService allOff];
     } else if ([action isEqualToString:@"allOn"]) {
-        [_lampService lampOneSetState:YES];
-        [_lampService lampTwoSetState:YES];
-        [_lampService lampThreeSetState:YES];
-        [_lampService beedoBeedoSetState:NO];
+        [_lampService allOn];
     } else {
         reply(@{@"problem":@"unknown action"});
         NSLog(@"background task finished cleanly (unknown service request)");

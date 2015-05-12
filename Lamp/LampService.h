@@ -16,6 +16,8 @@
 -(void)beedoBeedoSetState:(BOOL)onOff;
 -(BOOL)checkState;
 -(BOOL)refreshState;
+-(void)allOn;
+-(void)allOff;
 
 -(BOOL)lampOneIsOn;
 -(BOOL)lampTwoIsOn;
