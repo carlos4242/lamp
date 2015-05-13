@@ -25,5 +25,6 @@
 -(BOOL)beedoBeedoIsOn;
 
 +(BOOL)onHomeNetwork;
++(BOOL)onWifi;
 
 @end

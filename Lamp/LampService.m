@@ -7,11 +7,11 @@
 //
 
 #import "LampService.h"
+#import "Reachability.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 
-#define kArduinoIPAddress "10.0.1.160"
-NSString *serviceRoot;// = @"http://10.0.1.160/";
+NSString *serviceRoot;
 struct in_addr homeen0base;
 
 @implementation LampService
@@ -25,7 +25,6 @@ struct in_addr homeen0base;
 }
 
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
-    
     serviceCallName = [[NSString alloc] initWithString:service];
 	NSString *urlString = [NSString stringWithFormat:@"%@%@",serviceRoot,service];
 	
@@ -85,6 +84,10 @@ struct in_addr homeen0base;
 
 +(BOOL)onHomeNetwork {
     return [self getIPAddressBase] == homeen0base.s_addr;
+}
+
++(BOOL)onWifi {
+    return [Reachability sharedWifiReachability].currentReachabilityStatus != NotReachable;
 }
 
 +(in_addr_t)getIPAddressBase {

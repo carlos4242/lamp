@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tFb-zC-fBL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tFb-zC-fBL">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
     <scenes>
         <!--Lamp View Controller-->
@@ -103,8 +103,8 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="REMOTE LIGHT SWITCH" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYr-a9-q59">
-                                <rect key="frame" x="26" y="-36" width="253" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="REMOTE LIGHT SWITCH" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYr-a9-q59">
+                                <rect key="frame" x="184" y="50" width="232" height="24"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -142,6 +142,46 @@
                                     <action selector="allOnPressed:" destination="tFb-zC-fBL" eventType="touchUpInside" id="obr-eo-Hd3"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5UC-wL-ea8" userLabel="Not At Home View">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6k-CS-tmC">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="YlW-qv-HO6">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Not at home - lamp control not available" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hwq-Uh-w6f">
+                                                    <rect key="frame" x="145" y="290" width="309" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Turn on wifi" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8px-HP-wKf">
+                                                    <rect key="frame" x="256" y="290" width="88" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerX" secondItem="hwq-Uh-w6f" secondAttribute="centerX" id="EoF-HF-0i0"/>
+                                                <constraint firstAttribute="centerY" secondItem="hwq-Uh-w6f" secondAttribute="centerY" id="Ydd-n4-Bop"/>
+                                                <constraint firstAttribute="centerY" secondItem="8px-HP-wKf" secondAttribute="centerY" id="m3Y-NX-PV2"/>
+                                                <constraint firstAttribute="centerX" secondItem="8px-HP-wKf" secondAttribute="centerX" id="qdd-Zk-BdC"/>
+                                            </constraints>
+                                        </view>
+                                        <blurEffect style="dark"/>
+                                    </visualEffectView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="q6k-CS-tmC" firstAttribute="top" secondItem="5UC-wL-ea8" secondAttribute="top" id="1Ru-dh-CQQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="q6k-CS-tmC" secondAttribute="bottom" id="3z3-8k-2ms"/>
+                                    <constraint firstItem="q6k-CS-tmC" firstAttribute="leading" secondItem="5UC-wL-ea8" secondAttribute="leading" id="Vtx-fJ-dIU"/>
+                                    <constraint firstAttribute="trailing" secondItem="q6k-CS-tmC" secondAttribute="trailing" id="hgX-Vw-eab"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -154,19 +194,25 @@
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerY" secondItem="cAZ-Uh-XUF" secondAttribute="centerY" id="8xE-1U-c5l"/>
                             <constraint firstItem="VWT-YH-YBi" firstAttribute="leading" secondItem="uwm-1J-GDP" secondAttribute="trailing" constant="22" id="AOt-r4-29n"/>
                             <constraint firstItem="QlR-1D-CF2" firstAttribute="leading" secondItem="gD2-zQ-c97" secondAttribute="trailing" constant="20" id="EeJ-Dw-HFZ"/>
+                            <constraint firstItem="5UC-wL-ea8" firstAttribute="leading" secondItem="lmb-4n-f94" secondAttribute="leading" id="FrM-fA-Oh3"/>
                             <constraint firstItem="NsG-Ws-t45" firstAttribute="top" secondItem="cUy-G5-F64" secondAttribute="bottom" constant="10" id="FyG-Jj-V3V"/>
                             <constraint firstItem="NsG-Ws-t45" firstAttribute="leading" secondItem="Q8l-zu-7mF" secondAttribute="trailing" constant="20" id="GVo-Vt-8P4"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerX" secondItem="SKo-vm-a2a" secondAttribute="centerX" constant="0.5" id="GYc-dy-3Gv"/>
                             <constraint firstItem="B9w-AL-pbP" firstAttribute="leading" secondItem="QlR-1D-CF2" secondAttribute="trailing" constant="22" id="Gd9-gX-Fyi"/>
+                            <constraint firstAttribute="centerX" secondItem="AYr-a9-q59" secondAttribute="centerX" id="K6t-2V-qFL"/>
                             <constraint firstItem="SKo-vm-a2a" firstAttribute="top" secondItem="DxV-Kn-oFh" secondAttribute="bottom" constant="100" id="Kmu-GR-d4f"/>
                             <constraint firstItem="NsG-Ws-t45" firstAttribute="centerY" secondItem="Q8l-zu-7mF" secondAttribute="centerY" id="Ma1-rK-Fwn"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="leading" secondItem="Qb9-8k-GXK" secondAttribute="trailing" constant="20" id="NbG-ym-24X"/>
+                            <constraint firstItem="5UC-wL-ea8" firstAttribute="top" secondItem="lmb-4n-f94" secondAttribute="top" id="Npv-bl-nzH"/>
+                            <constraint firstItem="zwF-eh-XKu" firstAttribute="top" secondItem="5UC-wL-ea8" secondAttribute="bottom" id="SdT-ra-0nm"/>
                             <constraint firstItem="2ZN-sU-Kx9" firstAttribute="centerX" secondItem="QlR-1D-CF2" secondAttribute="centerX" id="SfG-PS-WfB"/>
                             <constraint firstItem="uwm-1J-GDP" firstAttribute="top" secondItem="QY7-AN-rWG" secondAttribute="bottom" constant="10" id="Uak-ki-IuR"/>
+                            <constraint firstAttribute="trailing" secondItem="5UC-wL-ea8" secondAttribute="trailing" id="Vyt-Sn-TVl"/>
                             <constraint firstItem="NsG-Ws-t45" firstAttribute="centerX" secondItem="cUy-G5-F64" secondAttribute="centerX" id="XNl-kv-G3C"/>
                             <constraint firstItem="SkR-mn-A2m" firstAttribute="centerY" secondItem="Qb9-8k-GXK" secondAttribute="centerY" id="Xp0-YD-Sb5"/>
                             <constraint firstItem="qem-hf-nW6" firstAttribute="top" secondItem="QlR-1D-CF2" secondAttribute="bottom" constant="60" id="ZOI-6F-SHn"/>
                             <constraint firstItem="QlR-1D-CF2" firstAttribute="top" secondItem="2ZN-sU-Kx9" secondAttribute="bottom" constant="10" id="Zac-e3-EYx"/>
+                            <constraint firstItem="AYr-a9-q59" firstAttribute="top" secondItem="lmb-4n-f94" secondAttribute="top" constant="50" id="ZbT-E6-7ZS"/>
                             <constraint firstItem="B9w-AL-pbP" firstAttribute="centerY" secondItem="QlR-1D-CF2" secondAttribute="centerY" id="awb-bo-oMR"/>
                             <constraint firstAttribute="centerX" secondItem="SKo-vm-a2a" secondAttribute="centerX" id="buT-63-zZW"/>
                             <constraint firstItem="gD2-zQ-c97" firstAttribute="centerY" secondItem="QlR-1D-CF2" secondAttribute="centerY" id="fOs-e8-0Lj"/>
@@ -200,8 +246,11 @@
                         <outlet property="allOnButton" destination="1Cj-HW-qy8" id="D6P-Vk-yPF"/>
                         <outlet property="beedoBeedoSwitch" destination="QlR-1D-CF2" id="Nfr-o3-jyX"/>
                         <outlet property="cornerLampSwitch" destination="NsG-Ws-t45" id="xWD-kH-IpW"/>
+                        <outlet property="notAtHomeLabel" destination="hwq-Uh-w6f" id="ubc-oC-62k"/>
+                        <outlet property="notAtHomeView" destination="5UC-wL-ea8" id="umP-hr-BPb"/>
                         <outlet property="roundLampSwitch" destination="uwm-1J-GDP" id="Bpg-ps-hUE"/>
                         <outlet property="tubeLampSwitch" destination="SkR-mn-A2m" id="b4I-Dg-mCK"/>
+                        <outlet property="turnOnWifiLabel" destination="8px-HP-wKf" id="kVR-5B-ICJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4D4-nM-r4C" userLabel="First Responder" sceneMemberID="firstResponder"/>

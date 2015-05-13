@@ -20,6 +20,10 @@
 @property (weak, nonatomic) IBOutlet UISwitch *beedoBeedoSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *allOnButton;
 @property (weak, nonatomic) IBOutlet UIButton *allOffButton;
+@property (weak, nonatomic) IBOutlet UIView *notAtHomeView;
+@property (weak, nonatomic) IBOutlet UILabel *notAtHomeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *turnOnWifiLabel;
+@property (nonatomic) BOOL notAtHome;
 
 @end
 
@@ -75,6 +79,17 @@
     _beedoBeedoSwitch.on = state;
 }
 
+-(void)setNotAtHome:(BOOL)notAtHome {
+    if (_notAtHome != notAtHome) {
+        _notAtHomeView.hidden = !notAtHome;
+        _notAtHomeView.alpha = _notAtHome?1:0;
+        [UIView animateWithDuration:0.2 animations:^{
+            _notAtHomeView.alpha = notAtHome?1:0;
+        }];
+        _notAtHome = notAtHome;
+    }
+}
+
 -(void)updateButtonStateFromLampService:(LampService*)lamp {
     [self setLamp1UIState:[lamp lampOneIsOn]];
     [self setLamp2UIState:[lamp lampTwoIsOn]];
@@ -97,22 +112,22 @@
 }
 
 -(void)refreshLampState {
+    self.notAtHome = ![LampService onHomeNetwork];
     if ([LampService onHomeNetwork]) {
-        NSLog(@"AT HOME");
+        LampService *lamp = [LampService new];
+        __weak LampService *ls = lamp;
+        lamp.completionFunction = ^(BOOL result,NSString *error) {
+            [self updateButtonVisibility:result];
+            if (result) {
+                [self updateButtonStateFromLampService:ls];
+            }
+            return YES;
+        };
+        [lamp checkState];
     } else {
-        NSLog(@"*** NOT AT HOME ***");
+        _turnOnWifiLabel.hidden = [LampService onWifi];
+        _notAtHomeLabel.hidden = ![LampService onWifi];
     }
-    
-    LampService *lamp = [LampService new];
-    __weak LampService *ls = lamp;
-    lamp.completionFunction = ^(BOOL result,NSString *error) {
-        [self updateButtonVisibility:result];
-        if (result) {
-            [self updateButtonStateFromLampService:ls];
-        }
-        return YES;
-    };
-    [lamp checkState];
 }
 
 - (IBAction)tubeLampChanged:(UISwitch*)sender {
