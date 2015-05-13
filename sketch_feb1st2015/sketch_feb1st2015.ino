@@ -22,6 +22,8 @@ int lightTwoState = LOW;
 int inverseLightThreeState = HIGH;
 int beedoBeedoState = LOW;
 
+boolean debug = false;
+
 // The setup() method runs once, when the sketch starts
 
 // assign a MAC address for the ethernet controller.
@@ -101,26 +103,11 @@ void setup()   {
 }
 
 String statusString() {
-  String l1p = String("{\"result\":1,\"lamp1\":"); 
-  String l1S = String();
-  l1S = l1p + lightOneState;
-
-  String l2p = String(",\"lamp2\":");
-  String l2S = String();
-  l2S = l2p + lightTwoState;
-
-  String l3p = String(",\"lamp3\":");
-  String l3S = String();
-  l3S = l3p + inverseLightThreeState;
-
-  String l4p = String(",\"beedoBeedo\":");
-  String l4S = String();
-  l4S = l4p + beedoBeedoState;
-
-  String l2t = String("}");
-
-  String stat = String();
-  stat = l1S + l2S + l3S + l4S + l2t;
+  String l1S = String("{\"result\":1,\"lamp1\":") + lightOneState;
+  String l2S = String(",\"lamp2\":") + lightTwoState;
+  String l3S = String(",\"lamp3\":") + inverseLightThreeState;
+  String l4S = String(",\"beedoBeedo\":") + beedoBeedoState;
+  String stat = l1S + l2S + l3S + l4S + String("}");
   return stat;
 }
 
@@ -213,6 +200,15 @@ void loop()
     else if(incomingByte == 115){ // s
       report(); 
     }
+    else if(incomingByte == 68){ // D - debug toggle
+      debug = !debug;
+      if (debug) {
+        Serial.println("http debug on");
+      } 
+      else {
+        Serial.println("http debug off");
+      } 
+    }
   }
 
   int override = digitalRead(overrideSwitch);
@@ -253,9 +249,12 @@ void loop()
 void listenForEthernetClients() {
   EthernetClient client = server.available();
   if (client) {
-    Serial.println("Got a client");
+    if (debug) {
+      Serial.println("Got a client");
+    }
     int iPos = 0;
     boolean gotGetRequest = false;
+    boolean sentFavicon = false;
     // an http request ends with a blank line
     while (client.connected()) {
       if (client.available()) {
@@ -264,19 +263,17 @@ void listenForEthernetClients() {
         iPos++;
         if (c == '\n') {
           lineBuffer[iPos] = 0;
-          //          String ll1 = String("Got http line (length ");
-          //          String ll2 = String(")...");
-          //          String ll = String();
-          //          ll = ll1 + iPos + ll2;
-          //          Serial.println(ll);
-          //          Serial.print(lineBuffer);
+          if (debug) {
+            String ll = String("[") + iPos + String("]:");
+            Serial.print(ll);
+            Serial.print(lineBuffer);
+          }
           if (!gotGetRequest) {
-            if (iPos<6) {
+            if (iPos<6 && debug) {
               Serial.println("Invalid get request");
             } 
             else {
               getRequest = String(lineBuffer+5);
-              Serial.print(getRequest);
               gotGetRequest = true;
             } 
           }
@@ -313,6 +310,10 @@ void listenForEthernetClients() {
                 if (request2 == 'a') {
                   // assume favicon
                   client.write(favicon,635);
+                  sentFavicon = true;
+                  if (debug) {
+                    Serial.println("sent favicon");
+                  }
                 } 
                 else {
                   // turn off L3
@@ -338,24 +339,35 @@ void listenForEthernetClients() {
               }
             }
             // send a standard http response header
-            client.println("HTTP/1.0 200 OK");
-            client.println("Content-Type: text/html");
-            client.println();
-            String stat = statusString();
-            client.println(stat);
+            if (!sentFavicon) {
+              client.println("HTTP/1.0 200 OK");
+              client.println("Content-Type: text/html");
+              client.println();
+              String stat = statusString();
+              client.println(stat);
+              if (debug) {
+                Serial.print("wrote:");
+                Serial.println(stat);
+              }
+            }
             break;
           }
           iPos = 0;
         }
       }
     }
-    Serial.println("client finished, waiting");
+    if (debug) {
+      Serial.println("client finished, waiting");
+    }
     // give the web browser time to receive the data
     delay(1);
     // close the connection:
     client.stop();
-    report();
-    Serial.println("client disconnected at server");
+    if (debug) {
+      Serial.println("client disconnected at server");
+    }
   }
 }
+
+
 
