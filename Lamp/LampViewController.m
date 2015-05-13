@@ -97,10 +97,10 @@
 }
 
 -(void)refreshLampState {
-    in_addr_t en0base = [LampService getIPAddress];
-    NSLog(@"0x%.8X",en0base);
-    if (en0base == 0x0001000A) {
-        NSLog(@"MATCHING EN0");
+    if ([LampService onHomeNetwork]) {
+        NSLog(@"AT HOME");
+    } else {
+        NSLog(@"*** NOT AT HOME ***");
     }
     
     LampService *lamp = [LampService new];

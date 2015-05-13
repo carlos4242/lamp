@@ -10,9 +10,19 @@
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 
-NSString *serviceRoot = @"http://10.0.1.160/";
+#define kArduinoIPAddress "10.0.1.160"
+NSString *serviceRoot;// = @"http://10.0.1.160/";
+struct in_addr homeen0base;
 
 @implementation LampService
+
++(void)initialize {
+    serviceRoot = @"http://" kArduinoIPAddress "/";
+    if (!inet_aton(kArduinoIPAddress, &homeen0base)) {
+        NSLog(@"Failed to read arduino address, check the format of the address string");
+        homeen0base.s_addr = 0;
+    }
+}
 
 -(NSMutableURLRequest*)requestForService:(NSString*)service {
     
@@ -73,7 +83,11 @@ NSString *serviceRoot = @"http://10.0.1.160/";
     return [self.output[@"beedoBeedo"] isKindOfClass:[NSNumber class]]&&[self.output[@"beedoBeedo"] boolValue];
 }
 
-+(in_addr_t)getIPAddress {
++(BOOL)onHomeNetwork {
+    return [self getIPAddressBase] == homeen0base.s_addr;
+}
+
++(in_addr_t)getIPAddressBase {
     in_addr_t en0base = 0;
     struct ifaddrs *interfaces = NULL;
     struct ifaddrs *temp_addr = NULL;

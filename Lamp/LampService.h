@@ -24,6 +24,6 @@
 -(BOOL)lampThreeIsOn;
 -(BOOL)beedoBeedoIsOn;
 
-+(in_addr_t)getIPAddress;
++(BOOL)onHomeNetwork;
 
 @end
