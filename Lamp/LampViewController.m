@@ -97,6 +97,12 @@
 }
 
 -(void)refreshLampState {
+    in_addr_t en0base = [LampService getIPAddress];
+    NSLog(@"0x%.8X",en0base);
+    if (en0base == 0x0001000A) {
+        NSLog(@"MATCHING EN0");
+    }
+    
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;
     lamp.completionFunction = ^(BOOL result,NSString *error) {

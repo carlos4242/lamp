@@ -73,9 +73,8 @@ NSString *serviceRoot = @"http://10.0.1.160/";
     return [self.output[@"beedoBeedo"] isKindOfClass:[NSNumber class]]&&[self.output[@"beedoBeedo"] boolValue];
 }
 
-
-- (NSString *)getIPAddress {
-    NSString *address = @"error";
++(in_addr_t)getIPAddress {
+    in_addr_t en0base = 0;
     struct ifaddrs *interfaces = NULL;
     struct ifaddrs *temp_addr = NULL;
     int success = 0;
@@ -88,22 +87,17 @@ NSString *serviceRoot = @"http://10.0.1.160/";
             if(temp_addr->ifa_addr->sa_family == AF_INET) {
                 // Check if interface is en0 which is the wifi connection on the iPhone
                 if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
-                    // Get NSString from C String
-                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
-                    
+                    in_addr_t en0addr = ((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr.s_addr;
+                    in_addr_t en0mask = ((struct sockaddr_in *)temp_addr->ifa_netmask)->sin_addr.s_addr;
+                    en0base = en0addr & en0mask;
                 }
-                
             }
-            
             temp_addr = temp_addr->ifa_next;
         }
     }
     // Free memory
     freeifaddrs(interfaces);
-    return address;
-    
+    return en0base;
 }
-
-
 
 @end
