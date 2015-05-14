@@ -6,9 +6,11 @@
 //  Copyright (c) 2012 Carl Peto. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "LampViewController.h"
 #import "LampService.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Reachability.h"
 
 @interface LampViewController ()
 
@@ -52,6 +54,10 @@
                                    selector:@selector(refreshLampState)
                                    userInfo:nil
                                     repeats:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshLampState)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
 }
 
 -(void)viewDidLayoutSubviews {
