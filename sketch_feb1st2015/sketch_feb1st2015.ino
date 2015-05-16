@@ -102,18 +102,17 @@ void setup()   {
   wdt_enable(WDTO_8S); // have the wdt reset the chip
 }
 
-String statusString() {
-  String l1S = String("{\"result\":1,\"lamp1\":") + lightOneState;
-  String l2S = String(",\"lamp2\":") + lightTwoState;
-  String l3S = String(",\"lamp3\":") + inverseLightThreeState;
-  String l4S = String(",\"beedoBeedo\":") + beedoBeedoState;
-  String stat = l1S + l2S + l3S + l4S + String("}");
-  return stat;
+char * statusString() {
+  char buffer[58] = "{\"result\":1,\"lamp1\":X,\"lamp2\":X,\"lamp3\":X,\"beedoBeedo\":X}";
+  buffer[20] = 48+lightOneState;
+  buffer[30] = 48+lightTwoState;
+  buffer[40] = 48+inverseLightThreeState;
+  buffer[55] = 48+beedoBeedoState;
+  return buffer;
 }
 
 void report() {
-  String reportString = statusString();
-  Serial.println(reportString);
+  Serial.println(statusString());
   if (lightOneState == LOW && lightTwoState == LOW && inverseLightThreeState == LOW) {
     digitalWrite(pilotLight, HIGH);
   } 
@@ -343,11 +342,15 @@ void listenForEthernetClients() {
               client.println("HTTP/1.0 200 OK");
               client.println("Content-Type: text/html");
               client.println();
-              String stat = statusString();
-              client.println(stat);
+              if (statusString()) {
+                client.println(statusString());
+              } 
+              else {
+                client.println("{result:0,error:\"could not form status string\"}");
+              }
               if (debug) {
                 Serial.print("wrote:");
-                Serial.println(stat);
+                Serial.println(statusString());
               }
             }
             break;
@@ -368,6 +371,7 @@ void listenForEthernetClients() {
     }
   }
 }
+
 
 
 
