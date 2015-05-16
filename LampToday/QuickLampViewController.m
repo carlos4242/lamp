@@ -67,25 +67,34 @@
     BOOL ran = [lamp checkState];
     NSLog(@"widget view did load %d",ran);
 }
--(void)setControlsVisible:(BOOL)visible {
+-(void)setControlsVisible:(BOOL)controlsVisible {
+    [self setControlsVisible:controlsVisible withTransitionCoordinator:nil];
+}
+-(void)setControlsVisible:(BOOL)visible
+ withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     _controlsVisible = visible;
-    self.tubeLampLabel.hidden = !visible;
-    self.roundLampLabel.hidden = !visible;
-    self.cornerLampLabel.hidden = !visible;
-    self.sirenLabel.hidden = !visible;
-    self.tubeLampSwitch.hidden = !visible;
-    self.roundLampSwitch.hidden = !visible;
-    self.cornerLampSwitch.hidden = !visible;
-    self.sirenSwitch.hidden = !visible;
-    self.arduinoNotContactable.hidden = visible;
-    self.turnOnWifiLabel.hidden = visible;
-    if (visible) {
-        self.preferredContentSize = CGSizeMake(self.view.frame.size.width,200);
-        NSLog(@"set preferred content size height to 200");
+    BOOL onwifi = [LampService onWifi];
+    void (^animations)() = ^{
+        self.tubeLampLabel.alpha = visible;
+        self.roundLampLabel.alpha = visible;
+        self.cornerLampLabel.alpha = visible;
+        self.sirenLabel.alpha = visible;
+        self.tubeLampSwitch.alpha = visible;
+        self.roundLampSwitch.alpha = visible;
+        self.cornerLampSwitch.alpha = visible;
+        self.sirenSwitch.hidden = visible;
+        self.arduinoNotContactable.alpha = !visible && onwifi;
+        self.turnOnWifiLabel.alpha = !visible && !onwifi;
+    };
+    
+    if (coordinator) {
+        [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+            animations();
+        } completion:nil];
     } else {
-        self.preferredContentSize = CGSizeMake(self.view.frame.size.width,100);
-        NSLog(@"set preferred content size height to 100");
+        animations();
     }
+    self.preferredContentSize = CGSizeMake(self.view.frame.size.width,visible?200:100);
 }
 -(void)setSwitchesEnabled {
     self.roundLampSwitch.on = self.lastResultLamp1On;
@@ -94,31 +103,43 @@
     self.sirenSwitch.on = self.lastResultSirenOn;
 }
 -(void)updateSwitchesEnabled:(LampService*)service {
-    self.lastResultLamp1On = [service lampOneIsOn];
-    self.lastResultLamp2On = [service lampTwoIsOn];
-    self.lastResultLamp3On = [service lampThreeIsOn];
-    self.lastResultSirenOn = [service beedoBeedoIsOn];
-    [self setSwitchesEnabled];
+    if (service) {
+        self.lastResultLamp1On = [service lampOneIsOn];
+        self.lastResultLamp2On = [service lampTwoIsOn];
+        self.lastResultLamp3On = [service lampThreeIsOn];
+        self.lastResultSirenOn = [service beedoBeedoIsOn];
+        [self setSwitchesEnabled];
+    }
+}
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    if (!CGSizeEqualToSize(self.view.frame.size,size) && coordinator) {
+        [self setControlsVisible:_controlsVisible withTransitionCoordinator:coordinator];
+    }
 }
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
     LampService *lamp = [self lampService:completionHandler];
-    BOOL ran = [lamp checkState];
-    NSLog(@"widget snapshot %d",ran);
+    [lamp checkState];
 }
 -(LampService*)lampService:(void (^)(NCUpdateResult))completionHandler {
     LampService *lamp = [LampService new];
     self.currentLampService = lamp;
-    __weak LampService *ls = lamp;
+    __weak QuickLampViewController *weakSelf = self;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
-        self.controlsVisible = result;
-        NSLog(@"widget webservice completed with result %d",result);
-        if (result) {
-            [self updateSwitchesEnabled:ls];
+        if ([LampService onHomeNetwork]) {
+            weakSelf.preferredContentSize = CGSizeMake(self.view.frame.size.width,200);
+        } else {
+            weakSelf.preferredContentSize = CGSizeMake(self.view.frame.size.width,100);
         }
-        [self saveLastResults];
-        if (completionHandler) {
-            NSLog(@"widget snapshot callback");
-            completionHandler(NCUpdateResultNewData);
+        if (result) {
+            [weakSelf updateSwitchesEnabled:weakSelf.currentLampService];
+            [weakSelf saveLastResults];
+            if (completionHandler) {
+                completionHandler(NCUpdateResultNewData);
+            }
+        } else {
+            if (completionHandler) {
+                completionHandler(NCUpdateResultNewData);
+            }
         }
         return YES;
     };
