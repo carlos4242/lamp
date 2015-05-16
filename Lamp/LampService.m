@@ -83,15 +83,15 @@ struct in_addr homeen0base;
 }
 
 +(BOOL)onHomeNetwork {
-    return [self getIPAddressBase] == homeen0base.s_addr;
+    return [self IPAddressMatchesBase:homeen0base.s_addr];
 }
 
 +(BOOL)onWifi {
     return [Reachability sharedWifiReachability].currentReachabilityStatus != NotReachable;
 }
 
-+(in_addr_t)getIPAddressBase {
-    in_addr_t en0base = 0;
++(BOOL)IPAddressMatchesBase:(in_addr_t)ipToMatch {
+    BOOL matches = false;
     struct ifaddrs *interfaces = NULL;
     struct ifaddrs *temp_addr = NULL;
     int success = 0;
@@ -106,7 +106,9 @@ struct in_addr homeen0base;
                 if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
                     in_addr_t en0addr = ((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr.s_addr;
                     in_addr_t en0mask = ((struct sockaddr_in *)temp_addr->ifa_netmask)->sin_addr.s_addr;
-                    en0base = en0addr & en0mask;
+                    in_addr_t en0base = en0addr & en0mask;
+                    in_addr_t maskedIP = ipToMatch & en0mask;
+                    matches = en0base == maskedIP;
                 }
             }
             temp_addr = temp_addr->ifa_next;
@@ -114,7 +116,7 @@ struct in_addr homeen0base;
     }
     // Free memory
     freeifaddrs(interfaces);
-    return en0base;
+    return matches;
 }
 
 @end
