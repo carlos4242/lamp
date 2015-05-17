@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="M4Y-Lb-cyx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14E7f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="M4Y-Lb-cyx">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Quick Lamp View Controller-->
@@ -16,31 +17,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tube Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
-                                <rect key="frame" x="20" y="30" width="127" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tube Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
+                                <rect key="frame" x="20" y="30" width="86" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Round Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="U15-wX-yfk">
-                                <rect key="frame" x="20" y="69" width="127" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Round Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="U15-wX-yfk">
+                                <rect key="frame" x="20" y="69" width="99" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Corner Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="qlg-bN-WZ3">
-                                <rect key="frame" x="20" y="108" width="127" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Corner Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="qlg-bN-WZ3">
+                                <rect key="frame" x="20" y="108" width="101" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Siren" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="M95-iB-nUE">
-                                <rect key="frame" x="20" y="147" width="127" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Siren" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="M95-iB-nUE">
+                                <rect key="frame" x="20" y="147" width="40" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lOl-Lj-GCp">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lOl-Lj-GCp">
                                 <rect key="frame" x="175" y="25" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -48,7 +49,7 @@
                                     <action selector="tubeLampSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="cyd-Xx-sTo"/>
                                 </connections>
                             </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gct-4y-G9W">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gct-4y-G9W">
                                 <rect key="frame" x="175" y="64" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -56,7 +57,7 @@
                                     <action selector="roundLampSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="l7l-bc-sjc"/>
                                 </connections>
                             </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rLg-z5-arF">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rLg-z5-arF">
                                 <rect key="frame" x="175" y="103" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -64,12 +65,11 @@
                                     <action selector="cornerLampSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="9FO-rO-X8V"/>
                                 </connections>
                             </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bR4-MR-k26">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bR4-MR-k26">
                                 <rect key="frame" x="175" y="142" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <action selector="cornerLampSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="stR-32-IDq"/>
                                     <action selector="sirenSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="adb-o1-BD0"/>
                                 </connections>
                             </switch>
@@ -79,8 +79,8 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Turn on wifi" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="83F-Hp-KCS">
-                                <rect key="frame" x="20" y="89" width="88" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Turn on wifi" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="83F-Hp-KCS">
+                                <rect key="frame" x="116" y="89" width="88" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -88,8 +88,30 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="centerY" secondItem="83F-Hp-KCS" secondAttribute="centerY" id="428-Ci-LmV"/>
+                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="leading" secondItem="Gct-4y-G9W" secondAttribute="leading" id="4X1-YR-ZDE"/>
+                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="UPh-Ej-BCy" secondAttribute="bottom" constant="50" id="5vg-43-YbT"/>
+                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="25" id="651-s5-yiB"/>
+                            <constraint firstItem="UPh-Ej-BCy" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="50" id="8Zh-88-vyT"/>
+                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="centerY" secondItem="GcN-lo-r42" secondAttribute="centerY" id="B1C-Ds-5Ta"/>
+                            <constraint firstItem="rLg-z5-arF" firstAttribute="top" secondItem="Gct-4y-G9W" secondAttribute="bottom" constant="8" symbolic="YES" id="Dih-94-caM"/>
+                            <constraint firstItem="Gct-4y-G9W" firstAttribute="leading" secondItem="rLg-z5-arF" secondAttribute="leading" id="DoW-Aa-L4I"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leadingMargin" constant="4" id="JfT-i3-xKx"/>
+                            <constraint firstItem="bR4-MR-k26" firstAttribute="leading" secondItem="rLg-z5-arF" secondAttribute="leading" id="KYr-vh-QgX"/>
+                            <constraint firstItem="qlg-bN-WZ3" firstAttribute="leading" secondItem="M95-iB-nUE" secondAttribute="leading" id="Kbg-u9-FmD"/>
+                            <constraint firstItem="Gct-4y-G9W" firstAttribute="top" secondItem="lOl-Lj-GCp" secondAttribute="bottom" constant="8" symbolic="YES" id="Lad-1H-ssn"/>
+                            <constraint firstItem="bR4-MR-k26" firstAttribute="top" secondItem="rLg-z5-arF" secondAttribute="bottom" constant="8" symbolic="YES" id="MZT-yo-Vf6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lOl-Lj-GCp" secondAttribute="trailing" constant="80" id="POD-m7-a0H"/>
                             <constraint firstAttribute="centerY" secondItem="UPh-Ej-BCy" secondAttribute="centerY" id="Sve-ph-hc4"/>
                             <constraint firstAttribute="centerX" secondItem="UPh-Ej-BCy" secondAttribute="centerX" id="ZDC-ZV-Jlp"/>
+                            <constraint firstItem="U15-wX-yfk" firstAttribute="centerY" secondItem="Gct-4y-G9W" secondAttribute="centerY" id="Zg0-5h-sDt"/>
+                            <constraint firstItem="U15-wX-yfk" firstAttribute="leading" secondItem="qlg-bN-WZ3" secondAttribute="leading" id="adg-eM-qU7"/>
+                            <constraint firstItem="U15-wX-yfk" firstAttribute="leading" secondItem="GcN-lo-r42" secondAttribute="leading" id="k6f-f3-zIp"/>
+                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="83F-Hp-KCS" secondAttribute="bottom" constant="50" id="sgL-wZ-ZPT"/>
+                            <constraint firstItem="bR4-MR-k26" firstAttribute="centerY" secondItem="M95-iB-nUE" secondAttribute="centerY" id="uer-2k-8U6"/>
+                            <constraint firstItem="83F-Hp-KCS" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="50" id="vnd-cC-Gsg"/>
+                            <constraint firstItem="rLg-z5-arF" firstAttribute="centerY" secondItem="qlg-bN-WZ3" secondAttribute="centerY" id="wHb-UJ-NRi"/>
+                            <constraint firstAttribute="centerX" secondItem="83F-Hp-KCS" secondAttribute="centerX" id="wMF-5X-j6r"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>

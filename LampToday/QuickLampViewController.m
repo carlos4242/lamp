@@ -82,7 +82,7 @@
         self.tubeLampSwitch.alpha = visible;
         self.roundLampSwitch.alpha = visible;
         self.cornerLampSwitch.alpha = visible;
-        self.sirenSwitch.hidden = visible;
+        self.sirenSwitch.alpha = visible;
         self.arduinoNotContactable.alpha = !visible && onwifi;
         self.turnOnWifiLabel.alpha = !visible && !onwifi;
     };
@@ -126,8 +126,10 @@
     __weak QuickLampViewController *weakSelf = self;
     lamp.completionFunction = ^(BOOL result,NSString *error) {
         if ([LampService onHomeNetwork]) {
+            self.controlsVisible = YES;
             weakSelf.preferredContentSize = CGSizeMake(self.view.frame.size.width,200);
         } else {
+            self.controlsVisible = NO;
             weakSelf.preferredContentSize = CGSizeMake(self.view.frame.size.width,100);
         }
         if (result) {
