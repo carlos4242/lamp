@@ -14,35 +14,35 @@
                         <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="S3S-Oj-5AN">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="250"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tube Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
-                                <rect key="frame" x="20" y="30" width="86" height="21"/>
+                                <rect key="frame" x="36" y="80" width="86" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Round Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="U15-wX-yfk">
-                                <rect key="frame" x="20" y="69" width="99" height="21"/>
+                                <rect key="frame" x="36" y="119" width="99" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Corner Lamp" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="qlg-bN-WZ3">
-                                <rect key="frame" x="20" y="108" width="101" height="21"/>
+                                <rect key="frame" x="36" y="158" width="101" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Siren" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="127" translatesAutoresizingMaskIntoConstraints="NO" id="M95-iB-nUE">
-                                <rect key="frame" x="20" y="147" width="40" height="21"/>
+                                <rect key="frame" x="36" y="197" width="40" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lOl-Lj-GCp">
-                                <rect key="frame" x="175" y="25" width="51" height="31"/>
+                                <rect key="frame" x="175" y="75" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -50,7 +50,7 @@
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gct-4y-G9W">
-                                <rect key="frame" x="175" y="64" width="51" height="31"/>
+                                <rect key="frame" x="175" y="114" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -58,7 +58,7 @@
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rLg-z5-arF">
-                                <rect key="frame" x="175" y="103" width="51" height="31"/>
+                                <rect key="frame" x="175" y="153" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -66,46 +66,77 @@
                                 </connections>
                             </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bR4-MR-k26">
-                                <rect key="frame" x="175" y="142" width="51" height="31"/>
+                                <rect key="frame" x="175" y="192" width="51" height="31"/>
                                 <color key="onTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="thumbTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <action selector="sirenSwitched:" destination="M4Y-Lb-cyx" eventType="valueChanged" id="adb-o1-BD0"/>
                                 </connections>
                             </switch>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You need to be at home to control lamps." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="UPh-Ej-BCy">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="You need to be at home to control lamps." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="UPh-Ej-BCy">
                                 <rect key="frame" x="56" y="80" width="208" height="41"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Turn on wifi" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="83F-Hp-KCS">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Turn on wifi" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="211" translatesAutoresizingMaskIntoConstraints="NO" id="83F-Hp-KCS">
                                 <rect key="frame" x="116" y="89" width="88" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HoC-Ws-dt2">
+                                <rect key="frame" x="36" y="20" width="75" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="75" id="ng3-4g-XI5"/>
+                                    <constraint firstAttribute="height" constant="35" id="rXQ-Ex-I6w"/>
+                                </constraints>
+                                <state key="normal" title="All On">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="allOnClicked:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="Amp-0h-zHX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qTj-Z1-oL3">
+                                <rect key="frame" x="162" y="20" width="75" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="5Rq-8E-Yz6"/>
+                                    <constraint firstAttribute="width" constant="75" id="lJO-CN-aYc"/>
+                                </constraints>
+                                <state key="normal" title="All Off">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="allOffClicked:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="lLM-1o-2Ep"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="83F-Hp-KCS" secondAttribute="centerY" id="428-Ci-LmV"/>
                             <constraint firstItem="lOl-Lj-GCp" firstAttribute="leading" secondItem="Gct-4y-G9W" secondAttribute="leading" id="4X1-YR-ZDE"/>
                             <constraint firstItem="FKl-LY-JtV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="UPh-Ej-BCy" secondAttribute="bottom" constant="50" id="5vg-43-YbT"/>
-                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="25" id="651-s5-yiB"/>
+                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="75" id="651-s5-yiB"/>
                             <constraint firstItem="UPh-Ej-BCy" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="50" id="8Zh-88-vyT"/>
                             <constraint firstItem="lOl-Lj-GCp" firstAttribute="centerY" secondItem="GcN-lo-r42" secondAttribute="centerY" id="B1C-Ds-5Ta"/>
                             <constraint firstItem="rLg-z5-arF" firstAttribute="top" secondItem="Gct-4y-G9W" secondAttribute="bottom" constant="8" symbolic="YES" id="Dih-94-caM"/>
                             <constraint firstItem="Gct-4y-G9W" firstAttribute="leading" secondItem="rLg-z5-arF" secondAttribute="leading" id="DoW-Aa-L4I"/>
-                            <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leadingMargin" constant="4" id="JfT-i3-xKx"/>
+                            <constraint firstItem="qTj-Z1-oL3" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="20" id="HQz-9e-fIb"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leadingMargin" constant="20" id="JfT-i3-xKx"/>
                             <constraint firstItem="bR4-MR-k26" firstAttribute="leading" secondItem="rLg-z5-arF" secondAttribute="leading" id="KYr-vh-QgX"/>
                             <constraint firstItem="qlg-bN-WZ3" firstAttribute="leading" secondItem="M95-iB-nUE" secondAttribute="leading" id="Kbg-u9-FmD"/>
                             <constraint firstItem="Gct-4y-G9W" firstAttribute="top" secondItem="lOl-Lj-GCp" secondAttribute="bottom" constant="8" symbolic="YES" id="Lad-1H-ssn"/>
                             <constraint firstItem="bR4-MR-k26" firstAttribute="top" secondItem="rLg-z5-arF" secondAttribute="bottom" constant="8" symbolic="YES" id="MZT-yo-Vf6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lOl-Lj-GCp" secondAttribute="trailing" constant="80" id="POD-m7-a0H"/>
                             <constraint firstAttribute="centerY" secondItem="UPh-Ej-BCy" secondAttribute="centerY" id="Sve-ph-hc4"/>
+                            <constraint firstItem="lOl-Lj-GCp" firstAttribute="centerX" secondItem="qTj-Z1-oL3" secondAttribute="centerX" id="TVB-rE-K3W"/>
                             <constraint firstAttribute="centerX" secondItem="UPh-Ej-BCy" secondAttribute="centerX" id="ZDC-ZV-Jlp"/>
                             <constraint firstItem="U15-wX-yfk" firstAttribute="centerY" secondItem="Gct-4y-G9W" secondAttribute="centerY" id="Zg0-5h-sDt"/>
                             <constraint firstItem="U15-wX-yfk" firstAttribute="leading" secondItem="qlg-bN-WZ3" secondAttribute="leading" id="adg-eM-qU7"/>
+                            <constraint firstItem="HoC-Ws-dt2" firstAttribute="leading" secondItem="GcN-lo-r42" secondAttribute="leading" id="bCp-YO-39U"/>
+                            <constraint firstItem="HoC-Ws-dt2" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="20" id="g23-2s-Bdw"/>
                             <constraint firstItem="U15-wX-yfk" firstAttribute="leading" secondItem="GcN-lo-r42" secondAttribute="leading" id="k6f-f3-zIp"/>
                             <constraint firstItem="FKl-LY-JtV" firstAttribute="top" relation="greaterThanOrEqual" secondItem="83F-Hp-KCS" secondAttribute="bottom" constant="50" id="sgL-wZ-ZPT"/>
                             <constraint firstItem="bR4-MR-k26" firstAttribute="centerY" secondItem="M95-iB-nUE" secondAttribute="centerY" id="uer-2k-8U6"/>
@@ -119,8 +150,10 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="200"/>
+                    <size key="freeformSize" width="320" height="250"/>
                     <connections>
+                        <outlet property="allOffButton" destination="qTj-Z1-oL3" id="xAc-9h-PJn"/>
+                        <outlet property="allOnButton" destination="HoC-Ws-dt2" id="Avl-ar-EcB"/>
                         <outlet property="arduinoNotContactable" destination="UPh-Ej-BCy" id="L6U-FJ-JPa"/>
                         <outlet property="cornerLampLabel" destination="qlg-bN-WZ3" id="Us4-Q9-0Dj"/>
                         <outlet property="cornerLampSwitch" destination="rLg-z5-arF" id="2MZ-nz-eXa"/>
