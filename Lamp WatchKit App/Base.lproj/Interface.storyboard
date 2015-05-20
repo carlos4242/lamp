@@ -64,15 +64,16 @@
             <objects>
                 <glanceController spacing="0.0" topTemplateType="body1Large" bottomTemplateType="body6Footer" id="Sv0-Ai-Zie" customClass="GlanceController">
                     <items>
-                        <label alignment="left" text="Status" id="zym-Mt-bDU"/>
-                        <label alignment="left" alpha="0.29999999999999999" id="IMb-Mk-9nk"/>
-                        <label alignment="left" text="...checking..." id="8Pe-E5-cpT"/>
-                        <label alignment="left" text="tap to change" id="kRy-un-hI7"/>
+                        <label alignment="left" text="Lamp Status" id="zym-Mt-bDU"/>
+                        <label alignment="left" alpha="0.29999999999999999" id="IMb-Mk-9nk" userLabel="Main Status Label"/>
+                        <label alignment="left" text="...checking..." id="8Pe-E5-cpT" userLabel="Details Status Label"/>
+                        <label alignment="left" text="tap to change" id="kRy-un-hI7" userLabel="tap to change Label"/>
                     </items>
                     <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
                     <connections>
-                        <outlet property="detailedStatus" destination="8Pe-E5-cpT" id="qYX-lW-mN3"/>
+                        <outlet property="detailedStatus" destination="8Pe-E5-cpT" id="u4h-fr-h1H"/>
                         <outlet property="mainStatus" destination="IMb-Mk-9nk" id="b1j-lp-RyF"/>
+                        <outlet property="tapToChangeLabel" destination="kRy-un-hI7" id="upV-Aa-16a"/>
                     </connections>
                 </glanceController>
             </objects>

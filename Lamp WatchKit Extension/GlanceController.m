@@ -12,6 +12,7 @@
 @interface GlanceController()
 @property (weak, nonatomic) IBOutlet WKInterfaceLabel *mainStatus;
 @property (weak, nonatomic) IBOutlet WKInterfaceLabel *detailedStatus;
+@property (weak, nonatomic) IBOutlet WKInterfaceLabel *tapToChangeLabel;
 @property BOOL awoke;
 
 @end
@@ -28,12 +29,15 @@
         if (error) {
             [self.mainStatus setText:@""];
             [self.detailedStatus setText:error.description];
+            [self.tapToChangeLabel setHidden:YES];
         } else {
             NSString *problem = replyInfo[@"problem"];
             if (problem) {
                 [self.mainStatus setText:@""];
                 [self.detailedStatus setText:problem];
+                [self.tapToChangeLabel setHidden:YES];
             } else {
+                [self.tapToChangeLabel setHidden:NO];
                 BOOL tubeOn = [replyInfo[@"tube"] boolValue];
                 BOOL roundOn = [replyInfo[@"round"] boolValue];
                 BOOL cornerOn = [replyInfo[@"corner"] boolValue];
