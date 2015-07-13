@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7531" systemVersion="14E7f" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="3737"/>
     </dependencies>
     <scenes>
@@ -12,12 +12,12 @@
                     <items>
                         <group width="1" alignment="left" id="bsr-dJ-adb">
                             <items>
-                                <button width="67" alignment="left" title="All OFF" id="PHj-4h-CzZ">
+                                <button width="67" alignment="left" alpha="0.20000000000000001" title="All OFF" enabled="NO" id="PHj-4h-CzZ">
                                     <connections>
                                         <action selector="allOffPressed" destination="AgC-eL-Hgc" id="bAQ-0n-ybt"/>
                                     </connections>
                                 </button>
-                                <button width="65" alignment="right" title="All ON" id="Ree-dp-FuT">
+                                <button width="65" alignment="right" alpha="0.20000000000000001" title="All ON" enabled="NO" id="Ree-dp-FuT">
                                     <connections>
                                         <action selector="allOnPressed" destination="AgC-eL-Hgc" id="Gnk-rp-D46"/>
                                     </connections>
@@ -44,7 +44,7 @@
                                 <action selector="bedoSwitchChanged:" destination="AgC-eL-Hgc" id="PUs-Yd-ecM"/>
                             </connections>
                         </switch>
-                        <label alignment="left" hidden="YES" text="Error Label" numberOfLines="15" id="2I6-6n-HFi"/>
+                        <label width="1" alignment="left" hidden="YES" text="Error Label" textAlignment="center" numberOfLines="15" id="2I6-6n-HFi"/>
                     </items>
                     <connections>
                         <outlet property="allOffSwitch" destination="PHj-4h-CzZ" id="4fx-vN-7Cu"/>
@@ -64,17 +64,16 @@
             <objects>
                 <glanceController spacing="0.0" topTemplateType="body1Large" bottomTemplateType="body6Footer" id="Sv0-Ai-Zie" customClass="GlanceController">
                     <items>
-                        <label alignment="left" text="Status" id="zym-Mt-bDU"/>
-                        <label alignment="left" alpha="0.29999999999999999" text="..." id="IMb-Mk-9nk"/>
-                        <label alignment="left" alpha="0.0" id="8Pe-E5-cpT">
-                            <string key="text">Label∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙</string>
-                        </label>
-                        <label alignment="left" text="tap to change" id="kRy-un-hI7"/>
+                        <label alignment="left" text="Lamp Status" id="zym-Mt-bDU"/>
+                        <label alignment="left" alpha="0.29999999999999999" id="IMb-Mk-9nk" userLabel="Main Status Label"/>
+                        <label alignment="left" text="...checking..." id="8Pe-E5-cpT" userLabel="Details Status Label"/>
+                        <label alignment="left" text="tap to change" id="kRy-un-hI7" userLabel="tap to change Label"/>
                     </items>
                     <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
                     <connections>
-                        <outlet property="detailedStatus" destination="8Pe-E5-cpT" id="qYX-lW-mN3"/>
+                        <outlet property="detailedStatus" destination="8Pe-E5-cpT" id="u4h-fr-h1H"/>
                         <outlet property="mainStatus" destination="IMb-Mk-9nk" id="b1j-lp-RyF"/>
+                        <outlet property="tapToChangeLabel" destination="kRy-un-hI7" id="upV-Aa-16a"/>
                     </connections>
                 </glanceController>
             </objects>

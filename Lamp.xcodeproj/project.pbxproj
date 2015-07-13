@@ -122,6 +122,8 @@
 		8F91ECFB1B039B50000E72D9 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		8F91ECFC1B039B50000E72D9 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		8F91ECFF1B03A00C000E72D9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8F9B4BD01B0CEED500DF2F56 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		8F9B4BD11B0CEED500DF2F56 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
 		8FC4DFD9197BCF2800E94968 /* com.petosoft.Lamp.Quick-Lamp.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "com.petosoft.Lamp.Quick-Lamp.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC4DFDA197BCF2800E94968 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		8FC4DFDE197BCF2800E94968 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -299,6 +301,8 @@
 		8F8603C71659C5750025A56A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8F9B4BD01B0CEED500DF2F56 /* README.md */,
+				8F9B4BD11B0CEED500DF2F56 /* LICENSE */,
 				8F58CDD51B016F320083F44B /* sketch_feb1st2015 */,
 				8F58CDD31AF8078F0083F44B /* sketch_mar23a */,
 				8F569FD31ABA4CD800EE8A46 /* WatchKit Extension Supporting Files */,

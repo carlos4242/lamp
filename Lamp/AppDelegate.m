@@ -39,44 +39,64 @@
         }];
         NSLog(@"started background task for watchkit %lu",(unsigned long)backgroundTask);
     }
-
-    self.lampService = [LampService new];
-    __weak AppDelegate *weakSelf = self;
-    self.lampService.completionFunction = ^(BOOL result,NSString *error) {
-        if (weakSelf) {
-            reply([weakSelf resultFromService:weakSelf.lampService]);
-            NSLog(@"background task finished cleanly (service completed correctly)");
-        } else {
-            reply(@{@"problem":@"service died"});
-            NSLog(@"background task finished cleanly (but service had died)");
-        }
-        [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-        return YES;
-    };
     
-    NSString *action = userInfo[@"action"];
-    if ([action isEqualToString:@"refresh"]) {
-        [_lampService checkState];
-    } else if ([action isEqualToString:@"set"]) {
-        NSString *lamp = userInfo[@"lamp"];
-        BOOL value = [userInfo[@"value"] boolValue];
-        if ([lamp isEqualToString:@"tube"]) {
-            [_lampService lampTwoSetState:value];
-        } else if ([lamp isEqualToString:@"round"]) {
-            [_lampService lampOneSetState:value];
-        } else if ([lamp isEqualToString:@"corner"]) {
-            [_lampService lampThreeSetState:value];
-        } else if ([lamp isEqualToString:@"bedo"]) {
-            [_lampService beedoBeedoSetState:value];
+    BOOL onwifi = [LampService onWifi];
+    BOOL athome = [LampService onHomeNetwork];
+    if (!onwifi || !athome) {
+        if (onwifi) {
+            reply(@{@"problem":@"not at home"});
+        } else {
+            reply(@{@"problem":@"not on wifi"});
         }
-    } else if ([action isEqualToString:@"allOff"]) {
-        [_lampService allOff];
-    } else if ([action isEqualToString:@"allOn"]) {
-        [_lampService allOn];
-    } else {
-        reply(@{@"problem":@"unknown action"});
-        NSLog(@"background task finished cleanly (unknown service request)");
+        NSLog(@"background task finished cleanly (not on wifi or not at home)");
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+    } else {
+        __weak AppDelegate *weakSelf = self;
+        self.lampService = [LampService new];
+        self.lampService.completionFunction = ^(BOOL result,NSString *error) {
+            if (weakSelf) {
+                if (result) {
+                    reply([weakSelf resultFromService:weakSelf.lampService]);
+                    NSLog(@"background task finished cleanly (service completed correctly)");
+                } else if (error) {
+                    reply(@{@"problem":error});
+                    NSLog(@"background task finished with error %@",error);
+                } else {
+                    reply(@{@"problem":@"unknown error"});
+                    NSLog(@"background task finished with unknown error");
+                }
+            } else {
+                reply(@{@"problem":@"service died"});
+                NSLog(@"background task finished cleanly (but service had died)");
+            }
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+            return YES;
+        };
+        
+        NSString *action = userInfo[@"action"];
+        if ([action isEqualToString:@"refresh"]) {
+            [_lampService checkState];
+        } else if ([action isEqualToString:@"set"]) {
+            NSString *lamp = userInfo[@"lamp"];
+            BOOL value = [userInfo[@"value"] boolValue];
+            if ([lamp isEqualToString:@"tube"]) {
+                [_lampService lampTwoSetState:value];
+            } else if ([lamp isEqualToString:@"round"]) {
+                [_lampService lampOneSetState:value];
+            } else if ([lamp isEqualToString:@"corner"]) {
+                [_lampService lampThreeSetState:value];
+            } else if ([lamp isEqualToString:@"bedo"]) {
+                [_lampService beedoBeedoSetState:value];
+            }
+        } else if ([action isEqualToString:@"allOff"]) {
+            [_lampService allOff];
+        } else if ([action isEqualToString:@"allOn"]) {
+            [_lampService allOn];
+        } else {
+            reply(@{@"problem":@"unknown action"});
+            NSLog(@"background task finished cleanly (unknown service request)");
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+        }
     }
 }
 

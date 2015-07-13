@@ -32,22 +32,27 @@
     [self.roundSwitch setEnabled:enabled];
     [self.cornerSwitch setEnabled:enabled];
     [self.bedoSwitch setEnabled:enabled];
+    [self.allOnSwitch setEnabled:enabled];
+    [self.allOffSwitch setEnabled:enabled];
     [self.tubeSwitch setAlpha:enabled?1:0.2];
     [self.roundSwitch setAlpha:enabled?1:0.2];
     [self.cornerSwitch setAlpha:enabled?1:0.2];
     [self.bedoSwitch setAlpha:enabled?1:0.2];
-}
+    [self.allOnSwitch setAlpha:enabled?1:0.2];
+    [self.allOffSwitch setAlpha:enabled?1:0.2];}
 
 -(void)setSwitchesHidden:(BOOL)hidden {
     [self.tubeSwitch setHidden:hidden];
     [self.roundSwitch setHidden:hidden];
     [self.cornerSwitch setHidden:hidden];
     [self.bedoSwitch setHidden:hidden];
+    [self.allOnSwitch setHidden:hidden];
+    [self.allOffSwitch setHidden:hidden];
 }
 
 -(void)showErrorMessage:(NSString*)message {
-    [self setSwitchesHidden:YES];
-    [self.errorLabel setHidden:NO];
+    [self setSwitchesHidden:message];
+    [self.errorLabel setHidden:!message];
     [self.errorLabel setText:message];
 }
 
@@ -56,23 +61,29 @@
         if (error) {
             [self showErrorMessage:error.description];
         } else {
-            if (enable) {
-                [self setSwitchesEnabled:YES];
+            NSString *problem = replyInfo[@"problem"];
+            if (problem) {
+                [self showErrorMessage:problem];
+            } else {
+                [self showErrorMessage:nil];
+                if (enable) {
+                    [self setSwitchesEnabled:YES];
+                }
+                BOOL tube = [replyInfo[@"tube"] boolValue];
+                BOOL round = [replyInfo[@"round"] boolValue];
+                BOOL corner = [replyInfo[@"corner"] boolValue];
+                BOOL siren = [replyInfo[@"bedo"] boolValue];
+                BOOL any = tube|round|corner|siren;
+                BOOL all = tube&round&corner;
+                [self.tubeSwitch setOn:tube];
+                [self.roundSwitch setOn:round];
+                [self.cornerSwitch setOn:corner];
+                [self.bedoSwitch setOn:siren];
+                [self.allOffSwitch setEnabled:any];
+                [self.allOffSwitch setAlpha:any?1:0.2];
+                [self.allOnSwitch setEnabled:!all];
+                [self.allOnSwitch setAlpha:all?0.2:1];
             }
-            BOOL tube = [replyInfo[@"tube"] boolValue];
-            BOOL round = [replyInfo[@"round"] boolValue];
-            BOOL corner = [replyInfo[@"corner"] boolValue];
-            BOOL siren = [replyInfo[@"bedo"] boolValue];
-            BOOL any = tube|round|corner|siren;
-            BOOL all = tube&round&corner;
-            [self.tubeSwitch setOn:tube];
-            [self.roundSwitch setOn:round];
-            [self.cornerSwitch setOn:corner];
-            [self.bedoSwitch setOn:siren];
-            [self.allOffSwitch setEnabled:any];
-            [self.allOffSwitch setAlpha:any?1:0.2];
-            [self.allOnSwitch setEnabled:!all];
-            [self.allOnSwitch setAlpha:all?0.2:1];
         }
     }];
 }
