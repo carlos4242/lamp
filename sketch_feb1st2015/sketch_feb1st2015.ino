@@ -1,41 +1,305 @@
-//
-
 #include <SPI.h>
 #include <Ethernet.h>
 #include <avr/wdt.h>
+#include <avr/pgmspace.h>
+#include <EEPROM.h>
 
-int lightOne =  7;    // relay connected to digital pin 7
+// Initialize the Ethernet server library
+// with the IP address and port you want to use 
+// (port 80 is default for HTTP):
+EthernetServer server(80);
+
+int lightOne =  7;
 int lightTwo = 6;
+int lightThree = 5;
+int overrideSwitch = 2;
 
-// change 1
-int overrideSwitch = 5;
-int pilotLight = 4;
+// state flags :
+int lightOneState;
+int lightTwoState;
+int lightThreeState;
+boolean debug = true;
 
-int inverseLightThree = 3;
+void setup()   {
+  // setup pins :
+  pinMode(lightOne, OUTPUT);
+  pinMode(lightTwo, OUTPUT);
+  pinMode(lightThree, OUTPUT);
+  pinMode(overrideSwitch, INPUT);
 
-int beedoBeedo = 2;
+  // setup serial :
+  Serial.begin(9600);
 
-int incomingByte = 0;	// for incoming serial data
+  // assign a MAC and IP addresses for the ethernet controller :
+  byte mac[] = {0x90,0xA2,0xDA,0x0D,0x9C,0x31};
+  IPAddress ip(10,0,1,160);
+  Ethernet.begin(mac, ip);
 
-int lightOneState = LOW;
-int lightTwoState = LOW;
-int inverseLightThreeState = HIGH;
-int beedoBeedoState = LOW;
+  // start the ethernet server :
+  server.begin();
 
-boolean debug = false;
+  // restore light state from eeprom :
+  allOff();
+  lightOneState = EEPROM.read(lightOne);
+  lightTwoState = EEPROM.read(lightTwo);
+  lightThreeState = EEPROM.read(lightThree);
+  setLines();
 
-// The setup() method runs once, when the sketch starts
+  // start the watchdog timer :
+  wdt_enable(WDTO_8S); // have the wdt reset the chip
+}
 
-// assign a MAC address for the ethernet controller.
-// fill in your address here:
-byte mac[] = {
-  0x90,0xA2,0xDA,0x0D,0x9C,0x31};
-// assign an IP address for the controller:
-IPAddress ip(10,0,1,160);//10.0.1.1
-IPAddress gateway(10,0,1,2);
-IPAddress subnet(255, 255, 255, 0);
+const int statusBufferLen = 50;
+char statusBuffer[statusBufferLen];
 
-byte favicon[] = {
+// helper function to get status :
+char * statusString() {
+  strncpy(statusBuffer,"{\"lamp1\":X,\"lamp2\":X,\"lamp3\":X}",statusBufferLen);
+  statusBuffer[9] = 48+lightOneState; // 
+  statusBuffer[19] = 48+lightTwoState;
+  statusBuffer[29] = 48+lightThreeState;
+  return statusBuffer;
+}
+
+// report status on serial port
+void report() {
+  Serial.println(statusString());
+}
+
+void setLines() {
+  digitalWrite(lightOne, lightOneState);
+  digitalWrite(lightTwo, lightTwoState);
+  digitalWrite(lightThree, lightThreeState);
+  
+  EEPROM.write(lightOne, lightOneState);
+  EEPROM.write(lightTwo, lightTwoState);
+  EEPROM.write(lightThree, lightThreeState);
+}
+
+// helper function, set all on :
+void allOn() {
+  lightOneState = LOW;
+  lightTwoState = LOW;
+  lightThreeState = LOW;
+}
+
+// helper function, set all off :
+void allOff() {
+  lightOneState = HIGH;
+  lightTwoState = HIGH;
+  lightThreeState = HIGH;
+}
+
+void loop()                     
+{
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    int incomingByte = Serial.read();
+    if(incomingByte == 97){ // a
+      lightOneState = HIGH;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 98){ // b
+      lightOneState = LOW;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 99){ // c
+      lightTwoState = HIGH;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 100){ // d
+      lightTwoState = LOW;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 101){ // e
+      lightThreeState = HIGH;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 102){ // f
+      lightThreeState = LOW;
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 48){ // 0
+      allOff();
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 49){ // 1
+      allOn();
+      setLines();
+      report(); 
+    }
+    else if(incomingByte == 115){ // s
+      report();
+    }
+    else if(incomingByte == 68){ // D - debug toggle
+      debug = !debug;
+      if (debug) {
+        Serial.println("http debug on");
+      } 
+      else {
+        Serial.println("http debug off");
+      } 
+    }
+  }
+
+  //  int override = digitalRead(overrideSwitch);
+  //  if (override == HIGH) {
+  //    Serial.println("high");
+  //    if (lightOneState == LOW && lightTwoState == LOW && lightThreeState == HIGH) {
+  //      allOn();
+  //    } 
+  //    else {
+  //      allOff();
+  //    }
+  //    report();
+  //    while (override == HIGH) {
+  //      delay(1);
+  //      override = digitalRead(overrideSwitch);
+  //    }
+  //    delay(1);
+  //  }
+
+  listenForEthernetClients();
+  wdt_reset(); // reset the wdt
+}
+
+char * getLightsString = "GET /lights";
+char * getLightString = "GET /lights/";
+char * getFavicon = "GET /favicon";
+char * getWebsite = "GET /";
+char * light1 = "light1";
+char * light2 = "light2";
+char * light3 = "light3";
+char * textContentType = "Content-Type: text/plain";
+char * htmlContentType = "Content-Type: text/html";
+char * website = "<h1>insert website here</h1>\n";
+
+// webserver new API endpoints
+// GET /   ... get web code
+// GET /lights   ... get json of lights status
+// GET /lights/light1   ...   get json of single light status
+
+String getRequest;
+const int lineBufferLen = 200;
+char lineBuffer[lineBufferLen];
+char light[lineBufferLen];
+char postData[lineBufferLen];
+
+char * getLightStatus(char * light) {
+  int lightStatus;
+  if (strncmp(light,light1,strlen(light1)) == 0) {
+    lightStatus = lightOneState;
+  } else if (strncmp(light,light2,strlen(light2)) == 0) {
+    lightStatus = lightTwoState;
+  } else if (strncmp(light,light3,strlen(light3)) == 0) {
+    lightStatus = lightThreeState;
+  } else {
+    return "invalid";
+  }
+  Serial.println("get light status for...");
+  Serial.println(light);
+  String s1 = String(lightStatus);
+  Serial.println(s1);
+  char * buffer = statusBuffer;
+
+  strncpy(buffer,"{\"",2);
+  buffer += 2;
+  strncpy(buffer,light,strlen(light1));
+  buffer += strlen(light1);
+  strncpy(buffer,"\":X}",4);
+  buffer[2] = 48+lightStatus;
+  return statusBuffer;
+}
+char * getLightsStatus() {
+  return statusString();
+}
+
+// POST /lights  ...  allOn=1 ... turn all lights on and return json of lights status
+// POST /lights  ...  allOff=1 ... turn all lights off and return json of lights status
+// POST /lights/light2  ...  on=x  ... turn lights on or off (1 and 0 are only recognized values) returns json of single light status
+
+char * postLightsString = "POST /lights";
+char * postLightString = "POST /lights/";
+
+char * changeLightStatus() {
+  // use light to define which light is affected and postData to define how it's affected
+}
+char * changeLightsStatus() {
+  // use postData to define command
+  
+}
+
+boolean favicon;
+char * (*postFunction)();
+char * contentType;
+
+char * readFirstLine() {
+  if (strncmp(lineBuffer,getLightString,strlen(getLightString)) == 0) {
+    if (debug) {
+      Serial.println("get light");
+    }
+    // get the status of a single light
+    return getLightStatus(lineBuffer+strlen(getLightString));
+  } 
+  else if (strncmp(lineBuffer,getLightsString,strlen(getLightsString)) == 0) {
+    if (debug) {
+      Serial.println("get lights");
+    }
+    // get the status of all lights
+    return getLightsStatus();
+  } 
+  else if (strncmp(lineBuffer,getFavicon,strlen(getFavicon)) == 0) {
+    if (debug) {
+      Serial.println("favicon");
+    }
+    // get the favicon
+    favicon = true;
+    return 0;
+  }
+  else if (strncmp(lineBuffer,postLightString,strlen(postLightString)) == 0) {
+    if (debug) {
+      Serial.println("post light");
+    }
+    // set the status of a light
+    strncpy(light,lineBuffer+strlen(postLightString),lineBufferLen);
+    postFunction = changeLightStatus;
+    return 0;
+  }
+  else if (strncmp(lineBuffer,postLightsString,strlen(postLightsString)) == 0) {
+    if (debug) {
+      Serial.println("post lights");
+    }
+    // set the status of a light
+    strncpy(light,"",1);
+    postFunction = changeLightsStatus;
+    return 0;
+  } 
+  else if (strncmp(lineBuffer,getWebsite,strlen(getWebsite)) == 0) {
+    if (debug) {
+      Serial.println("get website");
+    }
+    // get the website
+    contentType = htmlContentType;
+    return website;
+  }
+  else {
+    if (debug) {
+      // this is a dodgy http request
+      Serial.println("Invalid http request");
+      Serial.println(lineBuffer);
+    }
+    return 0;
+  }
+}
+
+const PROGMEM byte fd[] = {
   0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0x00,0x00,0x00,0x0d,0x49,0x48,0x44,0x52,
   0x00,0x00,0x00,0x10,0x00,0x00,0x00,0x10,0x08,0x02,0x00,0x00,0x00,0x90,0x91,0x68,
   0x36,0x00,0x00,0x02,0x42,0x49,0x44,0x41,0x54,0x28,0xcf,0x6d,0x92,0xcf,0x4f,0x13,
@@ -77,300 +341,88 @@ byte favicon[] = {
   0xcb,0xb2,0x90,0xed,0xe0,0xed,0x1f,0xa5,0xdd,0x0f,0xa7,0xf2,0x58,0x08,0xb7,0x00,
   0x00,0x00,0x00,0x49,0x45,0x4e,0x44,0xae,0x42,0x60,0x82};
 
-// Initialize the Ethernet server library
-// with the IP address and port you want to use 
-// (port 80 is default for HTTP):
-EthernetServer server(80);
-
-String getRequest;
-char lineBuffer[100];
-
-void setup()   {
-  pinMode(lightOne, OUTPUT);
-  pinMode(lightTwo, OUTPUT);
-  pinMode(overrideSwitch, INPUT);
-  pinMode(pilotLight, OUTPUT);
-  pinMode(inverseLightThree, OUTPUT);
-  pinMode(beedoBeedo, OUTPUT);
-  Serial.begin(9600);
-  Ethernet.begin(mac, ip);
-  server.begin();
-  digitalWrite(pilotLight, LOW);
-  digitalWrite(inverseLightThree, HIGH);
-  digitalWrite(beedoBeedo, LOW);
-
-  wdt_enable(WDTO_8S); // have the wdt reset the chip
-}
-
-char * statusString() {
-  char buffer[58] = "{\"result\":1,\"lamp1\":X,\"lamp2\":X,\"lamp3\":X,\"beedoBeedo\":X}";
-  buffer[20] = 48+lightOneState;
-  buffer[30] = 48+lightTwoState;
-  buffer[40] = 48+inverseLightThreeState;
-  buffer[55] = 48+beedoBeedoState;
-  return buffer;
-}
-
-void report() {
-  Serial.println(statusString());
-  if (lightOneState == LOW && lightTwoState == LOW && inverseLightThreeState == LOW) {
-    digitalWrite(pilotLight, HIGH);
-  } 
-  else {
-    digitalWrite(pilotLight, LOW);
-  }
-}
-
-void allOn() {
-  digitalWrite(lightOne, HIGH);
-  digitalWrite(lightTwo, HIGH);
-  digitalWrite(inverseLightThree, LOW);
-  digitalWrite(beedoBeedo, LOW);
-  lightOneState = HIGH;
-  lightTwoState = HIGH;
-  inverseLightThreeState = LOW;
-  beedoBeedoState = LOW;
-}
-
-void allOff() {
-  digitalWrite(lightOne, LOW);
-  digitalWrite(lightTwo, LOW);
-  digitalWrite(inverseLightThree, HIGH);
-  digitalWrite(beedoBeedo, LOW);
-  lightOneState = LOW;
-  lightTwoState = LOW;
-  inverseLightThreeState = HIGH;
-  beedoBeedoState = LOW;
-}
-
-void loop()                     
-{
-  if (Serial.available() > 0) {
-    // read the incoming byte:
-    incomingByte = Serial.read();
-    if(incomingByte == 97){ // a
-      digitalWrite(lightOne, HIGH);
-      lightOneState = HIGH;
-      report(); 
-    }
-    else if(incomingByte == 98){ // b
-      digitalWrite(lightOne, LOW);
-      lightOneState = LOW;
-      report(); 
-    }
-    else if(incomingByte == 99){ // c
-      digitalWrite(lightTwo, HIGH);
-      lightTwoState = HIGH;
-      report(); 
-    }
-    else if(incomingByte == 100){ // d
-      digitalWrite(lightTwo, LOW);
-      lightTwoState = LOW;
-      report(); 
-    }
-    else if(incomingByte == 101){ // e
-      digitalWrite(inverseLightThree, HIGH);
-      inverseLightThreeState = HIGH;
-      report(); 
-    }
-    else if(incomingByte == 102){ // f
-      digitalWrite(inverseLightThree, LOW);
-      inverseLightThreeState = LOW;
-      report(); 
-    }
-    else if(incomingByte == 103){ // g
-      digitalWrite(beedoBeedo, HIGH);
-      beedoBeedoState = HIGH;
-      report(); 
-    }
-    else if(incomingByte == 104){ // h
-      digitalWrite(beedoBeedo, LOW);
-      beedoBeedoState = LOW;
-      report(); 
-    }
-    else if(incomingByte == 48){ // 0
-      allOff();
-      report(); 
-    }
-    else if(incomingByte == 49){ // 1
-      allOn();
-      report(); 
-    }
-    else if(incomingByte == 115){ // s
-      report(); 
-    }
-    else if(incomingByte == 68){ // D - debug toggle
-      debug = !debug;
-      if (debug) {
-        Serial.println("http debug on");
-      } 
-      else {
-        Serial.println("http debug off");
-      } 
-    }
-  }
-
-  int override = digitalRead(overrideSwitch);
-  if (override == HIGH) {
-    if (lightOneState == LOW && lightTwoState == LOW && inverseLightThreeState == HIGH) {
-      allOn();
-    } 
-    else {
-      allOff();
-    }
-    report();
-    while (override == HIGH) {
-      delay(1);
-      override = digitalRead(overrideSwitch);
-    }
-    delay(1);
-  }
-
-  listenForEthernetClients();
-  wdt_reset(); // reset the wdt
-}
-
-
-// webserver endpoints
-// / shows status
-// /a turns lamp 1 on
-// /b turns lamp 1 off
-// /c turns lamp 2 on
-// /d turns lamp 2 off
-// /e turns lamp 3 relay high (lamp off)
-// /f turns lamp 3 relay low (lamp on)
-// /c turns flasher relay high (flasher on)
-// /d turns flasher relay low (flasher off)
-// each on/off command also returns status
-// status returns according to the format
-// "{\"result\":1,\"lamp1\":".$lamp1Status.",\"lamp2\":".$lamp2Status."}\r\n" 
-
 void listenForEthernetClients() {
   EthernetClient client = server.available();
   if (client) {
     if (debug) {
       Serial.println("Got a client");
     }
-    int iPos = 0;
-    boolean gotGetRequest = false;
-    boolean sentFavicon = false;
+    favicon = false;
+    postFunction = 0;
+    contentType = textContentType;
+    boolean firstLine = true;
+    boolean gotHeaders = false;
+    char * output = 0;
     // an http request ends with a blank line
     while (client.connected()) {
       if (client.available()) {
-        char c = client.read();
-        lineBuffer[iPos] = c;
-        iPos++;
-        if (c == '\n') {
-          lineBuffer[iPos] = 0;
-          if (debug) {
-            String ll = String("[") + iPos + String("]:");
-            Serial.print(ll);
-            Serial.print(lineBuffer);
+        int lineLength = client.readBytesUntil('\n',lineBuffer,lineBufferLen);
+        lineBuffer[lineLength] = 0;
+        if (debug) {
+          String ll = String("[") + lineLength + String("]:");
+          Serial.print(ll);
+          Serial.println(lineBuffer);
+        }
+        if (firstLine) {
+          output = readFirstLine();
+          firstLine = false;
+        } 
+        else {
+          // wait for an empty line to indicate the end of the header, then wait for post data if required
+          if (strlen(lineBuffer) <= 1) {
+            gotHeaders = true;
+            if (debug) {
+              Serial.println("got headers");
+            }
+          } 
+          else if (gotHeaders) {
+            // next line is POST data
+            if (postFunction) {
+              strncpy(postData,lineBuffer,lineBufferLen);
+              output = postFunction();
+              if (debug) {
+                Serial.println("performed post function");
+              }
+            }
           }
-          if (!gotGetRequest) {
-            if (iPos<6 && debug) {
-              Serial.println("Invalid get request");
+          if (gotHeaders && (postData || !postFunction)) {
+            if (favicon) {
+              Serial.println("FAVICON");
+              for (int i = 0; i < 635; i++) {
+                byte b = pgm_read_byte(fd+i);
+                client.write(b);
+              }
             } 
             else {
-              getRequest = String(lineBuffer+5);
-              gotGetRequest = true;
-            } 
-          }
-          if (iPos<3) {
-            if (gotGetRequest) {
-              char request = getRequest[0];
-              char request2 = getRequest[1];
-              if (request == 'a') {
-                // turn on L1
-                digitalWrite(lightOne, HIGH);
-                lightOneState = HIGH;
-              }
-              else if (request == 'b') {
-                // turn off L1
-                digitalWrite(lightOne, LOW);
-                lightOneState = LOW;
-              }
-              else if (request == 'c') {
-                // turn on L2
-                digitalWrite(lightTwo, HIGH);
-                lightTwoState = HIGH;
-              }
-              else if (request == 'd') {
-                // turn off L2
-                digitalWrite(lightTwo, LOW);
-                lightTwoState = LOW;
-              }
-              else if (request == 'e') {
-                // turn on L3
-                digitalWrite(inverseLightThree, HIGH);
-                inverseLightThreeState = HIGH;
-              }
-              else if (request == 'f') { // take /f but not /favicon
-                if (request2 == 'a') {
-                  // assume favicon
-                  client.write(favicon,635);
-                  sentFavicon = true;
-                  if (debug) {
-                    Serial.println("sent favicon");
-                  }
-                } 
-                else {
-                  // turn off L3
-                  digitalWrite(inverseLightThree, LOW);
-                  inverseLightThreeState = LOW;
-                }
-              }
-              else if (request == 'g') {
-                // turn on beedo beedo
-                digitalWrite(beedoBeedo, HIGH);
-                beedoBeedoState = HIGH;
-              }
-              else if (request == 'h') {
-                // turn off beedo beedo
-                digitalWrite(beedoBeedo, LOW);
-                beedoBeedoState = LOW;
-              }
-              else if (request == '0') {
-                allOff();
-              }
-              else if (request == '1') {
-                allOn();
-              }
-            }
-            // send a standard http response header
-            if (!sentFavicon) {
+              // got headers and either have post data or it's not a post request, so send back headers
               client.println("HTTP/1.0 200 OK");
-              client.println("Content-Type: text/html");
+              client.println(contentType);
               client.println();
-              if (statusString()) {
-                client.println(statusString());
-              } 
-              else {
-                client.println("{result:0,error:\"could not form status string\"}");
-              }
-              if (debug) {
-                Serial.print("wrote:");
-                Serial.println(statusString());
-              }
+              client.println(output);
             }
-            break;
+            if (debug) {
+              Serial.println("client finished, waiting");
+            }
+            // give the web browser time to receive the data
+            delay(1);
+            // close the connection:
+            client.stop();
+            if (debug) {
+              Serial.println("client disconnected at server");
+            }
           }
-          iPos = 0;
         }
       }
     }
-    if (debug) {
-      Serial.println("client finished, waiting");
-    }
-    // give the web browser time to receive the data
-    delay(1);
-    // close the connection:
-    client.stop();
-    if (debug) {
-      Serial.println("client disconnected at server");
-    }
   }
 }
+
+
+
+
+
+
+
 
 
 

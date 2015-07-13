@@ -98,7 +98,7 @@
 		8F569FE71ABA4CD800EE8A46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		8F569FE91ABA4CD800EE8A46 /* Watch-Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Watch-Images.xcassets"; sourceTree = "<group>"; };
 		8F58CDD41AF8078F0083F44B /* sketch_mar23a.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = sketch_mar23a.ino; sourceTree = "<group>"; };
-		8F58CDD61B016F320083F44B /* sketch_feb1st2015.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = sketch_feb1st2015.ino; sourceTree = "<group>"; };
+		8F58CDD61B016F320083F44B /* sketch_feb1st2015.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; path = sketch_feb1st2015.ino; sourceTree = "<group>"; };
 		8F5E42AC1AF547DE006957AB /* Phone-Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Phone-Images.xcassets"; sourceTree = "<group>"; };
 		8F5E42AE1AF572F4006957AB /* AppIcon.xcf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppIcon.xcf; sourceTree = "<group>"; };
 		8F67C51C1AB5EC2700958BDB /* Lamp.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Lamp.storyboard; sourceTree = "<group>"; };
