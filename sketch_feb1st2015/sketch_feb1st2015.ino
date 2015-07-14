@@ -31,7 +31,8 @@ void setup()   {
   Serial.begin(9600);
 
   // assign a MAC and IP addresses for the ethernet controller :
-  byte mac[] = {0x90,0xA2,0xDA,0x0D,0x9C,0x31};
+  byte mac[] = {
+    0x90,0xA2,0xDA,0x0D,0x9C,0x31    };
   IPAddress ip(10,0,1,160);
   Ethernet.begin(mac, ip);
 
@@ -70,7 +71,7 @@ void setLines() {
   digitalWrite(lightOne, lightOneState);
   digitalWrite(lightTwo, lightTwoState);
   digitalWrite(lightThree, lightThreeState);
-  
+
   EEPROM.write(lightOne, lightOneState);
   EEPROM.write(lightTwo, lightTwoState);
   EEPROM.write(lightThree, lightThreeState);
@@ -149,22 +150,23 @@ void loop()
     }
   }
 
-  //  int override = digitalRead(overrideSwitch);
-  //  if (override == HIGH) {
-  //    Serial.println("high");
-  //    if (lightOneState == LOW && lightTwoState == LOW && lightThreeState == HIGH) {
-  //      allOn();
-  //    } 
-  //    else {
-  //      allOff();
-  //    }
-  //    report();
-  //    while (override == HIGH) {
-  //      delay(1);
-  //      override = digitalRead(overrideSwitch);
-  //    }
-  //    delay(1);
-  //  }
+  int override = digitalRead(overrideSwitch);
+  if (override == HIGH) {
+    Serial.println("high");
+    if (lightOneState == HIGH && lightTwoState == HIGH && lightThreeState == HIGH) {
+      allOn();
+    } 
+    else {
+      allOff();
+    }
+    setLines();
+    report();
+    while (override == HIGH) {
+      delay(1);
+      override = digitalRead(overrideSwitch);
+    }
+    delay(1);
+  }
 
   listenForEthernetClients();
   wdt_reset(); // reset the wdt
@@ -196,11 +198,14 @@ char * getLightStatus(char * light) {
   int lightStatus;
   if (strncmp(light,light1,strlen(light1)) == 0) {
     lightStatus = lightOneState;
-  } else if (strncmp(light,light2,strlen(light2)) == 0) {
+  } 
+  else if (strncmp(light,light2,strlen(light2)) == 0) {
     lightStatus = lightTwoState;
-  } else if (strncmp(light,light3,strlen(light3)) == 0) {
+  } 
+  else if (strncmp(light,light3,strlen(light3)) == 0) {
     lightStatus = lightThreeState;
-  } else {
+  } 
+  else {
     return "invalid";
   }
   Serial.println("get light status for...");
@@ -213,7 +218,7 @@ char * getLightStatus(char * light) {
   buffer += 2;
   strncpy(buffer,light,strlen(light1));
   buffer += strlen(light1);
-  strncpy(buffer,"\":X}",4);
+  strncpy(buffer,"\":X}",5);
   buffer[2] = 48+lightStatus;
   return statusBuffer;
 }
@@ -227,13 +232,51 @@ char * getLightsStatus() {
 
 char * postLightsString = "POST /lights";
 char * postLightString = "POST /lights/";
+char * onSwitchParam = "on=";
+char * allOnParam = "allOn=1";
+char * allOffParam = "allOff=1";
 
 char * changeLightStatus() {
   // use light to define which light is affected and postData to define how it's affected
+  int lightSwitchValue;
+  if (strncmp(postData,onSwitchParam,strlen(onSwitchParam)) == 0) {
+    char * lightSwitchValueString = postData + strlen(onSwitchParam);
+    lightSwitchValue = atoi(lightSwitchValueString);
+  } else {
+    return "invalid";
+  }
+  if (strncmp(light,light1,strlen(light1)) == 0) {
+    lightOneState = lightSwitchValue;
+    setLines();
+    return getLightStatus(light);
+  }
+  else if (strncmp(light,light2,strlen(light2)) == 0) {
+    lightTwoState = lightSwitchValue;
+    setLines();
+    return getLightStatus(light);
+  }
+  else if (strncmp(light,light3,strlen(light3)) == 0) {
+    lightThreeState = lightSwitchValue;
+    setLines();
+    return getLightStatus(light);
+  }
+  else {
+    return "invalid";
+  }
 }
 char * changeLightsStatus() {
   // use postData to define command
-  
+  if (strncmp(postData,allOnParam,strlen(allOnParam)) == 0) {
+    allOn();
+    setLines();
+    return getLightsStatus();
+  } else if (strncmp(postData,allOffParam,strlen(allOffParam)) == 0) {
+    allOff();
+    setLines();
+    return getLightsStatus();
+  } else {
+    return "invalid";
+  }
 }
 
 boolean favicon;
@@ -416,14 +459,3 @@ void listenForEthernetClients() {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
