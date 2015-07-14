@@ -32,7 +32,7 @@ void setup()   {
 
   // assign a MAC and IP addresses for the ethernet controller :
   byte mac[] = {
-    0x90,0xA2,0xDA,0x0D,0x9C,0x31    };
+    0x90,0xA2,0xDA,0x0D,0x9C,0x31            };
   IPAddress ip(10,0,1,160);
   Ethernet.begin(mac, ip);
 
@@ -181,7 +181,7 @@ char * light2 = "light2";
 char * light3 = "light3";
 char * textContentType = "Content-Type: text/plain";
 char * htmlContentType = "Content-Type: text/html";
-char * website = "<h1>insert website here</h1>\n";
+
 
 // webserver new API endpoints
 // GET /   ... get web code
@@ -242,7 +242,8 @@ char * changeLightStatus() {
   if (strncmp(postData,onSwitchParam,strlen(onSwitchParam)) == 0) {
     char * lightSwitchValueString = postData + strlen(onSwitchParam);
     lightSwitchValue = atoi(lightSwitchValueString);
-  } else {
+  } 
+  else {
     return "invalid";
   }
   if (strncmp(light,light1,strlen(light1)) == 0) {
@@ -270,18 +271,20 @@ char * changeLightsStatus() {
     allOn();
     setLines();
     return getLightsStatus();
-  } else if (strncmp(postData,allOffParam,strlen(allOffParam)) == 0) {
+  } 
+  else if (strncmp(postData,allOffParam,strlen(allOffParam)) == 0) {
     allOff();
     setLines();
     return getLightsStatus();
-  } else {
+  } 
+  else {
     return "invalid";
   }
 }
 
-boolean favicon;
+boolean sendFavicon;
+boolean sendWebsite;
 char * (*postFunction)();
-char * contentType;
 
 char * readFirstLine() {
   if (strncmp(lineBuffer,getLightString,strlen(getLightString)) == 0) {
@@ -302,8 +305,8 @@ char * readFirstLine() {
     if (debug) {
       Serial.println("favicon");
     }
-    // get the favicon
-    favicon = true;
+    // send the favicon
+    sendFavicon = true;
     return 0;
   }
   else if (strncmp(lineBuffer,postLightString,strlen(postLightString)) == 0) {
@@ -328,9 +331,9 @@ char * readFirstLine() {
     if (debug) {
       Serial.println("get website");
     }
-    // get the website
-    contentType = htmlContentType;
-    return website;
+    // send the website
+    sendWebsite = true;
+    return 0;
   }
   else {
     if (debug) {
@@ -384,15 +387,21 @@ const PROGMEM byte fd[] = {
   0xcb,0xb2,0x90,0xed,0xe0,0xed,0x1f,0xa5,0xdd,0x0f,0xa7,0xf2,0x58,0x08,0xb7,0x00,
   0x00,0x00,0x00,0x49,0x45,0x4e,0x44,0xae,0x42,0x60,0x82};
 
+const PROGMEM char website[] =
+"<h1>light control</h1>\n"
+"<script></script>\n"
+"place holder website"
+;
+
 void listenForEthernetClients() {
   EthernetClient client = server.available();
   if (client) {
     if (debug) {
       Serial.println("Got a client");
     }
-    favicon = false;
+    sendFavicon = false;
+    sendWebsite = false;
     postFunction = 0;
-    contentType = textContentType;
     boolean firstLine = true;
     boolean gotHeaders = false;
     char * output = 0;
@@ -429,8 +438,10 @@ void listenForEthernetClients() {
             }
           }
           if (gotHeaders && (postData || !postFunction)) {
-            if (favicon) {
-              Serial.println("FAVICON");
+            if (sendFavicon) {
+              if (debug) {
+                Serial.println("FAVICON");
+              }
               for (int i = 0; i < 635; i++) {
                 byte b = pgm_read_byte(fd+i);
                 client.write(b);
@@ -439,9 +450,22 @@ void listenForEthernetClients() {
             else {
               // got headers and either have post data or it's not a post request, so send back headers
               client.println("HTTP/1.0 200 OK");
-              client.println(contentType);
+              if (sendWebsite) {
+                client.println(htmlContentType);
+              } 
+              else {
+                client.println(textContentType);
+              }
               client.println();
-              client.println(output);
+              if (sendWebsite) {
+                for (int i = 0; i < strlen(website); i++) {
+                  byte b = pgm_read_byte(website+i);
+                  client.write(b);
+                }
+              } 
+              else {
+                client.println(output);
+              }
             }
             if (debug) {
               Serial.println("client finished, waiting");
@@ -459,3 +483,7 @@ void listenForEthernetClients() {
     }
   }
 }
+
+
+
+

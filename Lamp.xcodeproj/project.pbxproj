@@ -97,7 +97,6 @@
 		8F569FE51ABA4CD800EE8A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F569FE71ABA4CD800EE8A46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		8F569FE91ABA4CD800EE8A46 /* Watch-Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Watch-Images.xcassets"; sourceTree = "<group>"; };
-		8F58CDD41AF8078F0083F44B /* sketch_mar23a.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = sketch_mar23a.ino; sourceTree = "<group>"; };
 		8F58CDD61B016F320083F44B /* sketch_feb1st2015.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; path = sketch_feb1st2015.ino; sourceTree = "<group>"; };
 		8F5E42AC1AF547DE006957AB /* Phone-Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Phone-Images.xcassets"; sourceTree = "<group>"; };
 		8F5E42AE1AF572F4006957AB /* AppIcon.xcf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppIcon.xcf; sourceTree = "<group>"; };
@@ -207,14 +206,6 @@
 			path = "Lamp WatchKit App";
 			sourceTree = SOURCE_ROOT;
 		};
-		8F58CDD31AF8078F0083F44B /* sketch_mar23a */ = {
-			isa = PBXGroup;
-			children = (
-				8F58CDD41AF8078F0083F44B /* sketch_mar23a.ino */,
-			);
-			path = sketch_mar23a;
-			sourceTree = "<group>";
-		};
 		8F58CDD51B016F320083F44B /* sketch_feb1st2015 */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,7 +295,6 @@
 				8F9B4BD01B0CEED500DF2F56 /* README.md */,
 				8F9B4BD11B0CEED500DF2F56 /* LICENSE */,
 				8F58CDD51B016F320083F44B /* sketch_feb1st2015 */,
-				8F58CDD31AF8078F0083F44B /* sketch_mar23a */,
 				8F569FD31ABA4CD800EE8A46 /* WatchKit Extension Supporting Files */,
 				8F569FE41ABA4CD800EE8A46 /* WatchKit Supporting Files */,
 				8F8603BD1659C5750025A56A /* Products */,
