@@ -405,6 +405,7 @@ void listenForEthernetClients() {
     boolean firstLine = true;
     boolean gotHeaders = false;
     char * output = 0;
+    postData[0] = 0;
     // an http request ends with a blank line
     while (client.connected()) {
       if (client.available()) {
@@ -431,13 +432,15 @@ void listenForEthernetClients() {
             // next line is POST data
             if (postFunction) {
               strncpy(postData,lineBuffer,lineBufferLen);
+              Serial.println("post function is specified, passing it post data...");
+              Serial.println(postData);
               output = postFunction();
               if (debug) {
                 Serial.println("performed post function");
               }
             }
           }
-          if (gotHeaders && (postData || !postFunction)) {
+          if (gotHeaders && (postData[0] || !postFunction)) {
             if (sendFavicon) {
               if (debug) {
                 Serial.println("FAVICON");
