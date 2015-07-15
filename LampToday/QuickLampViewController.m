@@ -25,12 +25,10 @@
 @property (weak, nonatomic) IBOutlet UISwitch *tubeLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *roundLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *cornerLampSwitch;
-@property (weak, nonatomic) IBOutlet UISwitch *sirenSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *tubeLampLabel;
 @property (weak, nonatomic) IBOutlet UILabel *roundLampLabel;
 @property (weak, nonatomic) IBOutlet UILabel *cornerLampLabel;
 @property (weak, nonatomic) IBOutlet UILabel *arduinoNotContactable;
-@property (weak, nonatomic) IBOutlet UILabel *sirenLabel;
 @property (weak, nonatomic) IBOutlet UILabel *turnOnWifiLabel;
 @property (weak, nonatomic) IBOutlet UIButton *allOffButton;
 @property (weak, nonatomic) IBOutlet UIButton *allOnButton;
@@ -39,7 +37,6 @@
 @property BOOL lastResultLamp1On;
 @property BOOL lastResultLamp2On;
 @property BOOL lastResultLamp3On;
-@property BOOL lastResultSirenOn;
 @property BOOL lastResultAnyOn;
 @property BOOL lastResultNotAllOn;
 
@@ -57,11 +54,9 @@
     [self.visualEffectView.contentView addSubview:self.roundLampLabel];
     [self.visualEffectView.contentView addSubview:self.tubeLampLabel];
     [self.visualEffectView.contentView addSubview:self.cornerLampLabel];
-    [self.visualEffectView.contentView addSubview:self.sirenLabel];
     [self.visualEffectView.contentView addSubview:self.roundLampSwitch];
     [self.visualEffectView.contentView addSubview:self.tubeLampSwitch];
     [self.visualEffectView.contentView addSubview:self.cornerLampSwitch];
-    [self.visualEffectView.contentView addSubview:self.sirenSwitch];
     [self.visualEffectView.contentView addSubview:self.arduinoNotContactable];
     [self.visualEffectView.contentView addSubview:self.turnOnWifiLabel];
     [self.visualEffectView.contentView addSubview:self.allOffButton];
@@ -86,11 +81,9 @@
         self.tubeLampLabel.hidden = !visible;
         self.roundLampLabel.hidden = !visible;
         self.cornerLampLabel.hidden = !visible;
-        self.sirenLabel.hidden = !visible;
         self.tubeLampSwitch.hidden = !visible;
         self.roundLampSwitch.hidden = !visible;
         self.cornerLampSwitch.hidden = !visible;
-        self.sirenSwitch.hidden = !visible;
         self.allOnButton.hidden = !visible;
         self.allOffButton.hidden = !visible;
         self.arduinoNotContactable.hidden = visible || !onwifi;
@@ -103,7 +96,6 @@
     self.roundLampSwitch.on = self.lastResultLamp1On;
     self.tubeLampSwitch.on = self.lastResultLamp2On;
     self.cornerLampSwitch.on = self.lastResultLamp3On;
-    self.sirenSwitch.on = self.lastResultSirenOn;
     self.allOffButton.enabled = self.lastResultAnyOn;
     self.allOffButton.alpha = self.allOffButton.enabled?1:0.2;
     self.allOnButton.enabled = self.lastResultNotAllOn;
@@ -114,8 +106,7 @@
         self.lastResultLamp1On = [service lampOneIsOn];
         self.lastResultLamp2On = [service lampTwoIsOn];
         self.lastResultLamp3On = [service lampThreeIsOn];
-        self.lastResultSirenOn = [service beedoBeedoIsOn];
-        BOOL anyOn = [service lampOneIsOn] || [service lampTwoIsOn] || [service lampThreeIsOn] || [service beedoBeedoIsOn];
+        BOOL anyOn = [service lampOneIsOn] || [service lampTwoIsOn] || [service lampThreeIsOn];
         BOOL allOn = [service lampOneIsOn] && [service lampTwoIsOn] && [service lampThreeIsOn];
         self.lastResultAnyOn = anyOn;
         self.lastResultNotAllOn = !allOn;
@@ -152,9 +143,6 @@
 - (IBAction)cornerLampSwitched:(id)sender {
     [[self lampService:nil] lampThreeSetState:self.cornerLampSwitch.on];
 }
-- (IBAction)sirenSwitched:(id)sender {
-    [[self lampService:nil] beedoBeedoSetState:self.sirenSwitch.on];
-}
 - (IBAction)allOnClicked:(id)sender {
     [[self lampService:nil] allOn];
 }
@@ -166,7 +154,6 @@
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp1On forKey:kLastResultLamp1On];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp2On forKey:kLastResultLamp2On];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultLamp3On forKey:kLastResultLamp3On];
-    [[NSUserDefaults standardUserDefaults] setBool:self.lastResultSirenOn forKey:kLastResultSirenOn];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultAnyOn forKey:kLastResultAnyOn];
     [[NSUserDefaults standardUserDefaults] setBool:self.lastResultNotAllOn forKey:kLastResultNotAllOn];
 }
@@ -175,7 +162,6 @@
     self.lastResultLamp1On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp1On];
     self.lastResultLamp2On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp2On];
     self.lastResultLamp3On = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultLamp3On];
-    self.lastResultSirenOn = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultSirenOn];
     self.lastResultAnyOn = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultAnyOn];
     self.lastResultNotAllOn = [[NSUserDefaults standardUserDefaults] boolForKey:kLastResultNotAllOn];
 }

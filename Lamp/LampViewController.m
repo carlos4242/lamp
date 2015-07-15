@@ -19,7 +19,6 @@
 @property (weak, nonatomic) IBOutlet UISwitch *tubeLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *roundLampSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *cornerLampSwitch;
-@property (weak, nonatomic) IBOutlet UISwitch *beedoBeedoSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *allOnButton;
 @property (weak, nonatomic) IBOutlet UIButton *allOffButton;
 @property (weak, nonatomic) IBOutlet UIView *notAtHomeView;
@@ -35,7 +34,7 @@
     [super viewDidLoad];
     _gradient = [CAGradientLayer layer];
     UIColor *colour1 = [UIColor clearColor];
-    UIColor *colour2 = [UIColor colorWithWhite:0.5 alpha:1];//[UIColor blackColor];
+    UIColor *colour2 = [UIColor colorWithWhite:0.5 alpha:1];
     
     _gradient.colors = [NSArray arrayWithObjects:(id)colour1.CGColor,(id)colour2.CGColor, nil];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -81,10 +80,6 @@
     _cornerLampSwitch.on = state;
 }
 
--(void)setFlasherUIState:(BOOL)state {
-    _beedoBeedoSwitch.on = state;
-}
-
 -(void)setNotAtHome:(BOOL)notAtHome {
     if (_notAtHome != notAtHome) {
         _notAtHomeView.hidden = !notAtHome;
@@ -97,12 +92,17 @@
 }
 
 -(void)updateButtonStateFromLampService:(LampService*)lamp {
-    [self setLamp1UIState:[lamp lampOneIsOn]];
-    [self setLamp2UIState:[lamp lampTwoIsOn]];
-    [self setLamp3UIState:[lamp lampThreeIsOn]];
-    [self setFlasherUIState:[lamp beedoBeedoIsOn]];
-    BOOL anyOn = [lamp lampOneIsOn] || [lamp lampTwoIsOn] || [lamp lampThreeIsOn] || [lamp beedoBeedoIsOn];
-    BOOL allOn = [lamp lampOneIsOn] && [lamp lampTwoIsOn] && [lamp lampThreeIsOn];
+    if ([lamp lampOneIsOn] != undefined) {
+        [self setLamp1UIState:[lamp lampOneIsOn]];
+    }
+    if ([lamp lampTwoIsOn] != undefined) {
+        [self setLamp2UIState:[lamp lampTwoIsOn]];
+    }
+    if ([lamp lampThreeIsOn] != undefined) {
+        [self setLamp3UIState:[lamp lampThreeIsOn]];
+    }
+    BOOL anyOn = [lamp lampOneIsOn] == yes || [lamp lampTwoIsOn] == yes || [lamp lampThreeIsOn] == yes;
+    BOOL allOn = [lamp lampOneIsOn] == yes && [lamp lampTwoIsOn] == yes && [lamp lampThreeIsOn] == yes;
     self.allOffButton.enabled = anyOn;
     self.allOffButton.alpha = self.allOffButton.enabled?1:0.2;
     self.allOnButton.enabled = !allOn;
@@ -114,7 +114,6 @@
     _roundLampSwitch.alpha = alpha;
     _tubeLampSwitch.alpha = alpha;
     _cornerLampSwitch.alpha = alpha;
-    _beedoBeedoSwitch.alpha = alpha;
 }
 
 -(void)refreshLampState {
@@ -172,17 +171,6 @@
     [lamp lampThreeSetState:sender.on];
 }
 
-- (IBAction)beedoBeedoChanged:(UISwitch*)sender {
-    LampService *lamp = [LampService new];
-    __weak LampService *ls = lamp;
-    lamp.completionFunction = ^(BOOL result,NSString *error) {
-        if (result) {
-            [self updateButtonStateFromLampService:ls];
-        }
-        return YES;
-    };
-    [lamp beedoBeedoSetState:sender.on];
-}
 - (IBAction)allOnPressed:(id)sender {
     LampService *lamp = [LampService new];
     __weak LampService *ls = lamp;

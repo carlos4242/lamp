@@ -31,7 +31,7 @@ struct timeval lastSuccessfulNetworkCall;
 	uint serviceCallId; //debug variable
 }
 
--(BOOL)callService:(NSString*)service;
+-(BOOL)callService:(NSString*)service postData:(NSString*)postData;
 -(void)cancel;
 -(void)serviceCompletedSuccessfully;
 

@@ -42,16 +42,21 @@ extern NSString *serviceRoot;
 	NSLog(@"(%d) Sending url %@",serviceCallId,urlString);
 	return [NSURL URLWithString:urlString];
 }
--(NSMutableURLRequest*)requestForService:(NSString*)service {
+-(NSMutableURLRequest*)requestForService:(NSString*)service postData:(NSString*)postData {
     NSURL *url = [self getServiceUrlFromService:service];
 	NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
     [urlRequest setHTTPShouldHandleCookies:YES];
-	[urlRequest setHTTPMethod:@"GET"];
     [urlRequest setTimeoutInterval:3];
+    if (postData) {
+        [urlRequest setHTTPMethod:@"POST"];
+        [urlRequest setHTTPBody:[postData dataUsingEncoding:NSUTF8StringEncoding]];
+    } else {
+        [urlRequest setHTTPMethod:@"GET"];
+    }
     return urlRequest;
 }
--(BOOL)callService:(NSString*)service  {
-    NSMutableURLRequest *urlRequest = [self requestForService:service];
+-(BOOL)callService:(NSString*)service postData:(NSString*)postData {
+    NSMutableURLRequest *urlRequest = [self requestForService:service postData:postData];
     if (![NSURLConnection canHandleRequest:urlRequest]) {
         NSLog(@"*** WARNING!! callservice cannot handle request for %@ (%@, url = %@) in %@",urlRequest,service,[self getServiceUrlFromService:service],self);
         self.completionFunction(NO,@"cannot handle request");

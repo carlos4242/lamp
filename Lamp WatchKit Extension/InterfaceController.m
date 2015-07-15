@@ -7,14 +7,13 @@
 //
 
 #import "InterfaceController.h"
-
+#import "LampService.h"
 
 @interface InterfaceController()
 
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *tubeSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *roundSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceSwitch *cornerSwitch;
-@property (weak, nonatomic) IBOutlet WKInterfaceSwitch *bedoSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceLabel *errorLabel;
 
 @property (weak, nonatomic) IBOutlet WKInterfaceButton *allOffSwitch;
@@ -31,13 +30,11 @@
     [self.tubeSwitch setEnabled:enabled];
     [self.roundSwitch setEnabled:enabled];
     [self.cornerSwitch setEnabled:enabled];
-    [self.bedoSwitch setEnabled:enabled];
     [self.allOnSwitch setEnabled:enabled];
     [self.allOffSwitch setEnabled:enabled];
     [self.tubeSwitch setAlpha:enabled?1:0.2];
     [self.roundSwitch setAlpha:enabled?1:0.2];
     [self.cornerSwitch setAlpha:enabled?1:0.2];
-    [self.bedoSwitch setAlpha:enabled?1:0.2];
     [self.allOnSwitch setAlpha:enabled?1:0.2];
     [self.allOffSwitch setAlpha:enabled?1:0.2];}
 
@@ -45,7 +42,6 @@
     [self.tubeSwitch setHidden:hidden];
     [self.roundSwitch setHidden:hidden];
     [self.cornerSwitch setHidden:hidden];
-    [self.bedoSwitch setHidden:hidden];
     [self.allOnSwitch setHidden:hidden];
     [self.allOffSwitch setHidden:hidden];
 }
@@ -69,16 +65,20 @@
                 if (enable) {
                     [self setSwitchesEnabled:YES];
                 }
-                BOOL tube = [replyInfo[@"tube"] boolValue];
-                BOOL round = [replyInfo[@"round"] boolValue];
-                BOOL corner = [replyInfo[@"corner"] boolValue];
-                BOOL siren = [replyInfo[@"bedo"] boolValue];
-                BOOL any = tube|round|corner|siren;
-                BOOL all = tube&round&corner;
-                [self.tubeSwitch setOn:tube];
-                [self.roundSwitch setOn:round];
-                [self.cornerSwitch setOn:corner];
-                [self.bedoSwitch setOn:siren];
+                NSUInteger tube = [replyInfo[@"tube"] unsignedIntegerValue];
+                NSUInteger round = [replyInfo[@"round"] unsignedIntegerValue];
+                NSUInteger corner = [replyInfo[@"corner"] unsignedIntegerValue];
+                BOOL any = tube == yes || round == yes || corner == yes;
+                BOOL all = tube == yes && round == yes && corner == yes;
+                if (tube != undefined) {
+                    [self.tubeSwitch setOn:tube];
+                }
+                if (round != undefined) {
+                    [self.roundSwitch setOn:round];
+                }
+                if (corner != undefined) {
+                    [self.cornerSwitch setOn:corner];
+                }
                 [self.allOffSwitch setEnabled:any];
                 [self.allOffSwitch setAlpha:any?1:0.2];
                 [self.allOnSwitch setEnabled:!all];
@@ -115,9 +115,6 @@
 }
 - (IBAction)cornerSwitchChanged:(BOOL)value {
     [WKInterfaceController openParentApplication:@{@"action":@"set",@"lamp":@"corner",@"value":@(value)} reply:nil];
-}
-- (IBAction)bedoSwitchChanged:(BOOL)value {
-    [WKInterfaceController openParentApplication:@{@"action":@"set",@"lamp":@"bedo",@"value":@(value)} reply:nil];
 }
 - (IBAction)allOffPressed {
     [WKInterfaceController openParentApplication:@{@"action":@"allOff"} reply:^(NSDictionary *replyInfo, NSError *error) {

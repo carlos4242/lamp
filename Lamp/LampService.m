@@ -35,51 +35,55 @@ struct in_addr homeen0base;
 }
 
 -(void)lampOneSetState:(BOOL)onOff {
-    [super callService:onOff?@"a":@"b"];
+    [super callService:@"lights/light1" postData:[NSString stringWithFormat:@"on=%d",onOff]];
 }
 
 -(void)lampTwoSetState:(BOOL)onOff {
-    [super callService:onOff?@"c":@"d"];
+    [super callService:@"lights/light2" postData:[NSString stringWithFormat:@"on=%d",onOff]];
 }
 
 -(void)lampThreeSetState:(BOOL)onOff {
-    [super callService:onOff?@"f":@"e"];
-}
-
--(void)beedoBeedoSetState:(BOOL)onOff {
-    [super callService:onOff?@"g":@"h"];
+    [super callService:@"lights/light3" postData:[NSString stringWithFormat:@"on=%d",onOff]];
 }
 
 -(void)allOn {
-    [super callService:@"1"];
+    [super callService:@"lights" postData:@"allOn=1"];
 }
 
 -(void)allOff {
-    [super callService:@"0"];
+    [super callService:@"lights" postData:@"allOff=1"];
 }
 
 -(BOOL)checkState {
-    return [super callService:@""];
+    return [super callService:@"lights" postData:nil];
 }
 
 -(BOOL)refreshState {
-    return [super callService:@""];
+    return [super callService:@"lights" postData:nil];
 }
 
--(BOOL)lampOneIsOn {
-    return [self.output[@"lamp1"] isKindOfClass:[NSNumber class]]&&[self.output[@"lamp1"] boolValue];
+-(OptionalBool)lampOneIsOn {
+    if ([self.output[@"lamp1"] isKindOfClass:[NSNumber class]]) {
+        return [self.output[@"lamp1"] boolValue];
+    } else {
+        return undefined;
+    }
 }
 
--(BOOL)lampTwoIsOn {
-    return [self.output[@"lamp2"] isKindOfClass:[NSNumber class]]&&[self.output[@"lamp2"] boolValue];
+-(OptionalBool)lampTwoIsOn {
+    if ([self.output[@"lamp2"] isKindOfClass:[NSNumber class]]) {
+        return [self.output[@"lamp2"] boolValue];
+    } else {
+        return undefined;
+    }
 }
 
--(BOOL)lampThreeIsOn {
-    return [self.output[@"lamp3"] isKindOfClass:[NSNumber class]]&&![self.output[@"lamp3"] boolValue];
-}
-
--(BOOL)beedoBeedoIsOn {
-    return [self.output[@"beedoBeedo"] isKindOfClass:[NSNumber class]]&&[self.output[@"beedoBeedo"] boolValue];
+-(OptionalBool)lampThreeIsOn {
+    if ([self.output[@"lamp3"] isKindOfClass:[NSNumber class]]) {
+        return [self.output[@"lamp3"] boolValue];
+    } else {
+        return undefined;
+    }
 }
 
 +(BOOL)onHomeNetwork {

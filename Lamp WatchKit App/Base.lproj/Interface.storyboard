@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="3737"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="7701"/>
     </dependencies>
     <scenes>
         <!--Interface Controller-->
@@ -39,17 +39,11 @@
                                 <action selector="cornerSwitchChanged:" destination="AgC-eL-Hgc" id="3Iq-1H-dvs"/>
                             </connections>
                         </switch>
-                        <switch width="1" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Bedo" id="6hG-JM-zJC">
-                            <connections>
-                                <action selector="bedoSwitchChanged:" destination="AgC-eL-Hgc" id="PUs-Yd-ecM"/>
-                            </connections>
-                        </switch>
                         <label width="1" alignment="left" hidden="YES" text="Error Label" textAlignment="center" numberOfLines="15" id="2I6-6n-HFi"/>
                     </items>
                     <connections>
                         <outlet property="allOffSwitch" destination="PHj-4h-CzZ" id="4fx-vN-7Cu"/>
                         <outlet property="allOnSwitch" destination="Ree-dp-FuT" id="pwP-FH-ngh"/>
-                        <outlet property="bedoSwitch" destination="6hG-JM-zJC" id="HG6-a2-upF"/>
                         <outlet property="cornerSwitch" destination="8QQ-Ap-RHT" id="QSE-jF-eTT"/>
                         <outlet property="errorLabel" destination="2I6-6n-HFi" id="qkT-eU-jcx"/>
                         <outlet property="roundSwitch" destination="vdH-Ab-7C0" id="AmC-ed-PxE"/>

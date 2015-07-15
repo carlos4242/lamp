@@ -25,7 +25,6 @@
     return @{@"tube":@([service lampTwoIsOn]),
              @"round":@([service lampOneIsOn]),
              @"corner":@([service lampThreeIsOn]),
-             @"bedo":@([service beedoBeedoIsOn]),
              };
 }
 
@@ -85,8 +84,6 @@
                 [_lampService lampOneSetState:value];
             } else if ([lamp isEqualToString:@"corner"]) {
                 [_lampService lampThreeSetState:value];
-            } else if ([lamp isEqualToString:@"bedo"]) {
-                [_lampService beedoBeedoSetState:value];
             }
         } else if ([action isEqualToString:@"allOff"]) {
             [_lampService allOff];
