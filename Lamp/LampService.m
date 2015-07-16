@@ -35,15 +35,15 @@ struct in_addr homeen0base;
 }
 
 -(void)lampOneSetState:(BOOL)onOff {
-    [super callService:@"lights/light1" postData:[NSString stringWithFormat:@"on=%d",onOff]];
+    [super callService:@"lights/light1" postData:[NSString stringWithFormat:@"on=%d",!onOff]];
 }
 
 -(void)lampTwoSetState:(BOOL)onOff {
-    [super callService:@"lights/light2" postData:[NSString stringWithFormat:@"on=%d",onOff]];
+    [super callService:@"lights/light2" postData:[NSString stringWithFormat:@"on=%d",!onOff]];
 }
 
 -(void)lampThreeSetState:(BOOL)onOff {
-    [super callService:@"lights/light3" postData:[NSString stringWithFormat:@"on=%d",onOff]];
+    [super callService:@"lights/light3" postData:[NSString stringWithFormat:@"on=%d",!onOff]];
 }
 
 -(void)allOn {
@@ -64,7 +64,7 @@ struct in_addr homeen0base;
 
 -(OptionalBool)lampOneIsOn {
     if ([self.output[@"lamp1"] isKindOfClass:[NSNumber class]]) {
-        return [self.output[@"lamp1"] boolValue];
+        return ![self.output[@"lamp1"] boolValue];
     } else {
         return undefined;
     }
@@ -72,7 +72,7 @@ struct in_addr homeen0base;
 
 -(OptionalBool)lampTwoIsOn {
     if ([self.output[@"lamp2"] isKindOfClass:[NSNumber class]]) {
-        return [self.output[@"lamp2"] boolValue];
+        return ![self.output[@"lamp2"] boolValue];
     } else {
         return undefined;
     }
@@ -80,7 +80,7 @@ struct in_addr homeen0base;
 
 -(OptionalBool)lampThreeIsOn {
     if ([self.output[@"lamp3"] isKindOfClass:[NSNumber class]]) {
-        return [self.output[@"lamp3"] boolValue];
+        return ![self.output[@"lamp3"] boolValue];
     } else {
         return undefined;
     }

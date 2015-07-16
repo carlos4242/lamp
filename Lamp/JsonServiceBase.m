@@ -28,15 +28,8 @@ extern NSString *serviceRoot;
         NSError *error = nil;
         _output = [NSJSONSerialization JSONObjectWithData:serviceOutputData options:NSJSONReadingAllowFragments error:&error];
         if ([_output isKindOfClass:[NSDictionary class]]) {
-            NSNumber *resultValue = [_output objectForKey:@"result"];
-            BOOL result = [resultValue isKindOfClass:[NSNumber class]]&&[resultValue boolValue];
-            NSLog(@"(%d) Result %d",serviceCallId,result);
-            serviceCallResult=result;
-            
-            if (serviceCallResult) {
-                [self serviceCompletedSuccessfully]; // this is overridden in subclasses to finalise processing of the service
-            }
-
+            serviceCallResult = YES;
+            [self serviceCompletedSuccessfully]; // this is overridden in subclasses to finalise processing of the service
             NSString *errorMessage = [_output objectForKey:@"error"];
             if (errorMessage) {
                 serviceCallResult = NO;
