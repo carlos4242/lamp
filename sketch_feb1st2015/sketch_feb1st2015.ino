@@ -3,6 +3,7 @@
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
+#include "errno.h"
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
@@ -18,7 +19,7 @@ int overrideSwitch = 2;
 int lightOneState;
 int lightTwoState;
 int lightThreeState;
-boolean debug = true;
+boolean debug = false;
 
 void setup()   {
   // setup pins :
@@ -32,7 +33,7 @@ void setup()   {
 
   // assign a MAC and IP addresses for the ethernet controller :
   byte mac[] = {
-    0x90,0xA2,0xDA,0x0D,0x9C,0x31            };
+    0x90,0xA2,0xDA,0x0D,0x9C,0x31                                };
   IPAddress ip(10,0,1,160);
   Ethernet.begin(mac, ip);
 
@@ -55,10 +56,10 @@ char statusBuffer[statusBufferLen];
 
 // helper function to get status :
 char * statusString() {
-  strncpy(statusBuffer,"{\"lamp1\":X,\"lamp2\":X,\"lamp3\":X}",statusBufferLen);
-  statusBuffer[9] = 48+lightOneState; // 
-  statusBuffer[19] = 48+lightTwoState;
-  statusBuffer[29] = 48+lightThreeState;
+  strncpy(statusBuffer,"{\"1\":X,\"2\":X,\"3\":X}",statusBufferLen);
+  statusBuffer[5] = 48+lightOneState; // 
+  statusBuffer[11] = 48+lightTwoState;
+  statusBuffer[17] = 48+lightThreeState;
   return statusBuffer;
 }
 
@@ -176,11 +177,6 @@ char * getLightsString = "GET /lights";
 char * getLightString = "GET /lights/";
 char * getFavicon = "GET /favicon";
 char * getWebsite = "GET /";
-char * light1 = "light1";
-char * light2 = "light2";
-char * light3 = "light3";
-char * textContentType = "Content-Type: text/plain";
-char * htmlContentType = "Content-Type: text/html";
 
 
 // webserver new API endpoints
@@ -191,33 +187,32 @@ char * htmlContentType = "Content-Type: text/html";
 String getRequest;
 const int lineBufferLen = 200;
 char lineBuffer[lineBufferLen];
-char light[lineBufferLen];
-char postData[lineBufferLen];
+int lightToSet = 0;
 
-char * getLightStatus(char * light) {
+char * getLightStatus(int light) {
   int lightStatus;
-  if (strncmp(light,light1,strlen(light1)) == 0) {
+  if (light == 1) {
     lightStatus = lightOneState;
   } 
-  else if (strncmp(light,light2,strlen(light2)) == 0) {
+  else if (light == 2) {
     lightStatus = lightTwoState;
   } 
-  else if (strncmp(light,light3,strlen(light3)) == 0) {
+  else if (light == 3) {
     lightStatus = lightThreeState;
   } 
   else {
     return "invalid";
   }
-  Serial.println("get light status for...");
-  Serial.println(light);
-  String s1 = String(lightStatus);
-  Serial.println(s1);
+  //  Serial.println("get light status for...");
+  //  Serial.println(light);
+  //  String s1 = String(lightStatus);
+  //  Serial.println(s1);
   char * buffer = statusBuffer;
 
   strncpy(buffer,"{\"",2);
   buffer += 2;
-  strncpy(buffer,light,strlen(light1));
-  buffer += strlen(light1);
+  *buffer = 48+light;
+  buffer += 1;
   strncpy(buffer,"\":X}",5);
   buffer[2] = 48+lightStatus;
   return statusBuffer;
@@ -239,27 +234,31 @@ char * allOffParam = "allOff=1";
 char * changeLightStatus() {
   // use light to define which light is affected and postData to define how it's affected
   int lightSwitchValue;
-  if (strncmp(postData,onSwitchParam,strlen(onSwitchParam)) == 0) {
-    char * lightSwitchValueString = postData + strlen(onSwitchParam);
+  //  Serial.println("changeLightStatus buffer :");
+  //  Serial.println(lineBuffer);
+  if (strncmp(lineBuffer,onSwitchParam,strlen(onSwitchParam)) == 0) {
+    char * lightSwitchValueString = lineBuffer + strlen(onSwitchParam);
+    //    Serial.println("changeLightStatus buffer :");
+    //    Serial.println(lineBuffer);
     lightSwitchValue = atoi(lightSwitchValueString);
   } 
   else {
     return "invalid";
   }
-  if (strncmp(light,light1,strlen(light1)) == 0) {
+  if (lightToSet == 1) {
     lightOneState = lightSwitchValue;
     setLines();
-    return getLightStatus(light);
+    return getLightsStatus();
   }
-  else if (strncmp(light,light2,strlen(light2)) == 0) {
+  else if (lightToSet == 2) {
     lightTwoState = lightSwitchValue;
     setLines();
-    return getLightStatus(light);
+    return getLightsStatus();
   }
-  else if (strncmp(light,light3,strlen(light3)) == 0) {
+  else if (lightToSet == 3) {
     lightThreeState = lightSwitchValue;
     setLines();
-    return getLightStatus(light);
+    return getLightsStatus();
   }
   else {
     return "invalid";
@@ -267,12 +266,12 @@ char * changeLightStatus() {
 }
 char * changeLightsStatus() {
   // use postData to define command
-  if (strncmp(postData,allOnParam,strlen(allOnParam)) == 0) {
+  if (strncmp(lineBuffer,allOnParam,strlen(allOnParam)) == 0) {
     allOn();
     setLines();
     return getLightsStatus();
   } 
-  else if (strncmp(postData,allOffParam,strlen(allOffParam)) == 0) {
+  else if (strncmp(lineBuffer,allOffParam,strlen(allOffParam)) == 0) {
     allOff();
     setLines();
     return getLightsStatus();
@@ -286,13 +285,13 @@ boolean sendFavicon;
 boolean sendWebsite;
 char * (*postFunction)();
 
-char * readFirstLine() {
+char * readRequestLine() {
   if (strncmp(lineBuffer,getLightString,strlen(getLightString)) == 0) {
     if (debug) {
       Serial.println("get light");
     }
     // get the status of a single light
-    return getLightStatus(lineBuffer+strlen(getLightString));
+    return getLightStatus(atoi(lineBuffer+strlen(getLightString)));
   } 
   else if (strncmp(lineBuffer,getLightsString,strlen(getLightsString)) == 0) {
     if (debug) {
@@ -314,7 +313,7 @@ char * readFirstLine() {
       Serial.println("post light");
     }
     // set the status of a light
-    strncpy(light,lineBuffer+strlen(postLightString),lineBufferLen);
+    lightToSet = atoi(lineBuffer+strlen(postLightString));
     postFunction = changeLightStatus;
     return 0;
   }
@@ -322,8 +321,6 @@ char * readFirstLine() {
     if (debug) {
       Serial.println("post lights");
     }
-    // set the status of a light
-    strncpy(light,"",1);
     postFunction = changeLightsStatus;
     return 0;
   } 
@@ -345,6 +342,7 @@ char * readFirstLine() {
   }
 }
 
+const int favIconLength = 635;
 const PROGMEM byte fd[] = {
   0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0x00,0x00,0x00,0x0d,0x49,0x48,0x44,0x52,
   0x00,0x00,0x00,0x10,0x00,0x00,0x00,0x10,0x08,0x02,0x00,0x00,0x00,0x90,0x91,0x68,
@@ -387,13 +385,62 @@ const PROGMEM byte fd[] = {
   0xcb,0xb2,0x90,0xed,0xe0,0xed,0x1f,0xa5,0xdd,0x0f,0xa7,0xf2,0x58,0x08,0xb7,0x00,
   0x00,0x00,0x00,0x49,0x45,0x4e,0x44,0xae,0x42,0x60,0x82};
 
+void sendFaviconToClient(EthernetClient client) {
+  if (debug) {
+    Serial.println("FAVICON");
+  }
+
+  int favIconBufferLength = 200;
+  byte * faviconInRam = (byte*)malloc(favIconBufferLength);
+  if (faviconInRam) {
+    int offset = 0;
+    for (int i = 0; i <= favIconLength; i++) {
+      offset = i % favIconBufferLength;
+      if (i&&!offset) {
+        client.write(faviconInRam,favIconBufferLength);
+        //        Serial.println("dumped favicon data:...");
+        //        Serial.println(favIconBufferLength);
+        //        Serial.write(faviconInRam,favIconBufferLength);
+        //        Serial.println("");
+      }
+      faviconInRam[offset] = pgm_read_byte(fd+i);
+    }
+    if (offset) {
+      client.write(faviconInRam,offset);
+    }
+    //    Serial.println("dumped last favicon data:...");
+    //        Serial.println(offset);
+    //    Serial.write(faviconInRam,offset);
+    //        Serial.println("");
+    free(faviconInRam);
+    //    Serial.println("freed buffer");
+  } 
+  else {
+    Serial.println("failed to get favicon buffer");
+    Serial.println(errno);
+  }
+
+  //  const int favIconBuffer = 100;
+  //  static byte faviconRam[favIconBuffer];
+  //  for (int i = 0; i < favIconLength; i++) {
+  //    int offset = i % favIconBuffer;
+  //    faviconRam[offset] = pgm_read_byte(fd+i);
+  //    //                if 
+  //  }
+  //  client.write(faviconRam,favIconLength);
+} 
+
 const PROGMEM char website[] =
 "<h1>light control</h1>\n"
 "<script></script>\n"
 "place holder website"
 ;
 
+char * textContentType = "Content-Type: text/plain\r\n\r\n";
+char * htmlContentType = "Content-Type: text/html\r\n\r\n";
+
 void listenForEthernetClients() {
+  //  Serial.println(".");
   EthernetClient client = server.available();
   if (client) {
     if (debug) {
@@ -405,87 +452,148 @@ void listenForEthernetClients() {
     boolean firstLine = true;
     boolean gotHeaders = false;
     char * output = 0;
-    postData[0] = 0;
+    boolean postDataRead = false;
     // an http request ends with a blank line
     while (client.connected()) {
-      if (client.available()) {
-        int lineLength = client.readBytesUntil('\n',lineBuffer,lineBufferLen);
-        lineBuffer[lineLength] = 0;
-        if (debug) {
-          String ll = String("[") + lineLength + String("]:");
-          Serial.print(ll);
-          Serial.println(lineBuffer);
+      int lineLength;
+      if (gotHeaders) {
+        //        Serial.print("::");
+        lineLength = 0;
+        while (client.available()) {
+          //          Serial.print("_");
+          lineBuffer[lineLength] = client.read();
+          lineLength++;
         }
-        if (firstLine) {
-          output = readFirstLine();
-          firstLine = false;
+        //        Serial.print("::");
+      } 
+      else {
+        //        Serial.print(":*:");
+        lineLength = client.readBytesUntil('\n',lineBuffer,lineBufferLen);
+      }
+      lineBuffer[lineLength] = 0;
+      if (debug) {
+        String ll = String("[") + lineLength + String("]:");
+        Serial.print(ll);
+        Serial.println(lineBuffer);
+      }
+      if (firstLine) {
+        output = readRequestLine();
+        firstLine = false;
+      } 
+      else {
+        // wait for an empty line to indicate the end of the header, then wait for post data if required
+        if (strlen(lineBuffer) <= 1) {
+          gotHeaders = true;
+          if (debug) {
+            Serial.println("got headers");
+          }
         } 
-        else {
-          // wait for an empty line to indicate the end of the header, then wait for post data if required
-          if (strlen(lineBuffer) <= 1) {
-            gotHeaders = true;
+        else if (gotHeaders) {
+          if (debug) {
+            Serial.println("have headers, this may be a post function");
+          }
+          // next line is POST data
+          if (postFunction) {
             if (debug) {
-              Serial.println("got headers");
-            }
-          } 
-          else if (gotHeaders) {
-            // next line is POST data
-            if (postFunction) {
-              strncpy(postData,lineBuffer,lineBufferLen);
               Serial.println("post function is specified, passing it post data...");
-              Serial.println(postData);
-              output = postFunction();
-              if (debug) {
-                Serial.println("performed post function");
-              }
+              Serial.println(lineBuffer);
+            }
+            output = postFunction();
+            if (debug) {
+              Serial.println("performed post function");
             }
           }
-          if (gotHeaders && (postData[0] || !postFunction)) {
-            if (sendFavicon) {
-              if (debug) {
-                Serial.println("FAVICON");
-              }
-              for (int i = 0; i < 635; i++) {
-                byte b = pgm_read_byte(fd+i);
-                client.write(b);
+        }
+        if (gotHeaders && (output || !postFunction)) {
+          if (debug) {
+            Serial.println("ready to finish up");
+          }
+          if (sendFavicon) {
+            sendFaviconToClient(client);
+          } 
+          else {
+            char htmlReply[100];
+            char * htmlReplyPointer = htmlReply;
+            char * statusLine = "HTTP/1.0 200 OK\r\n";
+            int statusLineLength = strlen(statusLine);
+
+            int htmlReplyLength = statusLineLength;
+            strncpy(htmlReplyPointer,statusLine,statusLineLength);
+
+            htmlReplyPointer += statusLineLength;
+
+            // got headers and either have post data or it's not a post request, so send back headers
+            char * contentTypeHeader;
+            if (sendWebsite) {
+              contentTypeHeader = htmlContentType;
+            } 
+            else {
+              contentTypeHeader = textContentType;
+            }
+            int contentTypeHeaderLength = strlen(contentTypeHeader);
+            strncpy(htmlReplyPointer,contentTypeHeader,contentTypeHeaderLength);
+
+            htmlReplyPointer += contentTypeHeaderLength;
+
+            if (sendWebsite) {
+              int websiteLength = strlen(website);
+              byte * websiteInRam = (byte*)malloc(websiteLength);
+              if (websiteInRam) {
+                for (int i = 0; i <= websiteLength; i++) {
+                  websiteInRam[i] = pgm_read_byte(website+i);
+                }
+                client.write(websiteInRam,websiteLength+1);
+                free(websiteInRam);
+              } 
+              else {
+                Serial.println("could not write website - could not malloc");
               }
             } 
             else {
-              // got headers and either have post data or it's not a post request, so send back headers
-              client.println("HTTP/1.0 200 OK");
-              if (sendWebsite) {
-                client.println(htmlContentType);
-              } 
-              else {
-                client.println(textContentType);
+              if (debug) {
+                Serial.println("OUTPUT:");
+                Serial.println(output);
               }
-              client.println();
-              if (sendWebsite) {
-                for (int i = 0; i < strlen(website); i++) {
-                  byte b = pgm_read_byte(website+i);
-                  client.write(b);
-                }
-              } 
-              else {
-                client.println(output);
+              int outputLength = strlen(output);
+              strncpy(htmlReplyPointer,output,outputLength);
+              htmlReplyPointer += outputLength;
+              strncpy(htmlReplyPointer,"\r\n",2);
+              htmlReplyPointer += 2;
+              *htmlReplyPointer = 0;
+              int htmlReplyLength = htmlReplyPointer-htmlReply;
+              if (debug) {
+                Serial.println("writing html reply...");
+                Serial.print(htmlReply);
               }
+              client.write((byte*)htmlReply,htmlReplyLength);
             }
-            if (debug) {
-              Serial.println("client finished, waiting");
-            }
-            // give the web browser time to receive the data
-            delay(1);
-            // close the connection:
-            client.stop();
-            if (debug) {
-              Serial.println("client disconnected at server");
-            }
+          }
+          if (debug) {
+            Serial.println("client finished, waiting");
+          }
+          // give the web browser time to receive the data
+          delay(1);
+          //            delayMicroseconds(10000);
+          // close the connection:
+          client.stop();
+          if (debug) {
+            Serial.println("client disconnected at server");
           }
         }
       }
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
