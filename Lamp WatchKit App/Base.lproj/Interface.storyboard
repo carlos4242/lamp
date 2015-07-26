@@ -12,29 +12,29 @@
                     <items>
                         <group width="1" alignment="left" id="bsr-dJ-adb">
                             <items>
-                                <button width="67" alignment="left" alpha="0.20000000000000001" title="All OFF" enabled="NO" id="PHj-4h-CzZ">
+                                <button width="67" height="31" alignment="left" alpha="0.20000000000000001" title="All OFF" enabled="NO" id="PHj-4h-CzZ">
                                     <connections>
                                         <action selector="allOffPressed" destination="AgC-eL-Hgc" id="bAQ-0n-ybt"/>
                                     </connections>
                                 </button>
-                                <button width="65" alignment="right" alpha="0.20000000000000001" title="All ON" enabled="NO" id="Ree-dp-FuT">
+                                <button width="65" height="31" alignment="right" alpha="0.20000000000000001" title="All ON" enabled="NO" id="Ree-dp-FuT">
                                     <connections>
                                         <action selector="allOnPressed" destination="AgC-eL-Hgc" id="Gnk-rp-D46"/>
                                     </connections>
                                 </button>
                             </items>
                         </group>
-                        <switch width="1" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Tube" id="N6u-83-t5B">
+                        <switch width="1" height="33" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Tube" id="N6u-83-t5B">
                             <connections>
                                 <action selector="tubeSwitchChanged:" destination="AgC-eL-Hgc" id="E9O-Aw-XAv"/>
                             </connections>
                         </switch>
-                        <switch width="1" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Round" id="vdH-Ab-7C0">
+                        <switch width="1" height="34" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Round" id="vdH-Ab-7C0">
                             <connections>
                                 <action selector="roundSwitchChanged:" destination="AgC-eL-Hgc" id="1zE-BW-nUu"/>
                             </connections>
                         </switch>
-                        <switch width="1" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Corner" id="8QQ-Ap-RHT">
+                        <switch width="1" height="34" alignment="left" alpha="0.20000000000000001" enabled="NO" title="Corner" id="8QQ-Ap-RHT">
                             <connections>
                                 <action selector="cornerSwitchChanged:" destination="AgC-eL-Hgc" id="3Iq-1H-dvs"/>
                             </connections>
@@ -51,7 +51,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="164" y="215"/>
+            <point key="canvasLocation" x="164" y="208"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="rjY-Ar-IMT">

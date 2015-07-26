@@ -19,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet WKInterfaceButton *allOffSwitch;
 @property (weak, nonatomic) IBOutlet WKInterfaceButton *allOnSwitch;
 
-@property BOOL awoke;
+@property BOOL awoke,tube,round,corner;
 
 @end
 
@@ -68,17 +68,20 @@
                 NSUInteger tube = [replyInfo[@"tube"] unsignedIntegerValue];
                 NSUInteger round = [replyInfo[@"round"] unsignedIntegerValue];
                 NSUInteger corner = [replyInfo[@"corner"] unsignedIntegerValue];
-                BOOL any = tube == yes || round == yes || corner == yes;
-                BOOL all = tube == yes && round == yes && corner == yes;
                 if (tube != undefined) {
                     [self.tubeSwitch setOn:tube];
+                    self.tube = tube;
                 }
                 if (round != undefined) {
                     [self.roundSwitch setOn:round];
+                    self.round = round;
                 }
                 if (corner != undefined) {
                     [self.cornerSwitch setOn:corner];
+                    self.corner = corner;
                 }
+                BOOL any = self.tube || self.round || self.corner == yes;
+                BOOL all = self.tube && self.round && self.corner;
                 [self.allOffSwitch setEnabled:any];
                 [self.allOffSwitch setAlpha:any?1:0.2];
                 [self.allOnSwitch setEnabled:!all];

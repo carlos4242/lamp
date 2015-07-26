@@ -103,11 +103,17 @@
 }
 -(void)updateSwitchesEnabled:(LampService*)service {
     if (service) {
-        self.lastResultLamp1On = [service lampOneIsOn];
-        self.lastResultLamp2On = [service lampTwoIsOn];
-        self.lastResultLamp3On = [service lampThreeIsOn];
-        BOOL anyOn = [service lampOneIsOn] || [service lampTwoIsOn] || [service lampThreeIsOn];
-        BOOL allOn = [service lampOneIsOn] && [service lampTwoIsOn] && [service lampThreeIsOn];
+        if ([service lampOneIsOn] != undefined) {
+            self.lastResultLamp1On = [service lampOneIsOn];
+        }
+        if ([service lampTwoIsOn] != undefined) {
+            self.lastResultLamp2On = [service lampTwoIsOn];
+        }
+        if ([service lampThreeIsOn] != undefined) {
+            self.lastResultLamp3On = [service lampThreeIsOn];
+        }
+        BOOL anyOn = self.lastResultLamp1On || self.lastResultLamp2On || self.lastResultLamp3On;
+        BOOL allOn = self.lastResultLamp1On && self.lastResultLamp2On && self.lastResultLamp3On;
         self.lastResultAnyOn = anyOn;
         self.lastResultNotAllOn = !allOn;
         [self setSwitchesEnabled];

@@ -101,8 +101,8 @@
     if ([lamp lampThreeIsOn] != undefined) {
         [self setLamp3UIState:[lamp lampThreeIsOn]];
     }
-    BOOL anyOn = [lamp lampOneIsOn] == yes || [lamp lampTwoIsOn] == yes || [lamp lampThreeIsOn] == yes;
-    BOOL allOn = [lamp lampOneIsOn] == yes && [lamp lampTwoIsOn] == yes && [lamp lampThreeIsOn] == yes;
+    BOOL anyOn = _roundLampSwitch.on || _tubeLampSwitch.on || _cornerLampSwitch.on;
+    BOOL allOn = _roundLampSwitch.on && _tubeLampSwitch.on && _cornerLampSwitch.on;
     self.allOffButton.enabled = anyOn;
     self.allOffButton.alpha = self.allOffButton.enabled?1:0.2;
     self.allOnButton.enabled = !allOn;
