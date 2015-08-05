@@ -174,9 +174,6 @@ didReceiveResponse:(NSURLResponse *)response {
 	complete = YES;
 	NSString *lastErrorParsed = nil;
     [self setNetworkActivityIndicator:NO];
-	if ([serviceOutput length]<expectedContentLength) {
-		NSLog(@"(%d) **WARNING: expected length not reached**, expected:%lld got:%lu",serviceCallId,expectedContentLength,(unsigned long)[serviceOutput length]);
-	}
 	if (_lastStatusCode<300) {
         [self parseSuccessfulCompletionOfService:&lastErrorParsed];
 	} else {
