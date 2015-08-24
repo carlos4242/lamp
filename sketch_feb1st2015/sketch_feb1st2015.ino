@@ -10,10 +10,28 @@
 // (port 80 is default for HTTP):
 EthernetServer server(80);
 
+// light control
 int lightOne =  7;
 int lightTwo = 6;
 int lightThree = 5;
 int overrideSwitch = 2;
+
+// weather display
+int cloudIcon = 8;
+int sunIcon = 9;
+int rainLamp = 4;
+int daytimeLamp = 3;
+
+int alertSavingState = 14;
+
+// weather state
+int alertActiveState;
+int cloudIconState;
+int sunIconState;
+int rainLampState;
+int daytimeLampState;
+int timer1_counter;
+volatile int weatherCheckDue = 0;
 
 // state flags :
 int lightOneState;
@@ -28,12 +46,18 @@ void setup()   {
   pinMode(lightThree, OUTPUT);
   pinMode(overrideSwitch, INPUT);
 
+  pinMode(cloudIcon, OUTPUT);
+  pinMode(sunIcon, OUTPUT);
+  pinMode(rainLamp, OUTPUT);
+  pinMode(daytimeLamp, OUTPUT);
+
   // setup serial :
   Serial.begin(9600);
 
   // assign a MAC and IP addresses for the ethernet controller :
   byte mac[] = {
-    0x90,0xA2,0xDA,0x0D,0x9C,0x31                                };
+    0x90,0xA2,0xDA,0x0D,0x9C,0x31
+  };
   IPAddress ip(10,0,1,160);
   Ethernet.begin(mac, ip);
 
@@ -47,10 +71,95 @@ void setup()   {
   lightThreeState = EEPROM.read(lightThree);
   setLines();
 
+  cloudIconState = 1;//EEPROM.read(cloudIcon);
+  sunIconState = 1;//EEPROM.read(sunIcon);
+  rainLampState = 0;//EEPROM.read(rainLamp);
+  daytimeLampState = 0;//EEPROM.read(daytimeLamp);
+  alertActiveState = 0;//EEPROM.read(alertSavingState);
+  setWeatherLamps();
+
   // start the watchdog timer :
   wdt_enable(WDTO_8S); // have the wdt reset the chip
+
+  // initialize timer1 (credit http://www.hobbytronics.co.uk/arduino-timer-interrupts, nod to http://www.avrbeginners.net/architecture/timers/timers.html)
+  noInterrupts();           // disable all interrupts
+  TCCR1A = 0;
+  TCCR1B = 0;
+
+  // Set timer1_counter to the correct value for our interrupt interval
+  //timer1_counter = 64886;   // preload timer 65536-16MHz/256/100Hz
+  //timer1_counter = 64286;   // preload timer 65536-16MHz/256/50Hz
+  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2Hz
+
+  TCNT1 = timer1_counter;   // preload timer
+  TCCR1B |= (1 << CS12);    // 256 prescaler 
+  TIMSK1 |= (1 << TOIE1);   // enable timer overflow interrupt
+  interrupts();             // enable all interrupts
 }
 
+ISR(TIMER1_OVF_vect)        // interrupt service routine 
+{
+  TCNT1 = timer1_counter;   // preload timer
+  weatherCheckDue++;
+  if (alertActiveState) {
+    digitalWrite(rainLamp, digitalRead(rainLamp) ^ 1);
+  }
+}
+
+void setWeatherLamps() {
+  digitalWrite(cloudIcon, cloudIconState);
+  digitalWrite(sunIcon, sunIconState);
+  digitalWrite(rainLamp, rainLampState);
+  digitalWrite(daytimeLamp, daytimeLampState);
+
+  EEPROM.write(cloudIcon, cloudIconState);
+  EEPROM.write(sunIcon, sunIconState);
+  EEPROM.write(rainLamp, rainLampState);
+  EEPROM.write(daytimeLamp, daytimeLampState);
+  EEPROM.write(alertSavingState, alertActiveState);
+}
+
+// WEATHER CHECKING
+
+EthernetClient weatherClient;
+byte weatherServer[] = { 
+  10,0,1,102 };
+const int weatherBufferLen = 10;
+char weatherBuffer[weatherBufferLen];
+
+void getLatestWeather() {
+  if (weatherCheckDue>6) {
+    if (weatherClient.connect(weatherServer,80)) {
+      weatherClient.println("GET /weather/");
+      weatherClient.println();
+      int lineLength = 0;
+      while (weatherClient.connected()) {
+        while (weatherClient.available()) {
+          weatherBuffer[lineLength] = weatherClient.read();
+          lineLength++;
+        }
+      }
+      weatherBuffer[lineLength] = 0;
+      weatherClient.stop();
+      weatherClient.flush();
+      Serial.println("got weather");
+      Serial.println(weatherBuffer);
+      decodeWeather(weatherBuffer);
+      weatherCheckDue = 0;
+    }
+  }
+}
+
+void decodeWeather(char * weather) {
+  cloudIconState = weather[0] - 48;
+  sunIconState = weather[1] - 48;
+  rainLampState = weather[2] - 48;
+  daytimeLampState = weather[3] - 48;
+  alertActiveState = weather[4] - 48;
+  setWeatherLamps();
+}
+
+// LAMP WEB SERVICES
 const int statusBufferLen = 50;
 char statusBuffer[statusBufferLen];
 
@@ -170,6 +279,7 @@ void loop()
   }
 
   listenForEthernetClients();
+  getLatestWeather();
   wdt_reset(); // reset the wdt
 }
 
@@ -584,6 +694,10 @@ void listenForEthernetClients() {
     }
   }
 }
+
+
+
+
 
 
 
