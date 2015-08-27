@@ -78,9 +78,6 @@ void setup()   {
   alertActiveState = 0;//EEPROM.read(alertSavingState);
   setWeatherLamps();
 
-  // start the watchdog timer :
-  wdt_enable(WDTO_8S); // have the wdt reset the chip
-
   // initialize timer1 (credit http://www.hobbytronics.co.uk/arduino-timer-interrupts, nod to http://www.avrbeginners.net/architecture/timers/timers.html)
   noInterrupts();           // disable all interrupts
   TCCR1A = 0;
@@ -95,6 +92,9 @@ void setup()   {
   TCCR1B |= (1 << CS12);    // 256 prescaler 
   TIMSK1 |= (1 << TOIE1);   // enable timer overflow interrupt
   interrupts();             // enable all interrupts
+
+    // start the watchdog timer :
+  wdt_enable(WDTO_8S); // have the wdt reset the chip
 }
 
 ISR(TIMER1_OVF_vect)        // interrupt service routine 
@@ -142,8 +142,6 @@ void getLatestWeather() {
       weatherBuffer[lineLength] = 0;
       weatherClient.stop();
       weatherClient.flush();
-      Serial.println("got weather");
-      Serial.println(weatherBuffer);
       decodeWeather(weatherBuffer);
       weatherCheckDue = 0;
     }
@@ -279,7 +277,7 @@ void loop()
   }
 
   listenForEthernetClients();
-  getLatestWeather();
+  //getLatestWeather();
   wdt_reset(); // reset the wdt
 }
 
@@ -540,11 +538,59 @@ void sendFaviconToClient(EthernetClient client) {
   //  client.write(faviconRam,favIconLength);
 } 
 
-const PROGMEM char website[] =
-"<h1>light control</h1>\n"
-"<script></script>\n"
-"place holder website"
-;
+const int webHeaderLength = 43;
+const PROGMEM char webHeader[] =
+"HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n";
+const int website1Length = 82;
+const PROGMEM char website1[] =
+"<link rel='stylesheet' type='text/css' href='http://10.0.1.102/weather/lights.css'>";
+const int website1aLength = 91;
+const PROGMEM char website1a[] =
+"<h2 id='pageTitle'>light control</h2>Tube Lamp : <input type='checkbox' id='lamp2' disabled ";
+const int website2Length = 64;
+const PROGMEM char website2[] =
+"><br><br>Round Lamp : <input type='checkbox' id='lamp1' disabled ";
+const int website3Length = 65;
+const PROGMEM char website3[] =
+"><br><br>Corner Lamp : <input type='checkbox' id='lamp3' disabled ";
+const int website4Length = 79;
+const PROGMEM char website4[] =
+"><script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'>";
+const int website4aLength = 67;
+const PROGMEM char website4a[] =
+"</script><script src='http://10.0.1.102/weather/lights.js'></script>";
+
+void writeWebsiteSection(EthernetClient client, const char * section, const int length) {
+  byte * sectionInRam = (byte*)malloc(length);
+  if (sectionInRam) {
+    for (int i = 0; i <= length; i++) {
+      sectionInRam[i] = pgm_read_byte(section+i);
+    }
+    client.write(sectionInRam,length+1);
+    free(sectionInRam);
+  }
+  else {
+    Serial.println("could not write website section - could not malloc");
+  }
+}
+void writeWebsite(EthernetClient client) {
+  writeWebsiteSection(client,webHeader,webHeaderLength);
+  writeWebsiteSection(client,website1,website1Length);
+  writeWebsiteSection(client,website1a,website1aLength);
+  if (!lightTwoState) {
+    client.write((byte*)"checked",7);
+  }
+  writeWebsiteSection(client,website2,website2Length);
+  if (!lightOneState) {
+    client.write((byte*)"checked",7);
+  }
+  writeWebsiteSection(client,website3,website3Length);
+  if (!lightThreeState) {
+    client.write((byte*)"checked",7);
+  }
+  writeWebsiteSection(client,website4,website4Length);
+  writeWebsiteSection(client,website4a,website4aLength);
+}
 
 char * textContentType = "Content-Type: text/plain\r\n\r\n";
 char * htmlContentType = "Content-Type: text/html\r\n\r\n";
@@ -646,18 +692,7 @@ void listenForEthernetClients() {
             htmlReplyPointer += contentTypeHeaderLength;
 
             if (sendWebsite) {
-              int websiteLength = strlen(website);
-              byte * websiteInRam = (byte*)malloc(websiteLength);
-              if (websiteInRam) {
-                for (int i = 0; i <= websiteLength; i++) {
-                  websiteInRam[i] = pgm_read_byte(website+i);
-                }
-                client.write(websiteInRam,websiteLength+1);
-                free(websiteInRam);
-              } 
-              else {
-                Serial.println("could not write website - could not malloc");
-              }
+              writeWebsite(client);
             } 
             else {
               if (debug) {
@@ -694,6 +729,9 @@ void listenForEthernetClients() {
     }
   }
 }
+
+
+
 
 
 
