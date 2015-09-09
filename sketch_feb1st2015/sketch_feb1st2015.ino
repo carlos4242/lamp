@@ -4,6 +4,7 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 #include "errno.h"
+#include <utility/w5100.h>
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
@@ -61,6 +62,10 @@ void setup()   {
   IPAddress ip(10,0,1,160);
   Ethernet.begin(mac, ip);
 
+  // shorten timeout
+  W5100.setRetransmissionTime(0x3E8);
+  W5100.setRetransmissionCount(1);
+
   // start the ethernet server :
   server.begin();
 
@@ -71,11 +76,11 @@ void setup()   {
   lightThreeState = EEPROM.read(lightThree);
   setLines();
 
-  cloudIconState = 1;//EEPROM.read(cloudIcon);
-  sunIconState = 1;//EEPROM.read(sunIcon);
-  rainLampState = 0;//EEPROM.read(rainLamp);
-  daytimeLampState = 0;//EEPROM.read(daytimeLamp);
-  alertActiveState = 0;//EEPROM.read(alertSavingState);
+  cloudIconState = EEPROM.read(cloudIcon);
+  sunIconState = EEPROM.read(sunIcon);
+  rainLampState = EEPROM.read(rainLamp);
+  daytimeLampState = EEPROM.read(daytimeLamp);
+  alertActiveState = EEPROM.read(alertSavingState);
   setWeatherLamps();
 
   // initialize timer1 (credit http://www.hobbytronics.co.uk/arduino-timer-interrupts, nod to http://www.avrbeginners.net/architecture/timers/timers.html)
@@ -86,7 +91,7 @@ void setup()   {
   // Set timer1_counter to the correct value for our interrupt interval
   //timer1_counter = 64886;   // preload timer 65536-16MHz/256/100Hz
   //timer1_counter = 64286;   // preload timer 65536-16MHz/256/50Hz
-  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2Hz
+  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2HzM
 
   TCNT1 = timer1_counter;   // preload timer
   TCCR1B |= (1 << CS12);    // 256 prescaler 
@@ -94,7 +99,8 @@ void setup()   {
   interrupts();             // enable all interrupts
 
     // start the watchdog timer :
-  wdt_enable(WDTO_8S); // have the wdt reset the chip
+  wdt_enable(WDTO_500MS); // have the wdt reset the chip
+  Serial.println(">>Started");
 }
 
 ISR(TIMER1_OVF_vect)        // interrupt service routine 
@@ -109,8 +115,10 @@ ISR(TIMER1_OVF_vect)        // interrupt service routine
 void setWeatherLamps() {
   digitalWrite(cloudIcon, cloudIconState);
   digitalWrite(sunIcon, sunIconState);
-  digitalWrite(rainLamp, rainLampState);
   digitalWrite(daytimeLamp, daytimeLampState);
+  if (!alertActiveState) {
+    digitalWrite(rainLamp, rainLampState);
+  }
 
   EEPROM.write(cloudIcon, cloudIconState);
   EEPROM.write(sunIcon, sunIconState);
@@ -128,8 +136,9 @@ const int weatherBufferLen = 10;
 char weatherBuffer[weatherBufferLen];
 
 void getLatestWeather() {
-  if (weatherCheckDue>6) {
-    if (weatherClient.connect(weatherServer,80)) {
+  if (weatherCheckDue>60) {
+    int connectStatusCode = weatherClient.connect(weatherServer,80);
+    if (connectStatusCode) {
       weatherClient.println("GET /weather/");
       weatherClient.println();
       int lineLength = 0;
@@ -143,17 +152,17 @@ void getLatestWeather() {
       weatherClient.stop();
       weatherClient.flush();
       decodeWeather(weatherBuffer);
-      weatherCheckDue = 0;
-    }
+    } 
+    weatherCheckDue = 0;
   }
 }
 
 void decodeWeather(char * weather) {
   cloudIconState = weather[0] - 48;
   sunIconState = weather[1] - 48;
-  rainLampState = weather[2] - 48;
   daytimeLampState = weather[3] - 48;
   alertActiveState = weather[4] - 48;
+  rainLampState = weather[2] - 48;
   setWeatherLamps();
 }
 
@@ -277,7 +286,7 @@ void loop()
   }
 
   listenForEthernetClients();
-  //getLatestWeather();
+  getLatestWeather();
   wdt_reset(); // reset the wdt
 }
 
@@ -541,21 +550,27 @@ void sendFaviconToClient(EthernetClient client) {
 const int webHeaderLength = 43;
 const PROGMEM char webHeader[] =
 "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n";
+
 const int website1Length = 82;
 const PROGMEM char website1[] =
 "<link rel='stylesheet' type='text/css' href='http://10.0.1.102/weather/lights.css'>";
-const int website1aLength = 91;
+
+const int website1aLength = 101;
 const PROGMEM char website1a[] =
-"<h2 id='pageTitle'>light control</h2>Tube Lamp : <input type='checkbox' id='lamp2' disabled ";
-const int website2Length = 64;
+"<div id='pageTitle'>light control</div><div><p>Tube Lamp : <input type='checkbox' id='lamp2' disabled ";
+
+const int website2Length = 63;
 const PROGMEM char website2[] =
-"><br><br>Round Lamp : <input type='checkbox' id='lamp1' disabled ";
-const int website3Length = 65;
+"></p><p>Round Lamp : <input type='checkbox' id='lamp1' disabled ";
+
+const int website3Length = 64;
 const PROGMEM char website3[] =
-"><br><br>Corner Lamp : <input type='checkbox' id='lamp3' disabled ";
-const int website4Length = 79;
+"></p><p>Corner Lamp : <input type='checkbox' id='lamp3' disabled ";
+
+const int website4Length = 88;
 const PROGMEM char website4[] =
-"><script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'>";
+"><p></div><script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'>";
+
 const int website4aLength = 67;
 const PROGMEM char website4a[] =
 "</script><script src='http://10.0.1.102/weather/lights.js'></script>";
@@ -729,6 +744,8 @@ void listenForEthernetClients() {
     }
   }
 }
+
+
 
 
 
