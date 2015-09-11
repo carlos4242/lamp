@@ -20,8 +20,8 @@ int overrideSwitch = 2;
 // weather display
 int cloudIcon = 8;
 int sunIcon = 9;
-int rainLamp = 4;
-int daytimeLamp = 3;
+int rainLamp = 3;
+//int daytimeLamp = 3;
 
 int alertSavingState = 14;
 
@@ -30,7 +30,7 @@ int alertActiveState;
 int cloudIconState;
 int sunIconState;
 int rainLampState;
-int daytimeLampState;
+//int daytimeLampState;
 int timer1_counter;
 volatile int weatherCheckDue = 0;
 
@@ -50,7 +50,6 @@ void setup()   {
   pinMode(cloudIcon, OUTPUT);
   pinMode(sunIcon, OUTPUT);
   pinMode(rainLamp, OUTPUT);
-  pinMode(daytimeLamp, OUTPUT);
 
   // setup serial :
   Serial.begin(9600);
@@ -79,7 +78,6 @@ void setup()   {
   cloudIconState = EEPROM.read(cloudIcon);
   sunIconState = EEPROM.read(sunIcon);
   rainLampState = EEPROM.read(rainLamp);
-  daytimeLampState = EEPROM.read(daytimeLamp);
   alertActiveState = EEPROM.read(alertSavingState);
   setWeatherLamps();
 
@@ -89,9 +87,11 @@ void setup()   {
   TCCR1B = 0;
 
   // Set timer1_counter to the correct value for our interrupt interval
-  //timer1_counter = 64886;   // preload timer 65536-16MHz/256/100Hz
-  //timer1_counter = 64286;   // preload timer 65536-16MHz/256/50Hz
-  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2HzM
+  //timer1_counter = 64886;   // preload timer 65536-16MHz/256 == 96.1538Hz
+  //timer1_counter = 64286;   // preload timer 65536-16MHz/256 == 50Hz
+//  timer1_counter = 34286;   // preload timer 65536-16MHz/256 == 2HzM
+
+  timer1_counter = 62411;   // preload timer 65536-16MHz/256 == 20HzM
 
   TCNT1 = timer1_counter;   // preload timer
   TCCR1B |= (1 << CS12);    // 256 prescaler 
@@ -103,19 +103,41 @@ void setup()   {
   Serial.println(">>Started");
 }
 
+const int rainLampMin = 10;
+const int rainLampMax = 255;
+const float rainLampHalfCycleTime = 0.7;
+const float secondsPerInterrupt = 0.05;
+const float interruptsPerHalfCycle = rainLampHalfCycleTime / secondsPerInterrupt;
+const int stepsPerHalfCycle = int(float(rainLampMax-rainLampMin) / interruptsPerHalfCycle);
+
+boolean waxing = true;
+int currentRainLampBrightness = 0;
+
 ISR(TIMER1_OVF_vect)        // interrupt service routine 
 {
   TCNT1 = timer1_counter;   // preload timer
   weatherCheckDue++;
   if (alertActiveState) {
-    digitalWrite(rainLamp, digitalRead(rainLamp) ^ 1);
+    if (waxing) {
+      currentRainLampBrightness += stepsPerHalfCycle;
+      if (currentRainLampBrightness >= rainLampMax) {
+        currentRainLampBrightness = rainLampMax;
+        waxing = false;
+      }
+    } else {
+      currentRainLampBrightness -= stepsPerHalfCycle;
+      if (currentRainLampBrightness <= rainLampMin) {
+        currentRainLampBrightness = rainLampMin;
+        waxing = true;
+      }
+    }
+    analogWrite(rainLamp,currentRainLampBrightness);
   }
 }
 
 void setWeatherLamps() {
   digitalWrite(cloudIcon, cloudIconState);
   digitalWrite(sunIcon, sunIconState);
-  digitalWrite(daytimeLamp, daytimeLampState);
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
@@ -123,7 +145,6 @@ void setWeatherLamps() {
   EEPROM.write(cloudIcon, cloudIconState);
   EEPROM.write(sunIcon, sunIconState);
   EEPROM.write(rainLamp, rainLampState);
-  EEPROM.write(daytimeLamp, daytimeLampState);
   EEPROM.write(alertSavingState, alertActiveState);
 }
 
@@ -158,11 +179,15 @@ void getLatestWeather() {
 }
 
 void decodeWeather(char * weather) {
+  int oldRainLampState = rainLampState;
+  int oldAlertActiveState = alertActiveState;
   cloudIconState = weather[0] - 48;
   sunIconState = weather[1] - 48;
-  daytimeLampState = weather[3] - 48;
-  alertActiveState = weather[4] - 48;
   rainLampState = weather[2] - 48;
+  alertActiveState = weather[3] - 48;
+  if (alertActiveState != oldAlertActiveState) {
+    currentRainLampBrightness = oldRainLampState ? 255 : 0;
+  }
   setWeatherLamps();
 }
 
