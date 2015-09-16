@@ -5,6 +5,7 @@
 #include <EEPROM.h>
 #include "errno.h"
 #include <utility/w5100.h>
+#include <ADCTouch.h>
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
@@ -12,14 +13,17 @@
 EthernetServer server(80);
 
 // light control
-int lightOne =  7;
-int lightTwo = 6;
-int lightThree = 5;
+int lightOne =  8;
+int lightTwo = 9;
+int lightThree = 7;
 int overrideSwitch = 2;
 
+// touch sensor
+int ref0, ref1, ref2;       //reference values to remove offset
+
 // weather display
-int cloudIcon = 8;
-int sunIcon = 9;
+int cloudIcon = 6;
+int sunIcon = 5;
 int rainLamp = 3;
 //int daytimeLamp = 3;
 
@@ -32,7 +36,6 @@ int sunIconState;
 int rainLampState;
 //int daytimeLampState;
 int timer1_counter;
-volatile int weatherCheckDue = 0;
 
 // state flags :
 int lightOneState;
@@ -50,6 +53,12 @@ void setup()   {
   pinMode(cloudIcon, OUTPUT);
   pinMode(sunIcon, OUTPUT);
   pinMode(rainLamp, OUTPUT);
+
+  // setup touch sensor
+  // This is from here : http://playground.arduino.cc/Code/ADCTouch
+  ref0 = ADCTouch.read(A0, 500);    //create reference values to
+  ref1 = ADCTouch.read(A1, 500);      //account for the capacitance of the pad
+  ref2 = ADCTouch.read(A2, 500);      //account for the capacitance of the pad
 
   // setup serial :
   Serial.begin(9600);
@@ -89,7 +98,7 @@ void setup()   {
   // Set timer1_counter to the correct value for our interrupt interval
   //timer1_counter = 64886;   // preload timer 65536-16MHz/256 == 96.1538Hz
   //timer1_counter = 64286;   // preload timer 65536-16MHz/256 == 50Hz
-//  timer1_counter = 34286;   // preload timer 65536-16MHz/256 == 2HzM
+  //  timer1_counter = 34286;   // preload timer 65536-16MHz/256 == 2HzM
 
   timer1_counter = 62411;   // preload timer 65536-16MHz/256 == 20HzM
 
@@ -112,11 +121,12 @@ const int stepsPerHalfCycle = int(float(rainLampMax-rainLampMin) / interruptsPer
 
 boolean waxing = true;
 int currentRainLampBrightness = 0;
+volatile unsigned int interruptCounter = 0;
 
 ISR(TIMER1_OVF_vect)        // interrupt service routine 
 {
   TCNT1 = timer1_counter;   // preload timer
-  weatherCheckDue++;
+  interruptCounter++;
   if (alertActiveState) {
     if (waxing) {
       currentRainLampBrightness += stepsPerHalfCycle;
@@ -124,7 +134,8 @@ ISR(TIMER1_OVF_vect)        // interrupt service routine
         currentRainLampBrightness = rainLampMax;
         waxing = false;
       }
-    } else {
+    } 
+    else {
       currentRainLampBrightness -= stepsPerHalfCycle;
       if (currentRainLampBrightness <= rainLampMin) {
         currentRainLampBrightness = rainLampMin;
@@ -157,24 +168,56 @@ const int weatherBufferLen = 10;
 char weatherBuffer[weatherBufferLen];
 
 void getLatestWeather() {
-  if (weatherCheckDue>60) {
+  static int lineLength = 0;
+  static boolean readingWeatherReply = false;
+  static boolean finish = false;
+
+//Serial.println(interruptCounter);
+//Serial.println(interruptCounter % 60);
+  if (interruptCounter >= 60) {
+    Serial.println("weather poll");
+    // poll weather
     int connectStatusCode = weatherClient.connect(weatherServer,80);
+    Serial.println(connectStatusCode);
     if (connectStatusCode) {
       weatherClient.println("GET /weather/");
       weatherClient.println();
       int lineLength = 0;
-      while (weatherClient.connected()) {
-        while (weatherClient.available()) {
-          weatherBuffer[lineLength] = weatherClient.read();
-          lineLength++;
-        }
+      readingWeatherReply = true;
+      Serial.println("started reading weather");
+    }
+    interruptCounter = 0;
+    finish = false;
+  }
+  
+  if (interruptCounter > 20) {
+    // reset/abort timeout
+    if (readingWeatherReply) {
+      Serial.println("timed out waiting for weather, resetting...");
+      lineLength = 0;
+      finish = true;
+    }
+  }
+  if (readingWeatherReply) {
+    if (weatherClient.connected()) {
+      if (weatherClient.available()) {
+        weatherBuffer[lineLength] = weatherClient.read();
+        lineLength++;
+        Serial.write(weatherBuffer[lineLength-1]);
       }
-      weatherBuffer[lineLength] = 0;
-      weatherClient.stop();
-      weatherClient.flush();
-      decodeWeather(weatherBuffer);
-    } 
-    weatherCheckDue = 0;
+    } else {
+      Serial.println("finished reading weather cleanly");
+      finish = true;
+    }
+  }
+  if (finish) {
+    Serial.println("finishing on socket");
+    readingWeatherReply = false;
+    weatherBuffer[lineLength] = 0;
+    weatherClient.stop();
+    weatherClient.flush();
+    decodeWeather(weatherBuffer);
+    finish = false;
   }
 }
 
@@ -233,8 +276,50 @@ void allOff() {
   lightThreeState = HIGH;
 }
 
-void loop()                     
-{
+boolean sensor1BeingTouched = false;
+boolean sensor2BeingTouched = false;
+boolean sensor3BeingTouched = false;
+
+void checkTouchSensor() {
+  int value0 = ADCTouch.read(A0);   //no second parameter
+  int value1 = ADCTouch.read(A1);     //   --> 100 samples
+  int value2 = ADCTouch.read(A2);     //   --> 100 samples
+
+  value0 -= ref0;       //remove offset
+  value1 -= ref1;
+  value2 -= ref2;
+
+  if (value0 > 40) {
+    if (!sensor1BeingTouched) {
+      allOn();
+    }
+    sensor1BeingTouched = true;
+  } 
+  else {
+    sensor1BeingTouched = false;
+  }
+
+  if (value1 > 40) {
+    if (!sensor2BeingTouched) {
+      allOff();
+    }
+    sensor2BeingTouched = true;
+  } 
+  else {
+    sensor2BeingTouched = false;
+  }
+
+  if (value2 > 40) {
+    if (!sensor3BeingTouched) {
+    }
+    sensor3BeingTouched = true;
+  } 
+  else {
+    sensor3BeingTouched = false;
+  }  
+}
+
+void readSerialCommands() {
   if (Serial.available() > 0) {
     // read the incoming byte:
     int incomingByte = Serial.read();
@@ -291,7 +376,10 @@ void loop()
       } 
     }
   }
+}
 
+/*
+void readInputButton() {
   int override = digitalRead(overrideSwitch);
   if (override == HIGH) {
     Serial.println("high");
@@ -309,7 +397,14 @@ void loop()
     }
     delay(1);
   }
+}
+*/
 
+void loop()                     
+{
+  readSerialCommands();
+  checkTouchSensor();
+  //  readInputButton();
   listenForEthernetClients();
   getLatestWeather();
   wdt_reset(); // reset the wdt
@@ -769,6 +864,10 @@ void listenForEthernetClients() {
     }
   }
 }
+
+
+
+
 
 
 
