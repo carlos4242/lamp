@@ -5,6 +5,7 @@
 #include "errno.h"
 #include <utility/w5100.h>
 #include <ADCTouch.h>
+#include <ApplicationMonitor.h>
 
 #define enable_serial_debug 1
 
@@ -21,6 +22,8 @@
  *
  */
 
+// Watchdog dump class
+Watchdog::CApplicationMonitor ApplicationMonitor;
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
@@ -129,7 +132,9 @@ void setup()   {
   interrupts();             // enable all interrupts
 
     // start the watchdog timer :
-  wdt_enable(WDTO_4S); // have the wdt reset the chip
+  ApplicationMonitor.Dump(Serial);
+  ApplicationMonitor.EnableWatchdog(Watchdog::CApplicationMonitor::Timeout_4s);
+  //wdt_enable(WDTO_4S); // have the wdt reset the chip
 
   // start the ethernet server :
   server.begin();
@@ -432,7 +437,9 @@ void loop()
   checkTouchSensor();
   listenForEthernetClients();
   getLatestWeather();
-  wdt_reset(); // reset the wdt
+  //wdt_reset(); // reset the wdt
+  ApplicationMonitor.IAmAlive();
+//  ApplicationMonitor.SetData(g_nIterations++);
 }
 
 
