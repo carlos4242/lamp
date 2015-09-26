@@ -5,6 +5,7 @@
 #include "errno.h"
 #include <utility/w5100.h>
 #include <ADCTouch.h>
+// sourced from https://github.com/Megunolink/ArduinoCrashMonitor
 #include <ApplicationMonitor.h>
 
 #define enable_serial_debug 1
@@ -56,7 +57,7 @@ int timer1_counter;
 boolean lightOneState;
 boolean lightTwoState;
 boolean lightThreeState;
-boolean debug = true;
+boolean debug = false;
 
 volatile unsigned int interruptCounter = 0;
 int currentRainLampBrightness = 0;
