@@ -6,6 +6,7 @@
 #include <utility/w5100.h>
 #include <ADCTouch.h>
 // sourced from https://github.com/Megunolink/ArduinoCrashMonitor
+// referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
 #include <ApplicationMonitor.h>
 
 #define enable_serial_debug 1
