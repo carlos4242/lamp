@@ -56,7 +56,7 @@ int timer1_counter;
 boolean lightOneState;
 boolean lightTwoState;
 boolean lightThreeState;
-boolean debug = true;
+boolean debug = false;
 
 volatile unsigned int interruptCounter = 0;
 int currentRainLampBrightness = 0;
