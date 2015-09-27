@@ -14,8 +14,10 @@
 #ifdef enable_serial_debug
 #include <SPI.h>
 #define DEBUG_OUT(param) Serial.println(param)
+#define HTTP_DEBUG_OUT(param) {if (debug) {Serial.println(param);}}
 #else
 #define DEBUG_OUT(param)
+#define HTTP_DEBUG_OUT(param)
 #endif
 
 /*
@@ -31,6 +33,7 @@ Watchdog::CApplicationMonitor ApplicationMonitor;
 // with the IP address and port you want to use
 // (port 80 is default for HTTP):
 EthernetServer server(80);
+EthernetClient weatherClient;
 
 // light control
 byte lightOne =  8;
@@ -136,7 +139,6 @@ void setup()   {
   // start the watchdog timer :
   ApplicationMonitor.Dump(Serial);
   ApplicationMonitor.EnableWatchdog(Watchdog::CApplicationMonitor::Timeout_4s);
-  //wdt_enable(WDTO_4S); // have the wdt reset the chip
 
   // start the ethernet server :
   server.begin();
@@ -201,7 +203,6 @@ ISR(TIMER1_OVF_vect)
 
 
 void getLatestWeather() {
-  static EthernetClient weatherClient;
   static const byte weatherServerAddress[] = {
     10, 0, 1, 102
   };
@@ -678,44 +679,57 @@ void runWebServer() {
   static EthernetClient client = NULL;
   static const int lineBufferLen = 200;
   static char lineBuffer[lineBufferLen];
-
-  if (client) {
-    // we have a client, fill up the buffers with data
-    if (client.connected()) {
-      if (gotHeaders) {
-        // if we have already got the headers, the line we are receiving may be POST body data and may not end with a \n
-        // so we should carry on reading bytes into the buffer until there are none left
-        // the whole POST data will then be in the "line" buffer, which might actually have multiple lines in
-        if (client.available()) {
-          if (lineLength < lineBufferLen) { // check for buffer overrun
-            lineBuffer[lineLength] = client.read();
-            lineLength++;
+  if (!client || !client.connected()) {
+    // we don't yet have a connection from the web client, check if one is available
+    client = server.available();
+    if (client) {
+      HTTP_DEBUG_OUT(F("got a client, cleaning up server ready for use"));
+      // set everything up for a new client
+      cleanupWebServer();
+    }
+  } else {
+    while (client.connected()) {
+      // we have a connected client, fill up the buffers with data
+      while (!finishedReadingLine) {
+        if (gotHeaders) {
+          HTTP_DEBUG_OUT(F("got headers"));
+          // if we have already got the headers, the line we are receiving may be POST body data and may not end with a \n
+          // so we should carry on reading bytes into the buffer until there are none left
+          // the whole POST data will then be in the "line" buffer, which might actually have multiple lines in
+          if (client.available()) {
+            if (lineLength < lineBufferLen) { // check for buffer overrun
+              lineBuffer[lineLength] = client.read();
+              lineLength++;
+            } else {
+              // we have a buffer overrun somehow, reset the connection, it's not safe, stop the request and clean up everything
+              client.stop();
+              cleanupWebServer();
+              client = NULL;
+              DEBUG_OUT(F("buffer overrun occurred, POST body may have been too big"));
+            }
           } else {
-            // we have a buffer overrun somehow, reset the connection, it's not safe, stop the request and clean up everything
-            client.stop();
-            cleanupWebServer();
-            client = NULL;
-            Serial.println(F("buffer overrun occurred, POST body may have been too big"));
+            finishedReadingLine = true;
+            HTTP_DEBUG_OUT(lineLength);
           }
-        } else {
+        }
+        else {
+          lineLength = client.readBytesUntil('\n', lineBuffer, lineBufferLen);
           finishedReadingLine = true;
         }
       }
-      else {
-        lineLength = client.readBytesUntil('\n', lineBuffer, lineBufferLen);
-        finishedReadingLine = true;
-      }
 
       if (finishedReadingLine) {
+        HTTP_DEBUG_OUT(F("finished reading line"));
         // close the buffer off to make it a valid C string
         lineBuffer[lineLength] = 0;
-        if (debug) {
+        if (false && debug) {
           String ll = String("[") + lineLength + String("]:");
-          Serial.print(ll);
+          DEBUG_OUT(ll);
           DEBUG_OUT(lineBuffer);
         }
         // now interpret the line or, if it's a POST buffer, interpret the buffer
         if (firstLine) {
+          HTTP_DEBUG_OUT(F("first line read"));
           output = readRequestLine(lineBuffer);
           firstLine = false;
         }
@@ -723,42 +737,49 @@ void runWebServer() {
           // an http request ends with a blank line
           // wait for an empty line to indicate the end of the header, then wait for post data if required
           if (strlen(lineBuffer) <= 1) {
+            HTTP_DEBUG_OUT(F("header end line read"));
             gotHeaders = true;
           }
           else if (gotHeaders) {
             // next line is POST data
             if (postFunction) {
+              HTTP_DEBUG_OUT(F("calling post function"));
               output = postFunction(lineBuffer);
             }
           }
           if (gotHeaders && (output || !postFunction)) {
             // if we have got all the headers and we either
             if (sendFavicon) {
+              HTTP_DEBUG_OUT(F("sending favicon"));
               sendFaviconToClient(client);
             }
             else if (sendWebsite) {
+              HTTP_DEBUG_OUT(F("sending website"));
               writeWebsite(client);
             }
             else {
+              HTTP_DEBUG_OUT(F("sending web service reply"));
+              if (postFunction) {
+                HTTP_DEBUG_OUT(F("web service reply is from POST function"));
+              } else {
+                HTTP_DEBUG_OUT(F("web service reply is from GET"));
+              }
+              HTTP_DEBUG_OUT(output);
               writeWebServiceReply(client, output);
             }
+            HTTP_DEBUG_OUT(F("finished web service, closing socket"));
             // give the web browser time to receive the data
             delay(1);
             // close the connection:
             client.stop();
+            client.flush();
+            HTTP_DEBUG_OUT(F("done"));
+            cleanupWebServer();
           }
         }
+        finishedReadingLine = false;
+        lineLength = 0;
       }
-    }
-  } else {
-    // we don't yet have a connection from the web client, check if one is available
-    client = server.available();
-    if (client) {
-      if (debug) {
-        DEBUG_OUT(F("got a client"));
-      }
-      // set everything up for a new client
-      cleanupWebServer();
     }
   }
 }
@@ -823,9 +844,7 @@ static const PROGMEM byte fd[] = {
 };
 
 void sendFaviconToClient(EthernetClient client) {
-  if (debug) {
-    DEBUG_OUT(F("FAVICON"));
-  }
+  HTTP_DEBUG_OUT(F("FAVICON"));
 
   static const int favIconBufferLength = 200;
   byte * faviconInRam = (byte*)malloc(favIconBufferLength);
@@ -860,6 +879,7 @@ void writeWebsiteSection(EthernetClient client, const char * section, const int 
   }
   else {
     DEBUG_OUT(F("could not write website section - could not malloc"));
+    DEBUG_OUT(errno);
   }
 }
 
