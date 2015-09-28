@@ -687,10 +687,8 @@ void runWebServer() {
     }
   } else {
     while (client.connected() && interruptCounter < 100) {
-      Serial.println(interruptCounter);
       // we have a connected client, fill up the buffers with data
       while (!finishedReadingLine && interruptCounter < 100) {
-        Serial.println(interruptCounter);
         if (gotHeaders) {
           HTTP_DEBUG_OUT(F("got headers"));
           // if we have already got the headers, the line we are receiving may be POST body data and may not end with a \n
