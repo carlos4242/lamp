@@ -468,7 +468,7 @@ void readSerialCommands() {
 int lightToSet = 0;
 boolean sendFavicon;
 boolean sendWebsite;
-char * (*postFunction)(const char * postBody);
+const char * (*postFunction)(const char * postBody);
 
 // useful functions
 
@@ -510,7 +510,7 @@ void cornerOnly() {
   lightThreeState = LOW;
 }
 
-char * getLightStatus(int light) {
+const char * getLightStatus(int light) {
   int lightStatus;
   if (light == 1) {
     lightStatus = lightOneState;
@@ -539,11 +539,11 @@ char * getLightStatus(int light) {
   return statusBuffer;
 }
 
-char * getLightsStatus() {
+const char * getLightsStatus() {
   return statusString();
 }
 
-char * changeLightStatus(const char * postBody) {
+const char * changeLightStatus(const char * postBody) {
   static const char * onSwitchParam = "on=";
   // use light to define which light is affected and postData to define how it's affected
   int lightSwitchValue;
@@ -574,7 +574,7 @@ char * changeLightStatus(const char * postBody) {
   }
 }
 
-char * changeLightsStatus(const char * postBody) {
+const char * changeLightsStatus(const char * postBody) {
   static const char * allOnParam = "allOn=1";
   static const char * allOffParam = "allOff=1";
 
@@ -594,7 +594,7 @@ char * changeLightsStatus(const char * postBody) {
   }
 }
 
-char * readRequestLine(const char * requestLine) {
+const char * readRequestLine(const char * requestLine) {
   static const char * getLightsString = "GET /lights";
   static const char * getLightString = "GET /lights/";
   static const char * getFavicon = "GET /favicon";
@@ -658,7 +658,7 @@ static boolean firstLine = true;
 static boolean gotHeaders = false;
 static boolean postDataRead = false;
 static boolean finishedReadingLine = false;
-static char * output = 0;
+static const char * output = 0;
 static int lineLength = 0;
 
 void cleanupWebServer() {
@@ -701,6 +701,7 @@ void runWebServer() {
             } else {
               // we have a buffer overrun somehow, reset the connection, it's not safe, stop the request and clean up everything
               client.stop();
+              client.flush();
               cleanupWebServer();
               DEBUG_OUT(F("buffer overrun occurred, POST body may have been too big"));
             }
@@ -777,6 +778,14 @@ void runWebServer() {
         finishedReadingLine = false;
         lineLength = 0;
       }
+    }
+
+    if (interruptCounter >= 100) {
+       // we have run out of time, give up
+      client.stop();
+      client.flush();
+      cleanupWebServer();
+      DEBUG_OUT(F("ran out of time, stopping the webserver and restarting it"));
     }
   }
 }
