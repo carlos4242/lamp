@@ -191,6 +191,28 @@ ISR(TIMER1_OVF_vect)
 
 
 
+/*
+ *
+ *  MAIN LOOP
+ *
+ */
+
+
+void loop()
+{
+  readSerialCommands();
+  checkTouchSensor();
+  getLatestWeather();
+  runWebServer();
+  ApplicationMonitor.IAmAlive();
+}
+
+
+
+
+
+
+
 
 
 
@@ -219,7 +241,6 @@ void getLatestWeather() {
     if (connectStatusCode) {
       weatherClient.println(F("GET /weather/"));
       weatherClient.println();
-      int lineLength = 0;
       readingWeatherReply = true;
     }
     interruptCounter = 0;
@@ -422,29 +443,6 @@ void readSerialCommands() {
     }
   }
 }
-
-
-
-
-
-
-/*
- *
- *  MAIN LOOP
- *
- */
-
-
-void loop()
-{
-  readSerialCommands();
-  checkTouchSensor();
-  getLatestWeather();
-  runWebServer();
-  ApplicationMonitor.IAmAlive();
-}
-
-
 
 
 
@@ -676,10 +674,10 @@ void cleanupWebServer() {
 }
 
 void runWebServer() {
-  static EthernetClient client = NULL;
+  static EthernetClient client;
   static const int lineBufferLen = 200;
   static char lineBuffer[lineBufferLen];
-  if (!client || !client.connected()) {
+  if (!client.connected()) {
     // we don't yet have a connection from the web client, check if one is available
     client = server.available();
     if (client) {
@@ -688,9 +686,11 @@ void runWebServer() {
       cleanupWebServer();
     }
   } else {
-    while (client.connected()) {
+    while (client.connected() && interruptCounter < 100) {
+      Serial.println(interruptCounter);
       // we have a connected client, fill up the buffers with data
-      while (!finishedReadingLine) {
+      while (!finishedReadingLine && interruptCounter < 100) {
+        Serial.println(interruptCounter);
         if (gotHeaders) {
           HTTP_DEBUG_OUT(F("got headers"));
           // if we have already got the headers, the line we are receiving may be POST body data and may not end with a \n
@@ -704,7 +704,6 @@ void runWebServer() {
               // we have a buffer overrun somehow, reset the connection, it's not safe, stop the request and clean up everything
               client.stop();
               cleanupWebServer();
-              client = NULL;
               DEBUG_OUT(F("buffer overrun occurred, POST body may have been too big"));
             }
           } else {
