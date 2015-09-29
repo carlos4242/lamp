@@ -251,7 +251,7 @@ void getLatestWeather() {
   if (interruptCounter > 20) {
     // reset/abort timeout
     if (readingWeatherReply) {
-      DEBUG_OUT(F("reset weather connection"));
+      DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
       lineLength = 0;
       finish = true;
     }
@@ -440,6 +440,10 @@ void readSerialCommands() {
       else {
         DEBUG_OUT(F("http debug off"));
       }
+    }
+    else if (incomingByte == 82) { // R
+      ApplicationMonitor.ResetLogData();
+      Serial.println(F("Application Monitor log data reset"));
     }
   }
 }
