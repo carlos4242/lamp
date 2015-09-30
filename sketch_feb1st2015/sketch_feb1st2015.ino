@@ -19,6 +19,7 @@
 #define DEBUG_OUT(param)
 #define HTTP_DEBUG_OUT(param)
 #endif
+#define __ams(stage) ApplicationMonitor.SetData(stage);
 
 /*
  *
@@ -75,8 +76,40 @@ byte currentRainLampBrightness = 0;
  *
  */
 
+// these show where the app crashed
+enum EDebugStatusConstants {
+  Startup = 0,
+  Interrupt = 1,
+  ReadingSerial = 2,
+  CheckingTouchSensor = 3,
+  GettingWeather = 4,
+  RunningWebServer = 5,
+  Ending = 6,
+  GotWeatherServerConnection = 7,
+  SentGetWeatherCommand = 8,
+  GettingWeatherReply = 9,
+  ClosingWeatherConnection = 10,
+  ReadTouchSensor = 11,
+  ReadSerialCommand = 12,
+  GotWebserverClient = 13,
+  WebServerWaitingForLines = 14,
+  WebServerWaitingForLine = 15,
+  WebServerGotLine = 16,
+  WebServerReadingRequest = 17,
+  WebServerRunningPostFn = 18,
+  WebServerSendingReply = 19,
+  WebServerSendingFavicon = 20,
+  WebServerSendingWebsite = 21,
+  WebServerSendingWebserviceOutput = 22,
+  WebServerWaitingToClose = 23,
+  WebServerClosing = 24,
+  WebServerClosed = 25,
+  WebServerBailing = 26
+};
 
 void setup()   {
+  __ams(Startup)
+
   // setup pins :
   pinMode(lightOne, OUTPUT);
   pinMode(lightTwo, OUTPUT);
@@ -167,6 +200,10 @@ ISR(TIMER1_OVF_vect)
   // and pulsing the warning lamp
   static const byte stepsPerHalfCycle = byte(float(rainLampMax - rainLampMin) / (rainLampHalfCycleTime / secondsPerInterrupt));
   static boolean waxing = true;
+  static uint32_t currentDs = 0;
+
+  currentDs = ApplicationMonitor.GetData();
+  __ams(Interrupt)
 
   TCNT1 = timer1_counter;   // preload timer
   interruptCounter++;
@@ -187,6 +224,7 @@ ISR(TIMER1_OVF_vect)
     }
     analogWrite(rainLamp, currentRainLampBrightness);
   }
+  __ams(currentDs)
 }
 
 
@@ -200,10 +238,19 @@ ISR(TIMER1_OVF_vect)
 
 void loop()
 {
+  __ams(ReadingSerial)
   readSerialCommands();
+
+  __ams(CheckingTouchSensor)
   checkTouchSensor();
+
+  __ams(GettingWeather)
   getLatestWeather();
+
+  __ams(RunningWebServer)
   runWebServer();
+
+  __ams(Ending)
   ApplicationMonitor.IAmAlive();
 }
 
@@ -223,7 +270,6 @@ void loop()
  */
 
 
-
 void getLatestWeather() {
   static const byte weatherServerAddress[] = {
     10, 0, 1, 102
@@ -238,11 +284,17 @@ void getLatestWeather() {
   if (interruptCounter >= 60) {
     // poll weather
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, 80);
+
+    __ams(GotWeatherServerConnection)
+
     if (connectStatusCode) {
       weatherClient.println(F("GET /weather/"));
       weatherClient.println();
       readingWeatherReply = true;
+
+      __ams(SentGetWeatherCommand)
     }
+
     interruptCounter = 0;
     finish = false;
     lineLength = 0;
@@ -257,7 +309,12 @@ void getLatestWeather() {
     }
   }
   if (readingWeatherReply) {
+
+
     if (weatherClient.connected()) {
+
+      __ams(GettingWeatherReply)
+
       if (weatherClient.available()) {
         weatherBuffer[lineLength] = weatherClient.read();
         lineLength++;
@@ -268,6 +325,8 @@ void getLatestWeather() {
     }
   }
   if (finish) {
+    __ams(ClosingWeatherConnection)
+
     readingWeatherReply = false;
     weatherBuffer[lineLength] = 0;
     weatherClient.stop();
@@ -324,6 +383,8 @@ void checkTouchSensor() {
   int value0 = ADCTouch.read(A0);   //no second parameter
   int value1 = ADCTouch.read(A1);     //   --> 100 samples
   int value2 = ADCTouch.read(A2);     //   --> 100 samples
+
+  __ams(ReadTouchSensor)
 
   value0 -= ref0;       //remove offset
   value1 -= ref1;
@@ -389,6 +450,9 @@ void readSerialCommands() {
   if (Serial.available() > 0) {
     // read the incoming byte:
     int incomingByte = Serial.read();
+
+    __ams(ReadSerialCommand)
+
     if (incomingByte == 97) { // a
       lightOneState = HIGH;
       setLines();
@@ -684,14 +748,22 @@ void runWebServer() {
   if (!client.connected()) {
     // we don't yet have a connection from the web client, check if one is available
     client = server.available();
+
+    __ams(GotWebserverClient)
+
     if (client) {
       HTTP_DEBUG_OUT(F("got a client, cleaning up server ready for use"));
       // set everything up for a new client
       cleanupWebServer();
     }
   } else {
+    __ams(WebServerWaitingForLines)
+
     while (client.connected() && interruptCounter < 100) {
       // we have a connected client, fill up the buffers with data
+
+      __ams(WebServerWaitingForLine)
+
       while (!finishedReadingLine && interruptCounter < 100) {
         if (gotHeaders) {
           HTTP_DEBUG_OUT(F("got headers"));
@@ -721,6 +793,9 @@ void runWebServer() {
       }
 
       if (finishedReadingLine) {
+
+        __ams(WebServerGotLine)
+
         HTTP_DEBUG_OUT(F("finished reading line"));
         // close the buffer off to make it a valid C string
         lineBuffer[lineLength] = 0;
@@ -732,6 +807,8 @@ void runWebServer() {
         // now interpret the line or, if it's a POST buffer, interpret the buffer
         if (firstLine) {
           HTTP_DEBUG_OUT(F("first line read"));
+          __ams(WebServerReadingRequest)
+
           output = readRequestLine(lineBuffer);
           firstLine = false;
         }
@@ -743,20 +820,25 @@ void runWebServer() {
             gotHeaders = true;
           }
           else if (gotHeaders) {
+            __ams(WebServerRunningPostFn)
+
             // next line is POST data
             if (postFunction) {
               HTTP_DEBUG_OUT(F("calling post function"));
               output = postFunction(lineBuffer);
             }
           }
+
           if (gotHeaders && (output || !postFunction)) {
             // if we have got all the headers and we either
             if (sendFavicon) {
               HTTP_DEBUG_OUT(F("sending favicon"));
+              __ams(WebServerSendingFavicon)
               sendFaviconToClient(client);
             }
             else if (sendWebsite) {
               HTTP_DEBUG_OUT(F("sending website"));
+              __ams(WebServerSendingWebsite)
               writeWebsite(client);
             }
             else {
@@ -767,16 +849,20 @@ void runWebServer() {
                 HTTP_DEBUG_OUT(F("web service reply is from GET"));
               }
               HTTP_DEBUG_OUT(output);
+              __ams(WebServerSendingWebserviceOutput)
               writeWebServiceReply(client, output);
             }
             HTTP_DEBUG_OUT(F("finished web service, closing socket"));
             // give the web browser time to receive the data
+            __ams(WebServerWaitingToClose)
             delay(1);
             // close the connection:
+            __ams(WebServerClosing)
             client.stop();
             client.flush();
             HTTP_DEBUG_OUT(F("done"));
             cleanupWebServer();
+            __ams(WebServerClosed)
           }
         }
         finishedReadingLine = false;
@@ -785,7 +871,9 @@ void runWebServer() {
     }
 
     if (interruptCounter >= 100) {
-       // we have run out of time, give up
+      __ams(WebServerBailing)
+
+      // we have run out of time, give up
       client.stop();
       client.flush();
       cleanupWebServer();
