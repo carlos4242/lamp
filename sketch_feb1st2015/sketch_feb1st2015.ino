@@ -45,17 +45,21 @@ byte lightThree = 7;
 int ref0, ref1, ref2;       //reference values to remove offset
 
 // weather display
-byte cloudIcon = 6;
+byte cloudIcon = 4;
 byte sunIcon = 5;
 byte rainLamp = 3;
+byte moonIcon = 6;
 
 byte alertSavingState = 14;
+byte sunFlashingSavingState = 15;
 
 // weather state
 boolean alertActiveState;
 boolean cloudIconState;
 boolean sunIconState;
 boolean rainLampState;
+boolean moonIconState;
+boolean sunFlashingState;
 int timer1_counter;
 
 // state flags :
@@ -148,6 +152,8 @@ void setup()   {
   sunIconState = EEPROM.read(sunIcon);
   rainLampState = EEPROM.read(rainLamp);
   alertActiveState = EEPROM.read(alertSavingState);
+  moonIconState = EEPROM.read(moonIcon);
+  sunFlashingState = EEPROM.read(sunFlashingSavingState);
   setWeatherLamps();
 
   // initialize timer1
@@ -207,7 +213,7 @@ ISR(TIMER1_OVF_vect)
 
   TCNT1 = timer1_counter;   // preload timer
   interruptCounter++;
-  if (alertActiveState) {
+  if (alertActiveState) {//||sunFlashingState) {
     if (waxing) {
       currentRainLampBrightness += stepsPerHalfCycle;
       if (currentRainLampBrightness >= rainLampMax) {
@@ -222,7 +228,13 @@ ISR(TIMER1_OVF_vect)
         waxing = true;
       }
     }
-    analogWrite(rainLamp, currentRainLampBrightness);
+    if (alertActiveState) {
+      analogWrite(rainLamp, currentRainLampBrightness);
+    }
+//    if (sunFlashingState) {
+//      analogWrite(sunIcon, currentRainLampBrightness);
+//      analogWrite(moonIcon, currentRainLampBrightness);
+//    }
   }
   __ams(currentDs)
 }
@@ -339,19 +351,26 @@ void getLatestWeather() {
 void decodeWeather(char * weather) {
   boolean oldRainLampState = rainLampState;
   boolean oldAlertActiveState = alertActiveState;
+  boolean oldSunFlashingState = sunFlashingState;
   cloudIconState = weather[0] - 48;
   sunIconState = weather[1] - 48;
   rainLampState = weather[2] - 48;
   alertActiveState = weather[3] - 48;
-  if (alertActiveState != oldAlertActiveState) {
-    currentRainLampBrightness = oldRainLampState ? 255 : 0;
+  moonIconState = weather[4] - 48;
+  sunFlashingState = weather[5] - 48;
+  if ((alertActiveState && !oldAlertActiveState) || (sunFlashingState && !oldSunFlashingState)) {
+    Serial.println(F("resetting brightness"));
+    currentRainLampBrightness = 128;
   }
   setWeatherLamps();
 }
 
 void setWeatherLamps() {
   digitalWrite(cloudIcon, cloudIconState);
-  digitalWrite(sunIcon, sunIconState);
+  if (!sunFlashingState) {
+    digitalWrite(sunIcon, sunIconState);
+    digitalWrite(moonIcon, moonIconState);
+  }
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
@@ -360,6 +379,8 @@ void setWeatherLamps() {
   EEPROM.write(sunIcon, sunIconState);
   EEPROM.write(rainLamp, rainLampState);
   EEPROM.write(alertSavingState, alertActiveState);
+  EEPROM.write(moonIcon,moonIconState);
+  EEPROM.write(sunFlashingSavingState,sunFlashingState);
 }
 
 
