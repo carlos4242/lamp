@@ -134,7 +134,7 @@ void setup()   {
   IPAddress ip(10, 0, 1, 160);
   Ethernet.begin(mac, ip);
 
-  // shorten timeout
+  // shorten timeout http://forum.arduino.cc/index.php?topic=49401.0
   W5100.setRetransmissionTime(0x3E8);
   W5100.setRetransmissionCount(1);
 
@@ -306,6 +306,7 @@ void getLatestWeather() {
       DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
       lineLength = 0;
       finish = true;
+      interruptCounter = 0;
     }
   }
   if (readingWeatherReply) {
