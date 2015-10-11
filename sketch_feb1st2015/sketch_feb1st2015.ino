@@ -19,7 +19,8 @@
 #define DEBUG_OUT(param)
 #define HTTP_DEBUG_OUT(param)
 #endif
-#define __ams(stage) ApplicationMonitor.SetData(stage);
+
+//#define __ams(stage) ApplicationMonitor.SetData(stage);
 
 /*
  *
@@ -45,17 +46,21 @@ byte lightThree = 7;
 int ref0, ref1, ref2;       //reference values to remove offset
 
 // weather display
-byte cloudIcon = 6;
+byte cloudIcon = 4;
 byte sunIcon = 5;
 byte rainLamp = 3;
+byte moonIcon = 6;
 
 byte alertSavingState = 14;
+byte sunFlashingSavingState = 15;
 
 // weather state
 boolean alertActiveState;
 boolean cloudIconState;
 boolean sunIconState;
 boolean rainLampState;
+boolean moonIconState;
+boolean sunFlashingState;
 int timer1_counter;
 
 // state flags :
@@ -65,7 +70,7 @@ boolean lightThreeState;
 boolean debug = false;
 
 volatile unsigned int interruptCounter = 0;
-byte currentRainLampBrightness = 0;
+int currentRainLampBrightness = 0;
 
 
 
@@ -108,8 +113,6 @@ enum EDebugStatusConstants {
 };
 
 void setup()   {
-  __ams(Startup)
-
   // setup pins :
   pinMode(lightOne, OUTPUT);
   pinMode(lightTwo, OUTPUT);
@@ -148,6 +151,8 @@ void setup()   {
   sunIconState = EEPROM.read(sunIcon);
   rainLampState = EEPROM.read(rainLamp);
   alertActiveState = EEPROM.read(alertSavingState);
+  moonIconState = EEPROM.read(moonIcon);
+  sunFlashingState = EEPROM.read(sunFlashingSavingState);
   setWeatherLamps();
 
   // initialize timer1
@@ -203,11 +208,9 @@ ISR(TIMER1_OVF_vect)
   static uint32_t currentDs = 0;
 
   currentDs = ApplicationMonitor.GetData();
-  __ams(Interrupt)
-
   TCNT1 = timer1_counter;   // preload timer
   interruptCounter++;
-  if (alertActiveState) {
+  if (alertActiveState || sunFlashingState) {
     if (waxing) {
       currentRainLampBrightness += stepsPerHalfCycle;
       if (currentRainLampBrightness >= rainLampMax) {
@@ -222,9 +225,14 @@ ISR(TIMER1_OVF_vect)
         waxing = true;
       }
     }
-    analogWrite(rainLamp, currentRainLampBrightness);
+    if (alertActiveState) {
+      analogWrite(rainLamp, currentRainLampBrightness);
+    }
+    if (sunFlashingState) {
+      analogWrite(sunIcon, currentRainLampBrightness);
+      analogWrite(moonIcon, currentRainLampBrightness);
+    }
   }
-  __ams(currentDs)
 }
 
 
@@ -235,31 +243,14 @@ ISR(TIMER1_OVF_vect)
  *
  */
 
-
 void loop()
 {
-  __ams(ReadingSerial)
   readSerialCommands();
-
-  __ams(CheckingTouchSensor)
   checkTouchSensor();
-
-  __ams(GettingWeather)
   getLatestWeather();
-
-  __ams(RunningWebServer)
   runWebServer();
-
-  __ams(Ending)
   ApplicationMonitor.IAmAlive();
 }
-
-
-
-
-
-
-
 
 
 
@@ -269,90 +260,103 @@ void loop()
  *
  */
 
-
 void getLatestWeather() {
-  static const byte weatherServerAddress[] = {
-    10, 0, 1, 102
-  };
   static const int weatherBufferLen = 10;
   static char weatherBuffer[weatherBufferLen];
-
   static int lineLength = 0;
   static boolean readingWeatherReply = false;
   static boolean finish = false;
+  static boolean aborted = false;
+  static const byte weatherServerAddress[] = {10, 0, 1, 171};
+  static const int weatherPort = 3000;
 
-  if (interruptCounter >= 60) {
-    // poll weather
-    boolean connectStatusCode = weatherClient.connect(weatherServerAddress, 80);
+  if (interruptCounter >= 60) { // poll weather
+    // UNTIL FIXED
+//    interruptCounter = 0; return;
 
-    __ams(GotWeatherServerConnection)
+    
+    boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
 
     if (connectStatusCode) {
-      weatherClient.println(F("GET /weather/"));
+      weatherClient.println(F("GET /index.txt HTTP 1.0"));
       weatherClient.println();
       readingWeatherReply = true;
-
-      __ams(SentGetWeatherCommand)
+    } else {
+      sunFlashingState = true;
     }
 
     interruptCounter = 0;
     finish = false;
     lineLength = 0;
+    aborted = false;
   }
 
-  if (interruptCounter > 20) {
+  if (readingWeatherReply && interruptCounter > 40) {
     // reset/abort timeout
-    if (readingWeatherReply) {
-      DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
-      lineLength = 0;
-      finish = true;
-      interruptCounter = 0;
-    }
+    DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
+    lineLength = 0;
+    finish = true;
+    interruptCounter = 0;
+    sunFlashingState = true;
+    aborted = true;
   }
+  
   if (readingWeatherReply) {
-
-
     if (weatherClient.connected()) {
-
-      __ams(GettingWeatherReply)
-
       if (weatherClient.available()) {
-        weatherBuffer[lineLength] = weatherClient.read();
-        lineLength++;
+        if (lineLength<weatherBufferLen) {
+          weatherBuffer[lineLength] = weatherClient.read();
+          lineLength++;
+          DEBUG_OUT(weatherBuffer);
+        } else {
+          DEBUG_OUT(F("buffer overrun"));
+          finish = true;
+        }
       }
     }
     else {
       finish = true;
     }
   }
+  
   if (finish) {
-    __ams(ClosingWeatherConnection)
-
     readingWeatherReply = false;
     weatherBuffer[lineLength] = 0;
     weatherClient.stop();
     weatherClient.flush();
-    decodeWeather(weatherBuffer);
     finish = false;
+    if (!aborted) {
+      decodeWeather(weatherBuffer);
+      sunFlashingState = false;
+    }
   }
 }
 
 void decodeWeather(char * weather) {
   boolean oldRainLampState = rainLampState;
   boolean oldAlertActiveState = alertActiveState;
+  boolean oldSunFlashingState = sunFlashingState;
+  DEBUG_OUT(F("interpreting weather"));
+  DEBUG_OUT(weather);
   cloudIconState = weather[0] - 48;
   sunIconState = weather[1] - 48;
   rainLampState = weather[2] - 48;
   alertActiveState = weather[3] - 48;
-  if (alertActiveState != oldAlertActiveState) {
-    currentRainLampBrightness = oldRainLampState ? 255 : 0;
+  moonIconState = weather[4] - 48;
+  //  sunFlashingState = weather[5] - 48;
+  if ((alertActiveState && !oldAlertActiveState) || (sunFlashingState && !oldSunFlashingState)) {
+    Serial.println(F("resetting brightness"));
+    currentRainLampBrightness = 128;
   }
   setWeatherLamps();
 }
 
 void setWeatherLamps() {
   digitalWrite(cloudIcon, cloudIconState);
-  digitalWrite(sunIcon, sunIconState);
+  if (!sunFlashingState) {
+    digitalWrite(sunIcon, sunIconState);
+    digitalWrite(moonIcon, moonIconState);
+  }
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
@@ -361,11 +365,9 @@ void setWeatherLamps() {
   EEPROM.write(sunIcon, sunIconState);
   EEPROM.write(rainLamp, rainLampState);
   EEPROM.write(alertSavingState, alertActiveState);
+  EEPROM.write(moonIcon, moonIconState);
+  EEPROM.write(sunFlashingSavingState, sunFlashingState);
 }
-
-
-
-
 
 
 /*
@@ -374,32 +376,23 @@ void setWeatherLamps() {
  *
  */
 
-
-
 void checkTouchSensor() {
   static boolean sensor1BeingTouched = false;
   static boolean sensor2BeingTouched = false;
   static boolean sensor3BeingTouched = false;
 
-  int value0 = ADCTouch.read(A0);   //no second parameter
-  int value1 = ADCTouch.read(A1);     //   --> 100 samples
-  int value2 = ADCTouch.read(A2);     //   --> 100 samples
-
-  __ams(ReadTouchSensor)
-
-  value0 -= ref0;       //remove offset
-  value1 -= ref1;
-  value2 -= ref2;
+  //no second parameter --> 100 samples
+  int value0 = ADCTouch.read(A0) - ref0;
+  int value1 = ADCTouch.read(A1) - ref1;
+  int value2 = ADCTouch.read(A2) - ref2;
 
   if (value0 > 40) {
     if (!sensor1BeingTouched) {
       if (lightOneState == HIGH) {
-        // one of the lights is off, turn all on
-        allOn();
+        allOn(); // one of the lights is off, turn all on
       }
       else {
-        // one of the lights is on, turn corner only
-        cornerOnly();
+        cornerOnly(); // one of the lights is on, turn corner only
       }
       setLines();
     }
@@ -431,16 +424,11 @@ void checkTouchSensor() {
 }
 
 
-
-
-
 /*
  *
  *  SERIAL PORT DEBUGGING
  *
  */
-
-
 
 // report status on serial port
 void report() {
@@ -451,8 +439,6 @@ void readSerialCommands() {
   if (Serial.available() > 0) {
     // read the incoming byte:
     int incomingByte = Serial.read();
-
-    __ams(ReadSerialCommand)
 
     if (incomingByte == 97) { // a
       lightOneState = HIGH;
@@ -514,16 +500,11 @@ void readSerialCommands() {
 }
 
 
-
-
-
-
 /*
  *
  *  HTTP SERVER and WEB Service handling
  *
  */
-
 
 // GET /   ... get web code
 // GET /lights   ... get json of lights status
@@ -750,21 +731,14 @@ void runWebServer() {
     // we don't yet have a connection from the web client, check if one is available
     client = server.available();
 
-    __ams(GotWebserverClient)
-
     if (client) {
       HTTP_DEBUG_OUT(F("got a client, cleaning up server ready for use"));
       // set everything up for a new client
       cleanupWebServer();
     }
   } else {
-    __ams(WebServerWaitingForLines)
-
     while (client.connected() && interruptCounter < 100) {
       // we have a connected client, fill up the buffers with data
-
-      __ams(WebServerWaitingForLine)
-
       while (!finishedReadingLine && interruptCounter < 100) {
         if (gotHeaders) {
           HTTP_DEBUG_OUT(F("got headers"));
@@ -794,9 +768,6 @@ void runWebServer() {
       }
 
       if (finishedReadingLine) {
-
-        __ams(WebServerGotLine)
-
         HTTP_DEBUG_OUT(F("finished reading line"));
         // close the buffer off to make it a valid C string
         lineBuffer[lineLength] = 0;
@@ -808,8 +779,6 @@ void runWebServer() {
         // now interpret the line or, if it's a POST buffer, interpret the buffer
         if (firstLine) {
           HTTP_DEBUG_OUT(F("first line read"));
-          __ams(WebServerReadingRequest)
-
           output = readRequestLine(lineBuffer);
           firstLine = false;
         }
@@ -821,8 +790,6 @@ void runWebServer() {
             gotHeaders = true;
           }
           else if (gotHeaders) {
-            __ams(WebServerRunningPostFn)
-
             // next line is POST data
             if (postFunction) {
               HTTP_DEBUG_OUT(F("calling post function"));
@@ -834,12 +801,10 @@ void runWebServer() {
             // if we have got all the headers and we either
             if (sendFavicon) {
               HTTP_DEBUG_OUT(F("sending favicon"));
-              __ams(WebServerSendingFavicon)
               sendFaviconToClient(client);
             }
             else if (sendWebsite) {
               HTTP_DEBUG_OUT(F("sending website"));
-              __ams(WebServerSendingWebsite)
               writeWebsite(client);
             }
             else {
@@ -850,20 +815,16 @@ void runWebServer() {
                 HTTP_DEBUG_OUT(F("web service reply is from GET"));
               }
               HTTP_DEBUG_OUT(output);
-              __ams(WebServerSendingWebserviceOutput)
               writeWebServiceReply(client, output);
             }
             HTTP_DEBUG_OUT(F("finished web service, closing socket"));
             // give the web browser time to receive the data
-            __ams(WebServerWaitingToClose)
             delay(1);
             // close the connection:
-            __ams(WebServerClosing)
             client.stop();
             client.flush();
             HTTP_DEBUG_OUT(F("done"));
             cleanupWebServer();
-            __ams(WebServerClosed)
           }
         }
         finishedReadingLine = false;
@@ -872,8 +833,6 @@ void runWebServer() {
     }
 
     if (interruptCounter >= 100) {
-      __ams(WebServerBailing)
-
       // we have run out of time, give up
       client.stop();
       client.flush();
@@ -884,19 +843,11 @@ void runWebServer() {
 }
 
 
-
-
-
-
-
-
-
 /*
  *
  *  Static (ish) Website
  *
  */
-
 
 static const int favIconLength = 635;
 static const PROGMEM byte fd[] = {
@@ -1028,17 +979,3 @@ void writeWebsite(EthernetClient client) {
   writeWebsiteSection(client, website4, website4Length);
   writeWebsiteSection(client, website4a, website4aLength);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
