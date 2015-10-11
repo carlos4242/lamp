@@ -137,7 +137,7 @@ void setup()   {
   IPAddress ip(10, 0, 1, 160);
   Ethernet.begin(mac, ip);
 
-  // shorten timeout
+  // shorten timeout http://forum.arduino.cc/index.php?topic=49401.0
   W5100.setRetransmissionTime(0x3E8);
   W5100.setRetransmissionCount(1);
 
@@ -271,6 +271,10 @@ void getLatestWeather() {
   static const int weatherPort = 3000;
 
   if (interruptCounter >= 60) { // poll weather
+    // UNTIL FIXED
+//    interruptCounter = 0; return;
+
+    
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
 
     if (connectStatusCode) {
@@ -292,20 +296,29 @@ void getLatestWeather() {
     DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
     lineLength = 0;
     finish = true;
+    interruptCounter = 0;
     sunFlashingState = true;
     aborted = true;
   }
+  
   if (readingWeatherReply) {
     if (weatherClient.connected()) {
       if (weatherClient.available()) {
-        weatherBuffer[lineLength] = weatherClient.read();
-        lineLength++;
+        if (lineLength<weatherBufferLen) {
+          weatherBuffer[lineLength] = weatherClient.read();
+          lineLength++;
+          DEBUG_OUT(weatherBuffer);
+        } else {
+          DEBUG_OUT(F("buffer overrun"));
+          finish = true;
+        }
       }
     }
     else {
       finish = true;
     }
   }
+  
   if (finish) {
     readingWeatherReply = false;
     weatherBuffer[lineLength] = 0;
