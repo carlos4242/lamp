@@ -4,7 +4,8 @@
   "description": "",
   "main": "getWeather.js",
   "dependencies": {
-    "async": "^1.4.2"
+    "async": "^1.4.2",
+    "express": "^4.13.3"
   },
   "devDependencies": {},
   "scripts": {
