@@ -271,14 +271,10 @@ void getLatestWeather() {
   static const int weatherPort = 3000;
 
   if (interruptCounter >= 60) { // poll weather
-    // UNTIL FIXED
-//    interruptCounter = 0; return;
-
-    
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
 
     if (connectStatusCode) {
-      weatherClient.println(F("GET /index.txt HTTP 1.0"));
+      weatherClient.println(F("GET /weather.txt HTTP 1.0"));
       weatherClient.println();
       readingWeatherReply = true;
     } else {
@@ -304,13 +300,13 @@ void getLatestWeather() {
   if (readingWeatherReply) {
     if (weatherClient.connected()) {
       if (weatherClient.available()) {
+        byte byteRead = weatherClient.read();
         if (lineLength<weatherBufferLen) {
-          weatherBuffer[lineLength] = weatherClient.read();
+          weatherBuffer[lineLength] = byteRead;
           lineLength++;
-          DEBUG_OUT(weatherBuffer);
-        } else {
-          DEBUG_OUT(F("buffer overrun"));
-          finish = true;
+        }
+        if (byteRead == '\r') {
+          lineLength = 0;
         }
       }
     }
@@ -939,7 +935,7 @@ const PROGMEM char webHeader[] =
 
 const int website1Length = 82;
 const PROGMEM char website1[] =
-  "<link rel='stylesheet' type='text/css' href='http://10.0.1.102/weather/lights.css'>";
+  "<link rel='stylesheet' type='text/css' href='http://10.0.1.170:3000/lights.css'>";
 
 const int website1aLength = 101;
 const PROGMEM char website1a[] =
@@ -959,7 +955,7 @@ const PROGMEM char website4[] =
 
 const int website4aLength = 67;
 const PROGMEM char website4a[] =
-  "</script><script src='http://10.0.1.102/weather/lights.js'></script>";
+  "</script><script src='http://10.0.1.170:3000/lights.js'></script>";
 
 void writeWebsite(EthernetClient client) {
   writeWebsiteSection(client, webHeader, webHeaderLength);
