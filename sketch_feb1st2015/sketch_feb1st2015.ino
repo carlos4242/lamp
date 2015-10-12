@@ -260,78 +260,72 @@ void loop()
  *
  */
 
+#define weatherBufferLen 30
+#define weatherPort 3000
+#define weatherReadyTime 100
+#define weatherTimeout 100
+
 void getLatestWeather() {
-  static const int weatherBufferLen = 10;
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
-  static boolean readingWeatherReply = false;
-  static boolean finish = false;
-  static boolean aborted = false;
   static const byte weatherServerAddress[] = {10, 0, 1, 170};
-  static const int weatherPort = 3000;
 
-  if (interruptCounter >= 60) { // poll weather
+  if (interruptCounter >= weatherReadyTime) { // poll weather
+//    DEBUG_OUT(F("time to read weather"));
+    interruptCounter = 0;
+    lineLength = 0;
+    memset(weatherBuffer, 0, weatherBufferLen);
+
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
-
     if (connectStatusCode) {
       weatherClient.println(F("GET /weather.txt"));
       weatherClient.println();
-      readingWeatherReply = true;
-    } else {
-      sunFlashingState = true;
-    }
 
-    interruptCounter = 0;
-    finish = false;
-    lineLength = 0;
-    aborted = false;
-  }
-
-  if (readingWeatherReply && interruptCounter > 40) {
-    // reset/abort timeout
-    DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
-    lineLength = 0;
-    finish = true;
-    interruptCounter = 0;
-    sunFlashingState = true;
-    aborted = true;
-  }
-  
-  if (readingWeatherReply) {
-    if (weatherClient.connected()) {
-      if (weatherClient.available()) {
-        byte byteRead = weatherClient.read();
-        if (lineLength<weatherBufferLen) {
-          weatherBuffer[lineLength] = byteRead;
-          lineLength++;
-          DEBUG_OUT(F("buffer..."));
-          DEBUG_OUT(weatherBuffer);
-        } else {
-          DEBUG_OUT(F("buffer full"));
-        }
-        if (byteRead == '\r') {
-          lineLength = 0;
-          DEBUG_OUT(F("buffer reset..."));
-          DEBUG_OUT(weatherBuffer);
+      while (weatherClient.connected() && interruptCounter < weatherTimeout) {
+        while (weatherClient.available() && interruptCounter < weatherTimeout) {
+          byte byteRead = weatherClient.read();
+          if (lineLength < weatherBufferLen) {
+            weatherBuffer[lineLength] = byteRead;
+            lineLength++;
+//            DEBUG_OUT(weatherBuffer);
+          } else {
+//            DEBUG_OUT(F("overrun"));
+          }
+          if (byteRead == '\r') { // line ending, close the string
+            weatherBuffer[lineLength] = 0;
+          }
+          if (byteRead == '\n') { // carriage return
+            lineLength = 0;
+//            DEBUG_OUT(F("line read"));
+          }
         }
       }
+
+      if (lineLength) { // terminate the last string received if it didn't come with a line ending
+        weatherBuffer[lineLength] = 0;
+      }
+
+      if (interruptCounter >= weatherTimeout) {
+        DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
+        decodeWeather(0);
+      } else {
+//        DEBUG_OUT(F("interpreting weather"));
+//        DEBUG_OUT(strnlen(weatherBuffer,weatherBufferLen));
+//        DEBUG_OUT(weatherBuffer);
+//        DEBUG_OUT(weatherBuffer[0]);
+//        DEBUG_OUT(weatherBuffer[1]);
+//        DEBUG_OUT(weatherBuffer[2]);
+//        DEBUG_OUT(weatherBuffer[3]);
+//        DEBUG_OUT(weatherBuffer[4]);
+        decodeWeather(weatherBuffer);
+      }
+    } else {
+      DEBUG_OUT(F("connection fail"));
+      decodeWeather(0);
     }
-    else {
-      DEBUG_OUT(F("connection done"));
-      finish = true;
-    }
-  }
-  
-  if (finish) {
-    readingWeatherReply = false;
-    weatherBuffer[lineLength] = 0;
+
     weatherClient.stop();
     weatherClient.flush();
-    finish = false;
-    if (!aborted) {
-      decodeWeather(weatherBuffer);
-      sunFlashingState = false;
-    }
   }
 }
 
@@ -339,14 +333,22 @@ void decodeWeather(char * weather) {
   boolean oldRainLampState = rainLampState;
   boolean oldAlertActiveState = alertActiveState;
   boolean oldSunFlashingState = sunFlashingState;
-  DEBUG_OUT(F("interpreting weather"));
-  DEBUG_OUT(weather);
-  cloudIconState = weather[0] - 48;
-  sunIconState = weather[1] - 48;
-  rainLampState = weather[2] - 48;
-  alertActiveState = weather[3] - 48;
-  moonIconState = weather[4] - 48;
-  //  sunFlashingState = weather[5] - 48;
+  if (weather) {
+    cloudIconState = weather[0] - 48;
+    sunIconState = weather[1] - 48;
+    rainLampState = weather[2] - 48;
+    alertActiveState = weather[3] - 48;
+    moonIconState = weather[4] - 48;
+    //  sunFlashingState = weather[5] - 48;
+    sunFlashingState = false;
+  } else {
+    cloudIconState = false;
+    sunIconState = false;
+    rainLampState = false;
+    alertActiveState = false;
+    moonIconState = false;
+    sunFlashingState = true;
+  }
   if ((alertActiveState && !oldAlertActiveState) || (sunFlashingState && !oldSunFlashingState)) {
     Serial.println(F("resetting brightness"));
     currentRainLampBrightness = 128;
@@ -357,8 +359,11 @@ void decodeWeather(char * weather) {
 void setWeatherLamps() {
   digitalWrite(cloudIcon, cloudIconState);
   if (!sunFlashingState) {
+//    DEBUG_OUT(F("setting lamps"));
     digitalWrite(sunIcon, sunIconState);
+//    DEBUG_OUT(sunIconState);
     digitalWrite(moonIcon, moonIconState);
+//    DEBUG_OUT(moonIconState);
   }
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
@@ -940,7 +945,7 @@ const int webHeaderLength = 43;
 const PROGMEM char webHeader[] =
   "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n";
 
-const int website1Length = 82;
+const int website1Length = 79;
 const PROGMEM char website1[] =
   "<link rel='stylesheet' type='text/css' href='http://10.0.1.170:3000/lights.css'>";
 
@@ -960,7 +965,7 @@ const int website4Length = 88;
 const PROGMEM char website4[] =
   "><p></div><script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'>";
 
-const int website4aLength = 67;
+const int website4aLength = 64;
 const PROGMEM char website4a[] =
   "</script><script src='http://10.0.1.170:3000/lights.js'></script>";
 
