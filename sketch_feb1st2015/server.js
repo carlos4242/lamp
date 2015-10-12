@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 app = express();
 app.listen(3000);
 console.log('started server on 3000');
@@ -16,6 +17,6 @@ app.get('/weather.txt',function(req,res) {
 	res.removeHeader("Date");
 	res.removeHeader("X-Powered-By");
 	res.removeHeader("Content-Length");
-	res.write("test stream");
-	res.end('body stuff');
+	var weather = fs.readFileSync('weather.txt')
+	res.end(weather);
 });
