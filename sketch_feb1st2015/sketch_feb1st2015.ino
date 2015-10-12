@@ -267,14 +267,14 @@ void getLatestWeather() {
   static boolean readingWeatherReply = false;
   static boolean finish = false;
   static boolean aborted = false;
-  static const byte weatherServerAddress[] = {10, 0, 1, 171};
+  static const byte weatherServerAddress[] = {10, 0, 1, 170};
   static const int weatherPort = 3000;
 
   if (interruptCounter >= 60) { // poll weather
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
 
     if (connectStatusCode) {
-      weatherClient.println(F("GET /weather.txt HTTP 1.0"));
+      weatherClient.println(F("GET /weather.txt"));
       weatherClient.println();
       readingWeatherReply = true;
     } else {
@@ -304,13 +304,20 @@ void getLatestWeather() {
         if (lineLength<weatherBufferLen) {
           weatherBuffer[lineLength] = byteRead;
           lineLength++;
+          DEBUG_OUT(F("buffer..."));
+          DEBUG_OUT(weatherBuffer);
+        } else {
+          DEBUG_OUT(F("buffer full"));
         }
         if (byteRead == '\r') {
           lineLength = 0;
+          DEBUG_OUT(F("buffer reset..."));
+          DEBUG_OUT(weatherBuffer);
         }
       }
     }
     else {
+      DEBUG_OUT(F("connection done"));
       finish = true;
     }
   }
