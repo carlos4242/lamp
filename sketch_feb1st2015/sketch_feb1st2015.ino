@@ -22,6 +22,26 @@
 
 //#define __ams(stage) ApplicationMonitor.SetData(stage);
 
+#define rainLampMin 10
+#define rainLampMax 255
+#define rainLampHalfCycleTime 0.7
+#define secondsPerInterrupt 0.05
+#define weatherBufferLen 30
+#define weatherPort 3000
+#define weatherReadyTime 100
+#define weatherTimeout 100
+// light control
+#define lightOne 8
+#define lightTwo 2
+#define lightThree 7
+// weather display
+#define moonIcon 6
+#define cloudIcon 4
+#define sunIcon 5
+#define rainLamp 3
+#define alertSavingState 14
+#define sunFlashingSavingState 15
+
 /*
  *
  *  GLOBAL STATE AREA
@@ -37,22 +57,8 @@ Watchdog::CApplicationMonitor ApplicationMonitor;
 EthernetServer server(80);
 EthernetClient weatherClient;
 
-// light control
-byte lightOne =  8;
-byte lightTwo = 9;
-byte lightThree = 7;
-
 // touch sensor
 int ref0, ref1, ref2;       //reference values to remove offset
-
-// weather display
-byte cloudIcon = 4;
-byte sunIcon = 5;
-byte rainLamp = 3;
-byte moonIcon = 6;
-
-byte alertSavingState = 14;
-byte sunFlashingSavingState = 15;
 
 // weather state
 boolean alertActiveState;
@@ -82,6 +88,7 @@ int currentRainLampBrightness = 0;
  */
 
 // these show where the app crashed
+/*
 enum EDebugStatusConstants {
   Startup = 0,
   Interrupt = 1,
@@ -111,6 +118,7 @@ enum EDebugStatusConstants {
   WebServerClosed = 25,
   WebServerBailing = 26
 };
+*/
 
 void setup()   {
   // setup pins :
@@ -120,7 +128,8 @@ void setup()   {
   pinMode(cloudIcon, OUTPUT);
   pinMode(sunIcon, OUTPUT);
   pinMode(rainLamp, OUTPUT);
-
+  pinMode(moonIcon, OUTPUT);
+  
   // setup touch sensor
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
   ref0 = ADCTouch.read(A0, 500);    //create reference values to
@@ -153,7 +162,7 @@ void setup()   {
   alertActiveState = EEPROM.read(alertSavingState);
   moonIconState = EEPROM.read(moonIcon);
   sunFlashingState = EEPROM.read(sunFlashingSavingState);
-  setWeatherLamps();
+  setWeatherLamps(false);
 
   // initialize timer1
   // (credit http://www.hobbytronics.co.uk/arduino-timer-interrupts,
@@ -193,10 +202,7 @@ void setup()   {
  *
  */
 
-#define rainLampMin 10
-#define rainLampMax 255
-#define rainLampHalfCycleTime 0.7
-#define secondsPerInterrupt 0.05
+
 
 ISR(TIMER1_OVF_vect)
 {
@@ -260,21 +266,14 @@ void loop()
  *
  */
 
-#define weatherBufferLen 30
-#define weatherPort 3000
-#define weatherReadyTime 100
-#define weatherTimeout 100
-
 void getLatestWeather() {
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
   static const byte weatherServerAddress[] = {10, 0, 1, 170};
 
   if (interruptCounter >= weatherReadyTime) { // poll weather
-//    DEBUG_OUT(F("time to read weather"));
     interruptCounter = 0;
     lineLength = 0;
-    memset(weatherBuffer, 0, weatherBufferLen);
 
     boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
     if (connectStatusCode) {
@@ -287,16 +286,12 @@ void getLatestWeather() {
           if (lineLength < weatherBufferLen) {
             weatherBuffer[lineLength] = byteRead;
             lineLength++;
-//            DEBUG_OUT(weatherBuffer);
-          } else {
-//            DEBUG_OUT(F("overrun"));
           }
           if (byteRead == '\r') { // line ending, close the string
             weatherBuffer[lineLength] = 0;
           }
           if (byteRead == '\n') { // carriage return
             lineLength = 0;
-//            DEBUG_OUT(F("line read"));
           }
         }
       }
@@ -309,14 +304,6 @@ void getLatestWeather() {
         DEBUG_OUT(F("ran out of time checking weather, reset connection and gave up"));
         decodeWeather(0);
       } else {
-//        DEBUG_OUT(F("interpreting weather"));
-//        DEBUG_OUT(strnlen(weatherBuffer,weatherBufferLen));
-//        DEBUG_OUT(weatherBuffer);
-//        DEBUG_OUT(weatherBuffer[0]);
-//        DEBUG_OUT(weatherBuffer[1]);
-//        DEBUG_OUT(weatherBuffer[2]);
-//        DEBUG_OUT(weatherBuffer[3]);
-//        DEBUG_OUT(weatherBuffer[4]);
         decodeWeather(weatherBuffer);
       }
     } else {
@@ -353,28 +340,27 @@ void decodeWeather(char * weather) {
     Serial.println(F("resetting brightness"));
     currentRainLampBrightness = 128;
   }
-  setWeatherLamps();
+  setWeatherLamps(weather);
 }
 
-void setWeatherLamps() {
+void setWeatherLamps(bool save) {
   digitalWrite(cloudIcon, cloudIconState);
   if (!sunFlashingState) {
-//    DEBUG_OUT(F("setting lamps"));
     digitalWrite(sunIcon, sunIconState);
-//    DEBUG_OUT(sunIconState);
     digitalWrite(moonIcon, moonIconState);
-//    DEBUG_OUT(moonIconState);
   }
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
-
-  EEPROM.write(cloudIcon, cloudIconState);
-  EEPROM.write(sunIcon, sunIconState);
-  EEPROM.write(rainLamp, rainLampState);
-  EEPROM.write(alertSavingState, alertActiveState);
-  EEPROM.write(moonIcon, moonIconState);
-  EEPROM.write(sunFlashingSavingState, sunFlashingState);
+    
+  if (save) {
+    EEPROM.update(cloudIcon, cloudIconState);
+    EEPROM.update(sunIcon, sunIconState);
+    EEPROM.update(rainLamp, rainLampState);
+    EEPROM.update(alertSavingState, alertActiveState);
+    EEPROM.update(moonIcon, moonIconState);
+    EEPROM.update(sunFlashingSavingState, sunFlashingState);
+  }
 }
 
 
@@ -545,9 +531,9 @@ void setLines() {
   digitalWrite(lightTwo, lightTwoState);
   digitalWrite(lightThree, lightThreeState);
 
-  EEPROM.write(lightOne, lightOneState);
-  EEPROM.write(lightTwo, lightTwoState);
-  EEPROM.write(lightThree, lightThreeState);
+  EEPROM.update(lightOne, lightOneState);
+  EEPROM.update(lightTwo, lightTwoState);
+  EEPROM.update(lightThree, lightThreeState);
 }
 
 void allOn() {
@@ -568,6 +554,8 @@ void cornerOnly() {
   lightThreeState = LOW;
 }
 
+#define statusBufferLen 10
+
 const char * getLightStatus(int light) {
   int lightStatus;
   if (light == 1) {
@@ -583,7 +571,6 @@ const char * getLightStatus(int light) {
     return "invalid";
   }
 
-  static const int statusBufferLen = 10;
   static char statusBuffer[statusBufferLen];
 
   char * buffer = statusBuffer;
@@ -731,9 +718,10 @@ void cleanupWebServer() {
   lineLength = 0;
 }
 
+#define lineBufferLen 200
+
 void runWebServer() {
   static EthernetClient client;
-  static const int lineBufferLen = 200;
   static char lineBuffer[lineBufferLen];
   if (!client.connected()) {
     // we don't yet have a connection from the web client, check if one is available
@@ -857,7 +845,7 @@ void runWebServer() {
  *
  */
 
-static const int favIconLength = 635;
+#define favIconLength 635
 static const PROGMEM byte fd[] = {
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
   0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x91, 0x68,
