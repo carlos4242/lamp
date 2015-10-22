@@ -42,6 +42,13 @@
 #define alertSavingState 14
 #define sunFlashingSavingState 15
 
+// network settings
+#define weatherServer {10, 0, 1, 171}
+#define ethernetMAC {0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31}
+#define ipAddress 10, 0, 1, 160
+#define httpServerPort 80
+
+
 /*
  *
  *  GLOBAL STATE AREA
@@ -54,7 +61,7 @@ Watchdog::CApplicationMonitor ApplicationMonitor;
 // Initialize the Ethernet server library
 // with the IP address and port you want to use
 // (port 80 is default for HTTP):
-EthernetServer server(80);
+EthernetServer server(httpServerPort);
 EthernetClient weatherClient;
 
 // touch sensor
@@ -67,6 +74,7 @@ boolean sunIconState;
 boolean rainLampState;
 boolean moonIconState;
 boolean sunFlashingState;
+boolean daytime;
 int timer1_counter;
 
 // state flags :
@@ -140,10 +148,8 @@ void setup()   {
   Serial.begin(9600);
 
   // assign a MAC and IP addresses for the ethernet controller :
-  byte mac[] = {
-    0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31
-  };
-  IPAddress ip(10, 0, 1, 160);
+  static byte mac[] = ethernetMAC;
+  IPAddress ip(ipAddress);
   Ethernet.begin(mac, ip);
 
   // shorten timeout http://forum.arduino.cc/index.php?topic=49401.0
@@ -269,7 +275,7 @@ void loop()
 void getLatestWeather() {
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
-  static const byte weatherServerAddress[] = {10, 0, 1, 170};
+  static const byte weatherServerAddress[] = weatherServer;
 
   if (interruptCounter >= weatherReadyTime) { // poll weather
     interruptCounter = 0;
@@ -326,7 +332,7 @@ void decodeWeather(char * weather) {
     rainLampState = weather[2] - 48;
     alertActiveState = weather[3] - 48;
     moonIconState = weather[4] - 48;
-    //  sunFlashingState = weather[5] - 48;
+    daytime = weather[5] - 48;
     sunFlashingState = false;
   } else {
     cloudIconState = false;
@@ -382,7 +388,7 @@ void checkTouchSensor() {
 
   if (value0 > 40) {
     if (!sensor1BeingTouched) {
-      if (lightOneState == HIGH) {
+      if (daytime) {
         allOn(); // one of the lights is off, turn all on
       }
       else {
