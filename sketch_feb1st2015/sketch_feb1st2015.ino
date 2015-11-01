@@ -137,7 +137,7 @@ void setup()   {
   pinMode(sunIcon, OUTPUT);
   pinMode(rainLamp, OUTPUT);
   pinMode(moonIcon, OUTPUT);
-  
+
   // setup touch sensor
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
   ref0 = ADCTouch.read(A0, 500);    //create reference values to
@@ -358,7 +358,7 @@ void setWeatherLamps(bool save) {
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
-    
+
   if (save) {
     EEPROM.update(cloudIcon, cloudIconState);
     EEPROM.update(sunIcon, sunIconState);
@@ -377,9 +377,9 @@ void setWeatherLamps(bool save) {
  */
 
 void checkTouchSensor() {
-  static boolean sensor1BeingTouched = false;
-  static boolean sensor2BeingTouched = false;
-  static boolean sensor3BeingTouched = false;
+  //  static boolean sensor1BeingTouched = false;
+  //  static boolean sensor2BeingTouched = false;
+  //  static boolean sensor3BeingTouched = false;
 
   //no second parameter --> 100 samples
   int value0 = ADCTouch.read(A0) - ref0;
@@ -387,40 +387,25 @@ void checkTouchSensor() {
   int value2 = ADCTouch.read(A2) - ref2;
 
   if (value0 > 40) {
-    if (!sensor1BeingTouched) {
-      if (daytime) {
-        allOn(); // one of the lights is off, turn all on
-      }
-      else {
-        cornerOnly(); // one of the lights is on, turn corner only
-      }
-      setLines();
+    if (value1 > 40) {
+      cornerOnly();
+    } else {
+      allOn();
     }
-    sensor1BeingTouched = true;
-  }
-  else {
-    sensor1BeingTouched = false;
+    setLines();
+  } else if (value1 > 40) {
+    allOff();
+    setLines();
   }
 
-  if (value1 > 40) {
-    if (!sensor2BeingTouched) {
-      allOff();
-      setLines();
-    }
-    sensor2BeingTouched = true;
-  }
-  else {
-    sensor2BeingTouched = false;
-  }
-
-  if (value2 > 40) {
-    if (!sensor3BeingTouched) {
-    }
-    sensor3BeingTouched = true;
-  }
-  else {
-    sensor3BeingTouched = false;
-  }
+  //  if (value2 > 40) {
+  //    if (!sensor3BeingTouched) {
+  //    }
+  //    sensor3BeingTouched = true;
+  //  }
+  //  else {
+  //    sensor3BeingTouched = false;
+  //  }
 }
 
 
@@ -523,7 +508,7 @@ const char * (*postFunction)(const char * postBody);
 // useful functions
 
 char * statusString() {
-  static const int statusBufferLen = 19;
+  static const int statusBufferLen = 20;
   static char statusBuffer[statusBufferLen];
   strncpy(statusBuffer, "{\"1\":X,\"2\":X,\"3\":X}", statusBufferLen);
   statusBuffer[5] = 48 + lightOneState; //
