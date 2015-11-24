@@ -20,6 +20,13 @@
 #define HTTP_DEBUG_OUT(param)
 #endif
 
+#define EEPROMUpdate(address,value) do {\
+  byte current = EEPROM.read(address);\
+  if (current != value) {\
+    EEPROM.write(address,value);\
+  }\
+} while (false);
+
 //#define __ams(stage) ApplicationMonitor.SetData(stage);
 
 #define rainLampMin 10
@@ -378,12 +385,12 @@ void setWeatherLamps(bool save) {
   }
 
   if (save) {
-    EEPROM.update(cloudIcon, cloudIconState);
-    EEPROM.update(sunIcon, sunIconState);
-    EEPROM.update(rainLamp, rainLampState);
-    EEPROM.update(alertSavingState, alertActiveState);
-    EEPROM.update(moonIcon, moonIconState);
-    EEPROM.update(sunFlashingSavingState, sunFlashingState);
+    EEPROMUpdate(cloudIcon, cloudIconState);
+    EEPROMUpdate(sunIcon, sunIconState);
+    EEPROMUpdate(rainLamp, rainLampState);
+    EEPROMUpdate(alertSavingState, alertActiveState);
+    EEPROMUpdate(moonIcon, moonIconState);
+    EEPROMUpdate(sunFlashingSavingState, sunFlashingState);
   }
 }
 
@@ -543,9 +550,9 @@ void setLines() {
   digitalWrite(lightTwo, lightTwoState);
   digitalWrite(lightThree, lightThreeState);
 
-  EEPROM.update(lightOne, lightOneState);
-  EEPROM.update(lightTwo, lightTwoState);
-  EEPROM.update(lightThree, lightThreeState);
+  EEPROMUpdate(lightOne, lightOneState);
+  EEPROMUpdate(lightTwo, lightTwoState);
+  EEPROMUpdate(lightThree, lightThreeState);
 }
 
 void allOn() {
