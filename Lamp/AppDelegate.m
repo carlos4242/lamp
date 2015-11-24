@@ -18,6 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSLog(@"checking wifi reachability %d %d",[LampService onWifi],[LampService wifiReachabilityKnown]);
     return YES;
 }
 
@@ -40,8 +41,9 @@
     }
     
     BOOL onwifi = [LampService onWifi];
+    BOOL wifiKnown = [LampService wifiReachabilityKnown];
     BOOL athome = [LampService onHomeNetwork];
-    if (!onwifi || !athome) {
+    if ((!onwifi && wifiKnown) || !athome) {
         if (onwifi) {
             reply(@{@"problem":@"not at home"});
         } else {

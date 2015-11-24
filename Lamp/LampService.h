@@ -30,5 +30,8 @@ typedef enum : NSUInteger {
 
 +(BOOL)onHomeNetwork;
 +(BOOL)onWifi;
++(BOOL)arduinoReachable;
++(BOOL)wifiReachabilityKnown;
++(BOOL)arduinoReachabilityKnown;
 
 @end

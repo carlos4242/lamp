@@ -48,6 +48,24 @@
 #define ipAddress 10, 0, 1, 160
 #define httpServerPort 80
 
+/*
+ * 
+ * FORWARD DECLARATIONS
+ * 
+ */
+void setLines();
+void getLatestWeather();
+void decodeWeather(char * weather);
+void setWeatherLamps(bool save);
+void readSerialCommands();
+void checkTouchSensor();
+void runWebServer();
+void allOn();
+void allOff();
+void cornerOnly();
+char * statusString();
+void sendFaviconToClient(EthernetClient client);
+void writeWebsite(EthernetClient client);
 
 /*
  *
@@ -388,12 +406,15 @@ void checkTouchSensor() {
 
   if (value0 > 40) {
     if (value1 > 40) {
+      DEBUG_OUT("touch - turn on corner lamp");
       cornerOnly();
     } else {
+      DEBUG_OUT("touch - turn on all lamps");
       allOn();
     }
     setLines();
   } else if (value1 > 40) {
+      DEBUG_OUT("touch - turn off all lamps");
     allOff();
     setLines();
   }

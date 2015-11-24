@@ -16,11 +16,35 @@ struct in_addr homeen0base;
 
 @implementation LampService
 
+static BOOL wifiReachabilityKnown = false;
+static BOOL arduinoReachabilityKnown = false;
+static BOOL onwifi;
+static BOOL arduinoReachable;
+
 +(void)initialize {
     serviceRoot = @"http://" kArduinoIPAddress "/";
     if (!inet_aton(kArduinoIPAddress, &homeen0base)) {
         NSLog(@"Failed to read arduino address, check the format of the address string");
         homeen0base.s_addr = 0;
+    }
+    [[Reachability sharedWifiReachability] getStatus:^(NetworkStatus status) {
+        onwifi = status != NotReachable;
+        wifiReachabilityKnown = YES;
+    }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChange:) name:kReachabilityChangedNotification object:nil];
+    [[Reachability sharedWifiReachability] startNotifer];
+    [[Reachability sharedArduinoReachability] getStatus:^(NetworkStatus status) {
+        arduinoReachable = status != NotReachable;
+        arduinoReachabilityKnown = YES;
+    }];
+    [[Reachability sharedArduinoReachability] startNotifer];
+}
+
++(void)reachabilityChange:(NSNotification*)notification {
+    if (notification.object == [Reachability sharedWifiReachability]) {
+        onwifi = ((Reachability*)notification.object).currentReachabilityStatus != NotReachable;
+    } else if (notification.object == [Reachability sharedArduinoReachability]) {
+        arduinoReachable = ((Reachability*)notification.object).currentReachabilityStatus != NotReachable;
     }
 }
 
@@ -91,7 +115,19 @@ struct in_addr homeen0base;
 }
 
 +(BOOL)onWifi {
-    return [Reachability sharedWifiReachability].currentReachabilityStatus != NotReachable;
+    return onwifi;
+}
+
++(BOOL)arduinoReachable {
+    return arduinoReachable;
+}
+
++(BOOL)wifiReachabilityKnown {
+    return wifiReachabilityKnown;
+}
+
++(BOOL)arduinoReachabilityKnown {
+    return arduinoReachabilityKnown;
 }
 
 +(BOOL)IPAddressMatchesBase:(in_addr_t)ipToMatch {
