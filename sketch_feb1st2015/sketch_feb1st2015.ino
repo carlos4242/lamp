@@ -410,6 +410,9 @@ void checkTouchSensor() {
   int value0 = ADCTouch.read(A0) - ref0;
   int value1 = ADCTouch.read(A1) - ref1;
   int value2 = ADCTouch.read(A2) - ref2;
+  DEBUG_OUT(value0);
+  DEBUG_OUT(value1);
+  DEBUG_OUT(value2);
 
   if (value0 > 40) {
     //corner
