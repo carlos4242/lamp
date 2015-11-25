@@ -50,9 +50,9 @@
 #define sunFlashingSavingState 15
 
 // network settings
-#define weatherServer {10, 0, 1, 171}
+#define weatherServer 10,0,1,170
 #define ethernetMAC {0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31}
-#define ipAddress 10, 0, 1, 160
+#define ipAddress 10,0,1,160
 #define httpServerPort 80
 
 /*
@@ -300,7 +300,7 @@ void loop()
 void getLatestWeather() {
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
-  static const byte weatherServerAddress[] = weatherServer;
+  static const byte weatherServerAddress[] = {weatherServer};
 
   if (interruptCounter >= weatherReadyTime) { // poll weather
     interruptCounter = 0;
