@@ -42,10 +42,10 @@
 #define lightTwo 2
 #define lightThree 7
 // weather display
-#define moonIcon 6
+#define moonIcon 3
 #define cloudIcon 4
 #define sunIcon 5
-#define rainLamp 3
+#define rainLamp 6
 #define alertSavingState 14
 #define sunFlashingSavingState 15
 
@@ -412,28 +412,19 @@ void checkTouchSensor() {
   int value2 = ADCTouch.read(A2) - ref2;
 
   if (value0 > 40) {
-    if (value1 > 40) {
-      DEBUG_OUT("touch - turn on corner lamp");
-      cornerOnly();
-    } else {
-      DEBUG_OUT("touch - turn on all lamps");
-      allOn();
-    }
+    //corner
+    DEBUG_OUT("touch - turn on corner lamp");
+    cornerOnly();
     setLines();
   } else if (value1 > 40) {
-      DEBUG_OUT("touch - turn off all lamps");
+    DEBUG_OUT("touch - turn on all lamps");
+    allOn();
+    setLines();
+  } else if (value2 > 40) {
+    DEBUG_OUT("touch - turn off all lamps");
     allOff();
     setLines();
   }
-
-  //  if (value2 > 40) {
-  //    if (!sensor3BeingTouched) {
-  //    }
-  //    sensor3BeingTouched = true;
-  //  }
-  //  else {
-  //    sensor3BeingTouched = false;
-  //  }
 }
 
 
