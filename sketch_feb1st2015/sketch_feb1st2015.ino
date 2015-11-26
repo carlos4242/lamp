@@ -48,6 +48,7 @@
 #define rainLamp 6
 #define alertSavingState 14
 #define sunFlashingSavingState 15
+#define frostLamp 9
 
 // network settings
 #define weatherServer 10,0,1,170
@@ -99,6 +100,7 @@ boolean sunIconState;
 boolean rainLampState;
 boolean moonIconState;
 boolean sunFlashingState;
+boolean frostLampState = true;
 boolean daytime;
 int timer1_counter;
 
@@ -162,6 +164,7 @@ void setup()   {
   pinMode(sunIcon, OUTPUT);
   pinMode(rainLamp, OUTPUT);
   pinMode(moonIcon, OUTPUT);
+  pinMode(frostLamp, OUTPUT);
 
   // setup touch sensor
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
@@ -383,6 +386,7 @@ void setWeatherLamps(bool save) {
   if (!alertActiveState) {
     digitalWrite(rainLamp, rainLampState);
   }
+  digitalWrite(frostLamp, frostLampState);
 
   if (save) {
     EEPROMUpdate(cloudIcon, cloudIconState);
