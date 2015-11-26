@@ -38,9 +38,9 @@
 #define weatherReadyTime 100
 #define weatherTimeout 100
 // light control
-#define lightOne 8
+#define lightOne 7
 #define lightTwo 2
-#define lightThree 7
+#define lightThree 8
 // weather display
 #define moonIcon 3
 #define cloudIcon 4
@@ -167,7 +167,7 @@ void setup()   {
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
   ref0 = ADCTouch.read(A0, 500);    //create reference values to
   ref1 = ADCTouch.read(A1, 500);      //account for the capacitance of the pad
-  ref2 = ADCTouch.read(A2, 500);      //account for the capacitance of the pad
+  ref2 = ADCTouch.read(A5, 500);      //account for the capacitance of the pad
 
   // setup serial :
   Serial.begin(9600);
@@ -406,13 +406,34 @@ void checkTouchSensor() {
   //  static boolean sensor2BeingTouched = false;
   //  static boolean sensor3BeingTouched = false;
 
+  int a0 = ADCTouch.read(A0);
+  int a1 = ADCTouch.read(A1);
+//  int a2 = ADCTouch.read(A2);
+//  int a3 = ADCTouch.read(A3);
+//  int a4 = ADCTouch.read(A4);
+  int a5 = ADCTouch.read(A5);
+
+/*
+  Serial.print("A0:");
+  Serial.print(a0);
+  Serial.print("  A1:");
+  Serial.print(a1);
+  Serial.print("  A2:");
+  Serial.print(a2);
+  Serial.print("  A3:");
+  Serial.print(a3);
+  Serial.print("  A4:");
+  Serial.print(a4);
+  Serial.print("  A5:");
+  Serial.println(a5);
+
+return;
+*/
+
   //no second parameter --> 100 samples
-  int value0 = ADCTouch.read(A0) - ref0;
-  int value1 = ADCTouch.read(A1) - ref1;
-  int value2 = ADCTouch.read(A2) - ref2;
-  DEBUG_OUT(value0);
-  DEBUG_OUT(value1);
-  DEBUG_OUT(value2);
+  int value0 = a0 - ref0;
+  int value1 = a1 - ref1;
+  int value2 = a5 - ref2;
 
   if (value0 > 40) {
     //corner
