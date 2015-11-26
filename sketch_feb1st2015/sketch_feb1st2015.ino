@@ -100,7 +100,7 @@ boolean sunIconState;
 boolean rainLampState;
 boolean moonIconState;
 boolean sunFlashingState;
-boolean frostLampState = true;
+boolean frostLampState;
 boolean daytime;
 int timer1_counter;
 
@@ -196,6 +196,7 @@ void setup()   {
   alertActiveState = EEPROM.read(alertSavingState);
   moonIconState = EEPROM.read(moonIcon);
   sunFlashingState = EEPROM.read(sunFlashingSavingState);
+  frostLampState = EEPROM.read(frostLamp);
   setWeatherLamps(false);
 
   // initialize timer1
@@ -361,6 +362,7 @@ void decodeWeather(char * weather) {
     alertActiveState = weather[3] - 48;
     moonIconState = weather[4] - 48;
     daytime = weather[5] - 48;
+    frostLampState = weather[6] - 48;
     sunFlashingState = false;
   } else {
     cloudIconState = false;
@@ -368,6 +370,7 @@ void decodeWeather(char * weather) {
     rainLampState = false;
     alertActiveState = false;
     moonIconState = false;
+    frostLampState = false;
     sunFlashingState = true;
   }
   if ((alertActiveState && !oldAlertActiveState) || (sunFlashingState && !oldSunFlashingState)) {
@@ -394,6 +397,7 @@ void setWeatherLamps(bool save) {
     EEPROMUpdate(rainLamp, rainLampState);
     EEPROMUpdate(alertSavingState, alertActiveState);
     EEPROMUpdate(moonIcon, moonIconState);
+    EEPROMUpdate(frostLamp, frostLampState);
     EEPROMUpdate(sunFlashingSavingState, sunFlashingState);
   }
 }
