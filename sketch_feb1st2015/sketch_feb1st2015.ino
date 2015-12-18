@@ -51,7 +51,8 @@
 #define frostLamp 9
 
 // network settings
-#define weatherServer 10,0,1,170
+#define weatherServer1 10,0,1,170
+#define weatherServer2 10,0,1,175
 #define ethernetMAC {0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31}
 #define ipAddress 10,0,1,160
 #define httpServerPort 80
@@ -304,14 +305,14 @@ void loop()
 void getLatestWeather() {
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
-  static const byte weatherServerAddress[] = {weatherServer};
+  static const byte weatherServerAddress1[] = {weatherServer1};
+  static const byte weatherServerAddress2[] = {weatherServer2};
 
   if (interruptCounter >= weatherReadyTime) { // poll weather
     interruptCounter = 0;
     lineLength = 0;
 
-    boolean connectStatusCode = weatherClient.connect(weatherServerAddress, weatherPort);
-    if (connectStatusCode) {
+    if (weatherClient.connect(weatherServerAddress1, weatherPort) || weatherClient.connect(weatherServerAddress2, weatherPort)) {
       weatherClient.println(F("GET /weather.txt"));
       weatherClient.println();
 
