@@ -247,9 +247,8 @@ ISR(TIMER1_OVF_vect)
   // and pulsing the warning lamp
   static const byte stepsPerHalfCycle = byte(float(rainLampMax - rainLampMin) / (rainLampHalfCycleTime / secondsPerInterrupt));
   static boolean waxing = true;
-  static uint32_t currentDs = 0;
 
-  currentDs = ApplicationMonitor.GetData();
+  ApplicationMonitor.GetData();
   TCNT1 = timer1_counter;   // preload timer
   interruptCounter++;
   if (alertActiveState || sunFlashingState) {
@@ -353,7 +352,6 @@ void getLatestWeather() {
 }
 
 void decodeWeather(char * weather) {
-  boolean oldRainLampState = rainLampState;
   boolean oldAlertActiveState = alertActiveState;
   boolean oldSunFlashingState = sunFlashingState;
   if (weather) {
