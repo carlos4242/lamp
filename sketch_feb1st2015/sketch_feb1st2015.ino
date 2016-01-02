@@ -50,6 +50,8 @@ void allOff();
 void cornerOnly();
 char * statusString();
 double GetTemp();
+void receiveWireData(int byteCount);
+void sendWireData();
 
 /*
  *
