@@ -90,6 +90,10 @@ enum EDebugStatusConstants {
 //#define ipAddress 10,0,1,160
 //#define httpServerPort 80
 
+#define sensorOff A0
+#define sensorCorner A1
+#define sensorOn A2
+
 /*
  * 
  * FORWARD DECLARATIONS
@@ -169,9 +173,9 @@ void setup()   {
 
   // setup touch sensor
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
-  ref0 = ADCTouch.read(A0, 500);    //create reference values to
-  ref1 = ADCTouch.read(A1, 500);      //account for the capacitance of the pad
-  ref2 = ADCTouch.read(A5, 500);      //account for the capacitance of the pad
+  ref0 = ADCTouch.read(sensorOff, 500);    //create reference values to
+  ref1 = ADCTouch.read(sensorCorner, 500);      //account for the capacitance of the pad
+  ref2 = ADCTouch.read(sensorOn, 500);      //account for the capacitance of the pad
 
   // setup serial :
   Serial.begin(9600);
@@ -417,12 +421,9 @@ void checkTouchSensor() {
   //  static boolean sensor2BeingTouched = false;
   //  static boolean sensor3BeingTouched = false;
 
-  int a0 = ADCTouch.read(A0);
-  int a1 = ADCTouch.read(A1);
-//  int a2 = ADCTouch.read(A2);
-//  int a3 = ADCTouch.read(A3);
-//  int a4 = ADCTouch.read(A4);
-  int a5 = ADCTouch.read(A5);
+  int offVal = ADCTouch.read(sensorOff);
+  int cornerVal = ADCTouch.read(sensorCorner);
+  int onVal = ADCTouch.read(sensorOn);
 
 /*
   Serial.print("A0:");
@@ -442,22 +443,22 @@ return;
 */
 
   //no second parameter --> 100 samples
-  int value0 = a0 - ref0;
-  int value1 = a1 - ref1;
-  int value2 = a5 - ref2;
+  int value0 = offVal - ref0;
+  int value1 = cornerVal - ref1;
+  int value2 = onVal - ref2;
 
   if (value0 > 40) {
     //corner
+    DEBUG_OUT("touch - turn off all lamps");
+    allOff();
+    setLines();
+  } else if (value1 > 40) {
     DEBUG_OUT("touch - turn on corner lamp");
     cornerOnly();
     setLines();
-  } else if (value1 > 40) {
+  } else if (value2 > 40) {
     DEBUG_OUT("touch - turn on all lamps");
     allOn();
-    setLines();
-  } else if (value2 > 40) {
-    DEBUG_OUT("touch - turn off all lamps");
-    allOff();
     setLines();
   }
 }
