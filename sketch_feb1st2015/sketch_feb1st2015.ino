@@ -31,12 +31,12 @@ enum EDebugStatusConstants {
 };
 */
 
-#include <Ethernet.h>
+//#include <Ethernet.h>
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 #include "errno.h"
-#include <utility/w5100.h>
+//#include <utility/w5100.h>
 #include <ADCTouch.h>
 // sourced from https://github.com/Megunolink/ArduinoCrashMonitor
 // referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
@@ -71,9 +71,9 @@ enum EDebugStatusConstants {
 //#define weatherReadyTime 100
 //#define weatherTimeout 100
 // light control
-#define lightOne 7
-#define lightTwo 2
-#define lightThree 8
+#define lightOne 11
+#define lightTwo 12
+#define lightThree 13
 // weather display
 //#define moonIcon 3
 //#define cloudIcon 4
