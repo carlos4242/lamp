@@ -49,6 +49,7 @@ void allOn();
 void allOff();
 void cornerOnly();
 char * statusString();
+double GetTemp();
 
 /*
  *
@@ -296,7 +297,7 @@ void sendWireData(){
 }
  
 // Get the internal temperature of the arduino
-double GetTemp(void)
+double GetTemp()
 {
  unsigned int wADC;
  double t;
