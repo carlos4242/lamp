@@ -286,10 +286,41 @@ void cornerOnly() {
 // callback for received data
 void receiveWireData(int byteCount){
  while(Wire.available()) {
-  int number = Wire.read();
+  int incomingByte = Wire.read();
   DEBUG_OUT(F("received i2c data"));
-  DEBUG_OUT(number);
-  
+  DEBUG_OUT(incomingByte);
+    if (incomingByte == 97) { // a
+      lightOneState = HIGH;
+      setLines();
+    }
+    else if (incomingByte == 98) { // b
+      lightOneState = LOW;
+      setLines();
+    }
+    else if (incomingByte == 99) { // c
+      lightTwoState = HIGH;
+      setLines();
+    }
+    else if (incomingByte == 100) { // d
+      lightTwoState = LOW;
+      setLines();
+    }
+    else if (incomingByte == 101) { // e
+      lightThreeState = HIGH;
+      setLines();
+    }
+    else if (incomingByte == 102) { // f
+      lightThreeState = LOW;
+      setLines();
+    }
+    else if (incomingByte == 48) { // 0
+      allOff();
+      setLines();
+    }
+    else if (incomingByte == 49) { // 1
+      allOn();
+      setLines();
+    }
  }
 }
  
