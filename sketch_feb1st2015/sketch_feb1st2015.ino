@@ -3,7 +3,6 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 #include "errno.h"
-//#include <utility/w5100.h>
 #include <ADCTouch.h>
 // sourced from https://github.com/Megunolink/ArduinoCrashMonitor
 // referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
@@ -34,8 +33,8 @@
 #define lightThree 7
 
 #define sensorOff A0
-#define sensorCorner A1
-#define sensorOn A3
+#define sensorCorner A3
+#define sensorOn A1
 
 /*
  * 
@@ -143,26 +142,43 @@ void loop()
 
 void checkTouchSensor() {
   int offVal = ADCTouch.read(sensorOff);
-  int cornerVal = ADCTouch.read(sensorCorner);
+ // int cornerVal = ADCTouch.read(sensorCorner);
   int onVal = ADCTouch.read(sensorOn);
 
   //no second parameter --> 100 samples
   int value0 = offVal - ref0;
-  int value1 = cornerVal - ref1;
+  //int value1 = cornerVal - ref1;
   int value2 = onVal - ref2;
 
+
+//DEBUG_OUT(F("A0"));
+//DEBUG_OUT(ADCTouch.read(A0));
+//DEBUG_OUT(F("A1"));
+//DEBUG_OUT(ADCTouch.read(A1));
+/*
+DEBUG_OUT(F("A2"));
+DEBUG_OUT(ADCTouch.read(A2));
+DEBUG_OUT(F("A3"));
+DEBUG_OUT(ADCTouch.read(A3));
+DEBUG_OUT(F("A4"));
+DEBUG_OUT(ADCTouch.read(A4));
+DEBUG_OUT(F("value2"));
+DEBUG_OUT(value2);
+DEBUG_OUT(F(" "));
+*/
+
+
   if (value0 > 40) {
-    //corner
     DEBUG_OUT("touch - turn off all lamps");
     allOff();
     setLines();
-  } else if (value1 > 40) {
-    DEBUG_OUT("touch - turn on corner lamp");
-    cornerOnly();
-    setLines();
-  } else if (value2 > 40) {
+  } else if (value2 > 80) {
     DEBUG_OUT("touch - turn on all lamps");
     allOn();
+    setLines();
+  } else if (value2 > 20) {
+    DEBUG_OUT("touch - turn on corner lamp");
+    cornerOnly();
     setLines();
   }
 }
