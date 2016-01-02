@@ -71,9 +71,9 @@ enum EDebugStatusConstants {
 //#define weatherReadyTime 100
 //#define weatherTimeout 100
 // light control
-#define lightOne 11
+#define lightOne 13
 #define lightTwo 12
-#define lightThree 13
+#define lightThree 11
 // weather display
 //#define moonIcon 3
 //#define cloudIcon 4
