@@ -35,7 +35,7 @@
 
 #define sensorOff A0
 #define sensorCorner A1
-#define sensorOn A2
+#define sensorOn A3
 
 /*
  * 
