@@ -29,9 +29,9 @@
   }\
 } while (false);
 
-#define lightOne 13
-#define lightTwo 12
-#define lightThree 11
+#define lightOne 9
+#define lightTwo 8
+#define lightThree 7
 
 #define sensorOff A0
 #define sensorCorner A1
