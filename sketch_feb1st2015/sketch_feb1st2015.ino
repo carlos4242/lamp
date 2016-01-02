@@ -1,3 +1,4 @@
+#include <Wire.h>
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
@@ -7,7 +8,6 @@
 // sourced from https://github.com/Megunolink/ArduinoCrashMonitor
 // referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
 #include <ApplicationMonitor.h>
-#include <Wire.h>
  
 #define SLAVE_ADDRESS 0x04
 
