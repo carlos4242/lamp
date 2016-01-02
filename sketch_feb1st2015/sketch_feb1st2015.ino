@@ -1,128 +1,3 @@
-#include <Ethernet.h>
-#include <avr/wdt.h>
-#include <avr/pgmspace.h>
-#include <EEPROM.h>
-#include "errno.h"
-#include <utility/w5100.h>
-#include <ADCTouch.h>
-// sourced from https://github.com/Megunolink/ArduinoCrashMonitor
-// referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
-#include <ApplicationMonitor.h>
-
-#define enable_serial_debug 1
-
-#ifdef enable_serial_debug
-#include <SPI.h>
-#define DEBUG_OUT(param) Serial.println(param)
-#define HTTP_DEBUG_OUT(param) {if (debug) {Serial.println(param);}}
-#else
-#define DEBUG_OUT(param)
-#define HTTP_DEBUG_OUT(param)
-#endif
-
-#define EEPROMUpdate(address,value) do {\
-  byte current = EEPROM.read(address);\
-  if (current != value) {\
-    EEPROM.write(address,value);\
-  }\
-} while (false);
-
-//#define __ams(stage) ApplicationMonitor.SetData(stage);
-
-#define rainLampMin 10
-#define rainLampMax 255
-#define rainLampHalfCycleTime 0.7
-#define secondsPerInterrupt 0.05
-#define weatherBufferLen 30
-#define weatherPort 3000
-#define weatherReadyTime 100
-#define weatherTimeout 100
-// light control
-#define lightOne 7
-#define lightTwo 2
-#define lightThree 8
-// weather display
-#define moonIcon 3
-#define cloudIcon 4
-#define sunIcon 5
-#define rainLamp 6
-#define alertSavingState 14
-#define sunFlashingSavingState 15
-#define frostLamp 9
-
-// network settings
-#define weatherServer1 10,0,1,170
-#define weatherServer2 10,0,1,175
-#define ethernetMAC {0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31}
-#define ipAddress 10,0,1,160
-#define httpServerPort 80
-
-/*
- * 
- * FORWARD DECLARATIONS
- * 
- */
-void setLines();
-void getLatestWeather();
-void decodeWeather(char * weather);
-void setWeatherLamps(bool save);
-void readSerialCommands();
-void checkTouchSensor();
-void runWebServer();
-void allOn();
-void allOff();
-void cornerOnly();
-char * statusString();
-void sendFaviconToClient(EthernetClient client);
-void writeWebsite(EthernetClient client);
-
-/*
- *
- *  GLOBAL STATE AREA
- *
- */
-
-// Watchdog dump class
-Watchdog::CApplicationMonitor ApplicationMonitor;
-
-// Initialize the Ethernet server library
-// with the IP address and port you want to use
-// (port 80 is default for HTTP):
-EthernetServer server(httpServerPort);
-EthernetClient weatherClient;
-
-// touch sensor
-int ref0, ref1, ref2;       //reference values to remove offset
-
-// weather state
-boolean alertActiveState;
-boolean cloudIconState;
-boolean sunIconState;
-boolean rainLampState;
-boolean moonIconState;
-boolean sunFlashingState;
-boolean frostLampState;
-boolean daytime;
-int timer1_counter;
-
-// state flags :
-boolean lightOneState;
-boolean lightTwoState;
-boolean lightThreeState;
-boolean debug = false;
-
-volatile unsigned int interruptCounter = 0;
-int currentRainLampBrightness = 0;
-
-
-
-
-/*
- *
- *  SETUP
- *
- */
-
 // these show where the app crashed
 /*
 enum EDebugStatusConstants {
@@ -156,16 +31,141 @@ enum EDebugStatusConstants {
 };
 */
 
+#include <Ethernet.h>
+#include <avr/wdt.h>
+#include <avr/pgmspace.h>
+#include <EEPROM.h>
+#include "errno.h"
+#include <utility/w5100.h>
+#include <ADCTouch.h>
+// sourced from https://github.com/Megunolink/ArduinoCrashMonitor
+// referenced by http://www.megunolink.com/how-to-detect-lockups-using-the-arduino-watchdog/
+#include <ApplicationMonitor.h>
+
+#define enable_serial_debug 1
+
+#ifdef enable_serial_debug
+#include <SPI.h>
+#define DEBUG_OUT(param) Serial.println(param)
+#define HTTP_DEBUG_OUT(param) {if (debug) {Serial.println(param);}}
+#else
+#define DEBUG_OUT(param)
+#define HTTP_DEBUG_OUT(param)
+#endif
+
+#define EEPROMUpdate(address,value) do {\
+  byte current = EEPROM.read(address);\
+  if (current != value) {\
+    EEPROM.write(address,value);\
+  }\
+} while (false);
+
+//#define __ams(stage) ApplicationMonitor.SetData(stage);
+
+//#define rainLampMin 10
+//#define rainLampMax 255
+//#define rainLampHalfCycleTime 0.7
+//#define secondsPerInterrupt 0.05
+//#define weatherBufferLen 30
+//#define weatherPort 3000
+//#define weatherReadyTime 100
+//#define weatherTimeout 100
+// light control
+#define lightOne 7
+#define lightTwo 2
+#define lightThree 8
+// weather display
+//#define moonIcon 3
+//#define cloudIcon 4
+//#define sunIcon 5
+//#define rainLamp 6
+//#define alertSavingState 14
+//#define sunFlashingSavingState 15
+//#define frostLamp 9
+
+// network settings
+//#define weatherServer1 10,0,1,170
+//#define weatherServer2 10,0,1,175
+//#define ethernetMAC {0x90, 0xA2, 0xDA, 0x0D, 0x9C, 0x31}
+//#define ipAddress 10,0,1,160
+//#define httpServerPort 80
+
+/*
+ * 
+ * FORWARD DECLARATIONS
+ * 
+ */
+void setLines();
+//void getLatestWeather();
+//void decodeWeather(char * weather);
+//void setWeatherLamps(bool save);
+void readSerialCommands();
+void checkTouchSensor();
+void runWebServer();
+void allOn();
+void allOff();
+void cornerOnly();
+char * statusString();
+//void sendFaviconToClient(EthernetClient client);
+//void writeWebsite(EthernetClient client);
+
+/*
+ *
+ *  GLOBAL STATE AREA
+ *
+ */
+
+// Watchdog dump class
+Watchdog::CApplicationMonitor ApplicationMonitor;
+
+// Initialize the Ethernet server library
+// with the IP address and port you want to use
+// (port 80 is default for HTTP):
+//EthernetServer server(httpServerPort);
+//EthernetClient weatherClient;
+
+// touch sensor
+int ref0, ref1, ref2;       //reference values to remove offset
+
+// weather state
+//boolean alertActiveState;
+//boolean cloudIconState;
+//boolean sunIconState;
+//boolean rainLampState;
+//boolean moonIconState;
+//boolean sunFlashingState;
+//boolean frostLampState;
+//boolean daytime;
+//int timer1_counter;
+
+// state flags :
+boolean lightOneState;
+boolean lightTwoState;
+boolean lightThreeState;
+boolean debug = false;
+
+//volatile unsigned int interruptCounter = 0;
+//int currentRainLampBrightness = 0;
+
+
+
+
+/*
+ *
+ *  SETUP
+ *
+ */
+
 void setup()   {
   // setup pins :
   pinMode(lightOne, OUTPUT);
   pinMode(lightTwo, OUTPUT);
   pinMode(lightThree, OUTPUT);
-  pinMode(cloudIcon, OUTPUT);
-  pinMode(sunIcon, OUTPUT);
-  pinMode(rainLamp, OUTPUT);
-  pinMode(moonIcon, OUTPUT);
-  pinMode(frostLamp, OUTPUT);
+//  pinMode(cloudIcon, OUTPUT);
+//  pinMode(sunIcon, OUTPUT);
+//  pinMode(rainLamp, OUTPUT);
+//  pinMode(moonIcon, OUTPUT);
+//  pinMode(frostLamp, OUTPUT);
 
   // setup touch sensor
   // This is from here : http://playground.arduino.cc/Code/ADCTouch
@@ -177,13 +177,13 @@ void setup()   {
   Serial.begin(9600);
 
   // assign a MAC and IP addresses for the ethernet controller :
-  static byte mac[] = ethernetMAC;
-  IPAddress ip(ipAddress);
-  Ethernet.begin(mac, ip);
+//  static byte mac[] = ethernetMAC;
+//  IPAddress ip(ipAddress);
+//  Ethernet.begin(mac, ip);
 
   // shorten timeout http://forum.arduino.cc/index.php?topic=49401.0
-  W5100.setRetransmissionTime(0x3E8);
-  W5100.setRetransmissionCount(1);
+//  W5100.setRetransmissionTime(0x3E8);
+//  W5100.setRetransmissionCount(1);
 
   // restore light state from eeprom :
   lightOneState = EEPROM.read(lightOne);
@@ -191,15 +191,17 @@ void setup()   {
   lightThreeState = EEPROM.read(lightThree);
   setLines();
 
-  cloudIconState = EEPROM.read(cloudIcon);
-  sunIconState = EEPROM.read(sunIcon);
-  rainLampState = EEPROM.read(rainLamp);
-  alertActiveState = EEPROM.read(alertSavingState);
-  moonIconState = EEPROM.read(moonIcon);
-  sunFlashingState = EEPROM.read(sunFlashingSavingState);
-  frostLampState = EEPROM.read(frostLamp);
-  setWeatherLamps(false);
+//  cloudIconState = EEPROM.read(cloudIcon);
+//  sunIconState = EEPROM.read(sunIcon);
+//  rainLampState = EEPROM.read(rainLamp);
+//  alertActiveState = EEPROM.read(alertSavingState);
+//  moonIconState = EEPROM.read(moonIcon);
+//  sunFlashingState = EEPROM.read(sunFlashingSavingState);
+//  frostLampState = EEPROM.read(frostLamp);
+//  setWeatherLamps(false);
 
+
+/*
   // initialize timer1
   // (credit http://www.hobbytronics.co.uk/arduino-timer-interrupts,
   // nod to http://www.avrbeginners.net/architecture/timers/timers.html)
@@ -219,12 +221,14 @@ void setup()   {
   TIMSK1 |= (1 << TOIE1);   // enable timer overflow interrupt
   interrupts();             // enable all interrupts
 
+  */
+
   // start the watchdog timer :
   ApplicationMonitor.Dump(Serial);
   ApplicationMonitor.EnableWatchdog(Watchdog::CApplicationMonitor::Timeout_4s);
 
   // start the ethernet server :
-  server.begin();
+//  server.begin();
 
   DEBUG_OUT(F(">>Started"));
 }
@@ -239,7 +243,7 @@ void setup()   {
  */
 
 
-
+/*
 ISR(TIMER1_OVF_vect)
 {
   // interrupt service routine
@@ -275,7 +279,7 @@ ISR(TIMER1_OVF_vect)
     }
   }
 }
-
+*/
 
 
 /*
@@ -288,8 +292,8 @@ void loop()
 {
   readSerialCommands();
   checkTouchSensor();
-  getLatestWeather();
-  runWebServer();
+//  getLatestWeather();
+//  runWebServer();
   ApplicationMonitor.IAmAlive();
 }
 
@@ -300,7 +304,7 @@ void loop()
  *  WEATHER CHECKING
  *
  */
-
+/*
 void getLatestWeather() {
   static char weatherBuffer[weatherBufferLen];
   static int lineLength = 0;
@@ -400,7 +404,7 @@ void setWeatherLamps(bool save) {
     EEPROMUpdate(sunFlashingSavingState, sunFlashingState);
   }
 }
-
+*/
 
 /*
  *
@@ -550,10 +554,12 @@ void readSerialCommands() {
 
 // state (interpreted from the request line)
 
+/*
 int lightToSet = 0;
 boolean sendFavicon;
 boolean sendWebsite;
 const char * (*postFunction)(const char * postBody);
+*/
 
 // useful functions
 
@@ -595,6 +601,7 @@ void cornerOnly() {
   lightThreeState = LOW;
 }
 
+/*
 #define statusBufferLen 10
 
 const char * getLightStatus(int light) {
@@ -878,7 +885,7 @@ void runWebServer() {
     }
   }
 }
-
+*/
 
 /*
  *
@@ -886,6 +893,7 @@ void runWebServer() {
  *
  */
 
+/*
 #define favIconLength 635
 static const PROGMEM byte fd[] = {
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
@@ -1016,3 +1024,4 @@ void writeWebsite(EthernetClient client) {
   writeWebsiteSection(client, website4, website4Length);
   writeWebsiteSection(client, website4a, website4aLength);
 }
+*/
