@@ -342,7 +342,8 @@ void receiveWireData(int byteCount){
  
 // callback for sending data
 void sendWireData(){
- Wire.write((int)temp);
+  DEBUG_OUT(F("sending i2c data"));
+  Wire.write((int)temp);
 }
  
 // Get the internal temperature of the arduino
