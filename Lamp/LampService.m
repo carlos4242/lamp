@@ -6,6 +6,91 @@
 //  Copyright (c) 2012 Carl Peto. All rights reserved.
 //
 
+// GET /   ... get web code
+// GET /lights   ... get json of lights status
+// GET /lights/light1   ...   get json of single light status
+// POST /lights  ...  allOn=1 ... turn all lights on and return json of lights status
+// POST /lights  ...  allOff=1 ... turn all lights off and return json of lights status
+// POST /lights/light2  ...  on=x  ... turn lights on or off (1 and 0 are only recognized values) returns json of single light status
+
+// {\"1\":X,\"2\":X,\"3\":X}
+
+/*
+ const int webHeaderLength = 43;
+ const PROGMEM char webHeader[] =
+ "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n";
+ 
+ const int website1Length = 79;
+ const PROGMEM char website1[] =
+ "<link rel='stylesheet' type='text/css' href='http://10.0.1.170:3000/lights.css'>";
+ 
+ const int website1aLength = 101;
+ const PROGMEM char website1a[] =
+ "<div id='pageTitle'>light control</div><div><p>Tube Lamp : <input type='checkbox' id='lamp2' disabled ";
+ 
+ const int website2Length = 63;
+ const PROGMEM char website2[] =
+ "></p><p>Round Lamp : <input type='checkbox' id='lamp1' disabled ";
+ 
+ const int website3Length = 64;
+ const PROGMEM char website3[] =
+ "></p><p>Corner Lamp : <input type='checkbox' id='lamp3' disabled ";
+ 
+ const int website4Length = 88;
+ const PROGMEM char website4[] =
+ "><p></div><script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'>";
+ 
+ const int website4aLength = 64;
+ const PROGMEM char website4a[] =
+ "</script><script src='http://10.0.1.170:3000/lights.js'></script>";
+ 
+ 
+ 
+ 
+ void writeWebServiceReply(EthernetClient client, const char * output) {
+ static const char * header = "HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+ static const int headerLength = strlen(header);
+ static char htmlReply[100];
+ char * htmlReplyPointer = htmlReply;
+ strncpy(htmlReplyPointer, header, headerLength);
+ htmlReplyPointer += headerLength;
+ int outputLength = strlen(output);
+ strncpy(htmlReplyPointer, output, outputLength);
+ htmlReplyPointer += outputLength;
+ int htmlReplyLength = htmlReplyPointer - htmlReply;
+ client.write((byte*)htmlReply, htmlReplyLength);
+ }
+ 
+ const char * getLightStatus(int light) {
+ int lightStatus;
+ if (light == 1) {
+ lightStatus = lightOneState;
+ }
+ else if (light == 2) {
+ lightStatus = lightTwoState;
+ }
+ else if (light == 3) {
+ lightStatus = lightThreeState;
+ }
+ else {
+ return "invalid";
+ }
+ 
+ static char statusBuffer[statusBufferLen];
+ 
+ char * buffer = statusBuffer;
+ 
+ strncpy(buffer, "{\"", 2);
+ buffer += 2;
+ *buffer = 48 + light;
+ buffer += 1;
+ strncpy(buffer, "\":X}", 5);
+ buffer[2] = 48 + lightStatus;
+ return statusBuffer;
+ }
+ 
+ */
+
 #import "LampService.h"
 #import "Reachability.h"
 #include <ifaddrs.h>
