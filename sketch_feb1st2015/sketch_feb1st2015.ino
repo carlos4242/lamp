@@ -69,7 +69,6 @@ boolean lightOneState;
 boolean lightTwoState;
 boolean lightThreeState;
 boolean debug = false;
-double temp;
 
 
 
@@ -127,8 +126,6 @@ void loop()
 {
   readSerialCommands();
   checkTouchSensor();
-  delay(100);
-  temp = GetTemp();
   ApplicationMonitor.IAmAlive();
 }
 
@@ -150,7 +147,6 @@ void checkTouchSensor() {
   //int value1 = cornerVal - ref1;
   int value2 = onVal - ref2;
 
-
 //DEBUG_OUT(F("A0"));
 //DEBUG_OUT(ADCTouch.read(A0));
 //DEBUG_OUT(F("A1"));
@@ -166,7 +162,6 @@ DEBUG_OUT(F("value2"));
 DEBUG_OUT(value2);
 DEBUG_OUT(F(" "));
 */
-
 
   if (value0 > 40) {
     DEBUG_OUT("touch - turn off all lamps");
@@ -193,6 +188,10 @@ DEBUG_OUT(F(" "));
 // report status on serial port
 void report() {
   DEBUG_OUT(statusString());
+}
+
+char lightDetails() {
+  return lightOneState+lightTwoState<<1+lightThreeState<<2;
 }
 
 void readSerialCommands() {
@@ -343,21 +342,6 @@ void receiveWireData(int byteCount){
 // callback for sending data
 void sendWireData(){
   DEBUG_OUT(F("sending i2c data"));
-  Wire.write((int)temp);
-}
- 
-// Get the internal temperature of the arduino
-double GetTemp()
-{
- unsigned int wADC;
- double t;
- ADMUX = (_BV(REFS1) | _BV(REFS0) | _BV(MUX3));
- ADCSRA |= _BV(ADEN); // enable the ADC
- delay(20); // wait for voltages to become stable.
- ADCSRA |= _BV(ADSC); // Start the ADC
- while (bit_is_set(ADCSRA,ADSC));
- wADC = ADCW;
- t = (wADC - 324.31 ) / 1.22;
- return (t);
+  Wire.write(lightDetails());
 }
 
