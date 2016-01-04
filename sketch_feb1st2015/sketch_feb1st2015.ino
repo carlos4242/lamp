@@ -342,6 +342,8 @@ void receiveWireData(int byteCount){
 // callback for sending data
 void sendWireData(){
   DEBUG_OUT(F("sending i2c data"));
-  Wire.write(lightDetails());
+  char ld = lightDetails();
+  Wire.write((int)ld);
+  DEBUG_OUT((int)ld);
 }
 
