@@ -191,7 +191,7 @@ void report() {
 }
 
 char lightDetails() {
-  return lightOneState+lightTwoState<<1+lightThreeState<<2;
+  return lightOneState+(lightTwoState<<1)+(lightThreeState<<2);
 }
 
 void readSerialCommands() {
