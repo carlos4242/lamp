@@ -12,85 +12,69 @@
  
 */
 
+#include <EEPROM.h>
+#include <Wire.h>
 #include <SPI.h>
 #include <TimerOne.h>                    
+
+#define SLAVE_ADDRESS 0x04
+#define saveLastDim 0x31
 
 volatile int i=0;               // Variable to use as a counter
 volatile boolean zero_cross=0;  // Boolean to store a "switch" to tell us if we have crossed zero
 int PSSR1 = 4;                  // PowerSSR Tail connected to digital pin 4
 int dim = 32;                   // Default dimming level (0-128)  0 = on, 128 = off
 int freqStep = 60;              // Set to 60hz mains
-int LED = 0;                    // LED on Arduino board on digital pin 13
+
+#define EEPROMUpdate(address,value) do {\
+  byte current = EEPROM.read(address);\
+  if (current != value) {\
+    EEPROM.write(address,value);\
+  }\
+} while (false);
+
+#define DEBUG_OUT(param) Serial.println(param)
 
 void setup()
 {
+  DEBUG_OUT(F("startup:"));
+  
   Serial.begin(9600);
-Serial.println("startup:");
-pinMode(LED, OUTPUT);
- pinMode(4, OUTPUT);                // Set SSR1 pin as output
- attachInterrupt(0, zero_cross_detect, RISING);   // Attach an Interupt to digital pin 2 (interupt 0),
- Timer1.initialize(freqStep);
- Timer1.attachInterrupt(dim_check,freqStep);
 
-   dim = 120;
+  pinMode(4, OUTPUT);                // Set SSR1 pin as output
+  attachInterrupt(0, zero_cross_detect, RISING);   // Attach an Interupt to digital pin 2 (interupt 0),
+  Timer1.initialize(freqStep);
+  Timer1.attachInterrupt(dim_check,freqStep);
+
+ Wire.begin(SLAVE_ADDRESS);
+ 
+ // define callbacks for i2c communication
+ Wire.onReceive(receiveWireData);
+ Wire.onRequest(sendWireData);
+
+  dim = EEPROM.read(saveLastDim);
+  if (dim == 0xff) {
+    dim = 120;
+  }
+
+  DEBUG_OUT(F(">>Started"));
 }
 
 
 void loop()                        // Main loop
 {
-//  dim = 120;
   String s = Serial.readString();
   int newDim = s.toInt();
   if (newDim > 0) {
     dim = newDim;
-//    delay(100);
+    EEPROM.update(saveLastDim,dim);
     Serial.println("set dim to:");
     Serial.println(dim);
   }
-  
-  
-//dim = 120;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//dim = 100;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//
-//dim = 80;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//dim = 60;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//dim = 40;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//dim = 20;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
-//
-//dim = 0;
-//delay(500);
-//Serial.println("dim:");
-//Serial.println(dim);
 }
-
-// Functions
 
 void dim_check() {                  // This function will fire the triac at the proper time
  if(zero_cross == 1) {              // First check to make sure the zero-cross has happened else do nothing
-//   Serial.println("zc:");
    if(i>=dim) {
     delayMicroseconds(100);        //These values will fire the PSSR Tail.
     digitalWrite(PSSR1, HIGH);
@@ -108,4 +92,22 @@ void zero_cross_detect()
 {
    zero_cross = 1;
    // set the boolean to true to tell our dimming function that a zero cross has occured
-} 
+}
+
+// callback for received data
+void receiveWireData(int byteCount){
+ while(Wire.available()) {
+  int incomingByte = Wire.read();
+  DEBUG_OUT(F("received i2c data"));
+  DEBUG_OUT(incomingByte);
+  dim = incomingByte;
+  EEPROM.update(saveLastDim,dim);
+ }
+}
+ 
+// callback for sending data
+void sendWireData(){
+  DEBUG_OUT(F("sending i2c data"));
+  Wire.write(dim);
+  DEBUG_OUT(dim);
+}
