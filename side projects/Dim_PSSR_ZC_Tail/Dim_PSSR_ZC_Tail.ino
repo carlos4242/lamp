@@ -35,6 +35,11 @@ int freqStep = 60;              // Set to 60hz mains
 
 #define DEBUG_OUT(param) Serial.println(param)
 
+void zero_cross_detect();
+void dim_check();
+void receiveWireData(int byteCount);
+void sendWireData();
+
 void setup()
 {
   DEBUG_OUT(F("startup:"));
@@ -67,7 +72,7 @@ void loop()                        // Main loop
   int newDim = s.toInt();
   if (newDim > 0) {
     dim = newDim;
-    EEPROM.update(saveLastDim,dim);
+    EEPROMUpdate(saveLastDim,dim);
     Serial.println("set dim to:");
     Serial.println(dim);
   }
@@ -101,7 +106,7 @@ void receiveWireData(int byteCount){
   DEBUG_OUT(F("received i2c data"));
   DEBUG_OUT(incomingByte);
   dim = incomingByte;
-  EEPROM.update(saveLastDim,dim);
+  EEPROMUpdate(saveLastDim,dim);
  }
 }
  
