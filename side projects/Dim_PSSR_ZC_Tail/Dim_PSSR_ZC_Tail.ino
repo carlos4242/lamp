@@ -8,8 +8,6 @@
  1. Connect the C terminal of the ZeroCross Tail to digital pin 2 with a 10K ohm pull up to Arduino 5V.
  2. Connect the E terminal of the ZeroCross Tail to Arduino Gnd.
  3. Connect the PowerSSR Tail +in terminal to digital pin 4 and the -in terminal to Gnd.
- 
- 
 */
 
 #include <EEPROM.h>
@@ -42,42 +40,40 @@ void sendWireData();
 
 void setup()
 {
-  DEBUG_OUT(F("startup:"));
-  
-  Serial.begin(9600);
-
+  // setup dimmer
   pinMode(4, OUTPUT);                // Set SSR1 pin as output
   attachInterrupt(0, zero_cross_detect, RISING);   // Attach an Interupt to digital pin 2 (interupt 0),
   Timer1.initialize(freqStep);
   Timer1.attachInterrupt(dim_check,freqStep);
 
- Wire.begin(SLAVE_ADDRESS);
- 
- // define callbacks for i2c communication
- Wire.onReceive(receiveWireData);
- Wire.onRequest(sendWireData);
+  // i2C
+  Wire.begin(SLAVE_ADDRESS);
+  Wire.onReceive(receiveWireData);
+  Wire.onRequest(sendWireData);
 
+  // read most recent dimming level from EEPROM if available
   dim = EEPROM.read(saveLastDim);
   if (dim == 0xff) {
     dim = 120;
   }
 
+  // serial debugging
+  Serial.begin(9600);
   DEBUG_OUT(F(">>Started"));
 }
 
 
 void loop()                        // Main loop
 {
+  // check if serial debugging commands are available
   String s = Serial.readString();
   int newDim = s.toInt();
   if (newDim > 0) {
     dim = newDim;
     EEPROMUpdate(saveLastDim,dim);
-    Serial.println("set dim to:");
-    Serial.println(dim);
   } else if (s == "?") {
-    Serial.println("dim:");
-    Serial.println(dim);
+    DEBUG_OUT(F("dim:"));
+    DEBUG_OUT(dim);
   }
 }
 
@@ -102,20 +98,14 @@ void zero_cross_detect()
    // set the boolean to true to tell our dimming function that a zero cross has occured
 }
 
-// callback for received data
 void receiveWireData(int byteCount){
  while(Wire.available()) {
   int incomingByte = Wire.read();
-  DEBUG_OUT(F("received i2c data"));
-  DEBUG_OUT(incomingByte);
   dim = incomingByte;
   EEPROMUpdate(saveLastDim,dim);
  }
 }
  
-// callback for sending data
 void sendWireData(){
-  DEBUG_OUT(F("sending i2c data"));
   Wire.write(dim);
-  DEBUG_OUT(dim);
 }
