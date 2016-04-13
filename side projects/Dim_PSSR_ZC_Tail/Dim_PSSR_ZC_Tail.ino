@@ -75,6 +75,9 @@ void loop()                        // Main loop
     EEPROMUpdate(saveLastDim,dim);
     Serial.println("set dim to:");
     Serial.println(dim);
+  } else {
+    Serial.println("dim:");
+    Serial.println(dim);
   }
 }
 
