@@ -17,6 +17,8 @@
 
 #define SLAVE_ADDRESS 0x04
 #define saveLastDim 0x31
+#define minBrightness 0
+#define maxBrightness 138
 
 volatile int i=0;               // Variable to use as a counter
 volatile boolean zero_cross=0;  // Boolean to store a "switch" to tell us if we have crossed zero
@@ -101,11 +103,17 @@ void zero_cross_detect()
 void receiveWireData(int byteCount){
  while(Wire.available()) {
   int incomingByte = Wire.read();
-  dim = incomingByte;
+  if (incomingByte > maxBrightness) {
+    incomingByte = maxBrightness;
+  } else if (incomingByte < minBrightness) {
+    incomingByte = minBrightness;
+  }
+  
+  dim = maxBrightness - incomingByte;
   EEPROMUpdate(saveLastDim,dim);
  }
 }
  
 void sendWireData(){
-  Wire.write(dim);
+  Wire.write(maxBrightness - dim);
 }
