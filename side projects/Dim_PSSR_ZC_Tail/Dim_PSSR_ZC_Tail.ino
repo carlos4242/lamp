@@ -73,9 +73,6 @@ void setup()
   // set zero cross detect pin as input and engage the pullup resistor
   pinMode(PZCD1, INPUT);
 
-  pinMode(5,OUTPUT);
-  digitalWrite(5,LOW);
-
   // rotary encoder
   pinMode(encoderPin1, INPUT);
   pinMode(encoderPin2, INPUT);
@@ -125,24 +122,17 @@ void turnOn(bool * stateReportNeeded) {
   }
 }
 
-void interpretSerialCommand(char * serialBuffer, int * triggerPointPtr, bool * stateReportNeeded) {
-//  DEBUG_OUT(F("interpret...."));
-//  DEBUG_OUT(serialBuffer);
-  
+void interpretSerialCommand(char * serialBuffer, int * triggerPointPtr, bool * stateReportNeeded) {  
   if (strncmp(serialBuffer, "DMR1:", 5) == 0) {
     char * command = serialBuffer + 5;
     if (*command == '?') {
       *stateReportNeeded = true;
-//      DEBUG_OUT(F("report state"));
     } else if (*command == '_') {
       turnOff(stateReportNeeded);
-//      DEBUG_OUT(F("turn off"));
     } else if (*command == 'O') {
       turnOn(stateReportNeeded);
-//      DEBUG_OUT(F("turn on"));
     } else {
       turnOn(stateReportNeeded);
-//      DEBUG_OUT(F("change"));
       int newTriggerPointVal = atoi(command);
       if (newTriggerPointVal > maxTriggerPoint) {
         newTriggerPointVal = maxTriggerPoint;
@@ -283,6 +273,4 @@ void zero_cross_detect()
   i = 0;
   zero_cross = true;
   sentPulse = false; // prevent main loop action from occurring until after next zero cross cycle is complete
-  digitalWrite(5,HIGH);
-  digitalWrite(5,LOW);
 }
