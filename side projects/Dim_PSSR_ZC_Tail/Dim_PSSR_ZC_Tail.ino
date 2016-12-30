@@ -1,6 +1,7 @@
 #include <EEPROM.h>
 #include <TimerOne.h>
 #include <stdlib.h>
+#include <SoftwareSerial.h>
 
 #define EEPROMUpdate(address,value) do {\
     byte current = EEPROM.read(address);\
@@ -9,14 +10,31 @@
     }\
   } while (false);
 
-bool serialStarted = false;
+//#define DEBUG_SOFTWARE_SERIAL 1
+//#define DEBUG_SERIAL 1
 
+#ifdef DEBUG_SOFTWARE_SERIAL
+#define DEBUG_OUT(param) do {\
+    dbgSerial.println(param);\
+  } while (false);
+#define DEBUG_OUT_INLINE(param) do {\
+    dbgSerial.print(param);\
+  } while (false);
+#elseif DEBUG_SERIAL
 #define DEBUG_OUT(param) do {\
     if (serialStarted) {\
       Serial.println(param);\
     }\
   } while (false);
-
+#define DEBUG_OUT_INLINE(param) do {\
+    if (serialStarted) {\
+      Serial.print(param);\
+    }\
+  } while (false);
+#else
+#define DEBUG_OUT(param) 
+#define DEBUG_OUT_INLINE(param) 
+#endif
 
 /*
  Dim_PSSR_ZC_Tail
@@ -38,31 +56,38 @@ bool serialStarted = false;
 #define brightnessStep 1
 #define brightnessMultiplier 10
 
+
+// pins
+#define PZCD1 2 // PowerSwitch Zero detect on this pin (must be interrupt capable)
+#define PSSR1 4 // PowerSSR Tail connected to this digital pin to control power
+#define encoderPin1 7 // rotary encoder pin1
+#define encoderPin2 8 // rotary encoder pin2
+#define encoderSwitchPin 3 // rotary encoder push switch
+#define dbgrxpin 9
+#define dbgtxpin 10
+
 #define serialBufferSize 12 // the maximum length of the serial input/output
-// PowerSwitch Zero detect on this pin (must be interrupt capable)
-#define PZCD1 2
-// PowerSSR Tail connected to this digital pin to control power
-#define PSSR1 4
-// Set to 50hz mains
-#define freqStep 10
+#define freqStep 10 // Set to 50hz mains
 
-
-// rotary encoder support (including push switch):
-#define encoderPin1 7
-#define encoderPin2 8
-#define encoderSwitchPin 3
-
+bool serialStarted = false;
 volatile boolean lampOn = true;
 volatile bool sentPulse = true; // this should start false!
 volatile int currentTriggerPoint;
 static int nextTriggerPoint;
 volatile boolean zero_cross = false; // Boolean to store a "switch" to tell us if we have crossed zero
 
+// software serial debugger...
+#ifdef DEBUG_SOFTWARE_SERIAL
+SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
+#endif
+
+
 void setup()
 {
   // trigger an interrupt after a zero cross has been detected
-  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detect, RISING);   // Attach an Interupt to the digital pin that reads zero cross pulses
-
+  // Attach an Interupt to the digital pin that reads zero cross pulses
+  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detect, RISING);
+  
   // fire a timer to count up after zero cross detected until the time when the triac should be fired
   Timer1.initialize(freqStep);
   Timer1.attachInterrupt(timer_tick_function, freqStep);
@@ -92,6 +117,11 @@ void setup()
   currentTriggerPoint = triggerPointRead;
 
   lampOn = EEPROM.read(saveLampOnAt);
+
+#ifdef DEBUG_SOFTWARE_SERIAL
+  dbgSerial.begin(9600); // speed up to 57600 once tested
+  DEBUG_OUT(F(">> Software serial debugger started"));
+#endif
 }
 
 void writeStatus() {
@@ -122,7 +152,7 @@ void turnOn(bool * stateReportNeeded) {
   }
 }
 
-void interpretSerialCommand(char * serialBuffer, int * triggerPointPtr, bool * stateReportNeeded) {  
+void interpretSerialCommand(char * serialBuffer, int * triggerPointPtr, bool * stateReportNeeded) {
   if (strncmp(serialBuffer, "DMR1:", 5) == 0) {
     char * command = serialBuffer + 5;
     if (*command == '?') {
@@ -156,20 +186,32 @@ void loop()
 
   if (serialStarted) {
     // test with DMR1:?
+    static bool recognising = false;
     static int serialBufferPosition = 0;
     // check if serial debugging commands are available
     static char inputSerialBuffer[serialBufferSize];
     if (Serial.available()) {
       char c = Serial.read();
-      inputSerialBuffer[serialBufferPosition] = c;
-      serialBufferPosition++;
-      if ((serialBufferPosition >= serialBufferSize) || (c == '\r')) {
-        // null terminate the string, interpret the command and reset the buffer
-        inputSerialBuffer[serialBufferPosition] = 0;
-//        DEBUG_OUT(nextTriggerPoint);
-        interpretSerialCommand(inputSerialBuffer, &nextTriggerPoint, &stateReportNeeded);
-//        DEBUG_OUT(nextTriggerPoint);
-        serialBufferPosition = 0;
+
+      if (recognising || c == 'D') {
+        recognising = true;
+        inputSerialBuffer[serialBufferPosition] = c;
+        serialBufferPosition++;
+        if ((serialBufferPosition >= serialBufferSize) || (c == '\r') || (c == '\n')) {
+          // null terminate the string, interpret the command and reset the buffer
+          inputSerialBuffer[serialBufferPosition] = 0;
+
+          DEBUG_OUT_INLINE(F("OK:"));
+          DEBUG_OUT(inputSerialBuffer);
+
+          interpretSerialCommand(inputSerialBuffer, &nextTriggerPoint, &stateReportNeeded);
+          
+          serialBufferPosition = 0;
+          recognising = false;
+        }
+      } else {
+        DEBUG_OUT_INLINE(F("x:"));
+        DEBUG_OUT(c);
       }
     }
   }
@@ -238,11 +280,13 @@ void loop()
     }
 
     if (stateReportNeeded) {
+      DEBUG_OUT(F("reporting status"));
+      
       writeStatus();
       stateReportNeeded = false;
     }
 
-//    sentPulse = false; // this must reset to false!
+    sentPulse = false; // this must reset to false!
   }
 }
 
@@ -259,7 +303,7 @@ void timer_tick_function() {
 
   if (!zero_cross) return; // waiting for zero cross
 
-  if (i < currentTriggerPoint*brightnessMultiplier) {
+  if (i < currentTriggerPoint * brightnessMultiplier) {
     i++;
   } else {
     zero_cross = false; // disable until the next zero cross
