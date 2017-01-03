@@ -95,6 +95,7 @@
 #import "Reachability.h"
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 NSString *serviceRoot;
 struct in_addr homeen0base;
@@ -108,10 +109,19 @@ static BOOL arduinoReachable;
 
 +(void)initialize {
     serviceRoot = @"http://" kArduinoIPAddress "/";
-    if (!inet_aton(kArduinoIPAddress, &homeen0base)) {
+    
+    
+    //!inet_aton(kArduinoIPAddress, &homeen0base)
+    struct hostent *arduinoHost;
+    if ((arduinoHost = gethostbyname(kArduinoIPAddress))) {
+        struct in_addr **addr_list = (struct in_addr **)arduinoHost->h_addr_list;
+        homeen0base = *addr_list[0];
+    } else {
         NSLog(@"Failed to read arduino address, check the format of the address string");
         homeen0base.s_addr = 0;
     }
+    
+    
     [[Reachability sharedWifiReachability] getStatus:^(NetworkStatus status) {
         onwifi = status != NotReachable;
         wifiReachabilityKnown = YES;

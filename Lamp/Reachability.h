@@ -45,7 +45,8 @@
  
  */
 
-#define kArduinoIPAddress "10.0.1.160"
+//#define kArduinoIPAddress "10.0.1.160"
+#define kArduinoIPAddress "raspberrypi.local"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 

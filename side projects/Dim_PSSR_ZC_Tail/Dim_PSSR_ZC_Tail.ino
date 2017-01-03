@@ -32,8 +32,8 @@
     }\
   } while (false);
 #else
-#define DEBUG_OUT(param) 
-#define DEBUG_OUT_INLINE(param) 
+#define DEBUG_OUT(param)
+#define DEBUG_OUT_INLINE(param)
 #endif
 
 /*
@@ -66,10 +66,9 @@
 #define dbgrxpin 9
 #define dbgtxpin 10
 
-#define serialBufferSize 12 // the maximum length of the serial input/output
+#define serialBufferSize 8 // the maximum length of the serial input/output
 #define freqStep 10 // Set to 50hz mains
 
-bool serialStarted = false;
 volatile boolean lampOn = true;
 volatile bool sentPulse = true; // this should start false!
 volatile int currentTriggerPoint;
@@ -87,7 +86,7 @@ void setup()
   // trigger an interrupt after a zero cross has been detected
   // Attach an Interupt to the digital pin that reads zero cross pulses
   attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detect, RISING);
-  
+
   // fire a timer to count up after zero cross detected until the time when the triac should be fired
   Timer1.initialize(freqStep);
   Timer1.attachInterrupt(timer_tick_function, freqStep);
@@ -117,6 +116,8 @@ void setup()
   currentTriggerPoint = triggerPointRead;
 
   lampOn = EEPROM.read(saveLampOnAt);
+  Serial.begin(9600);
+  Serial.println(F("Serial started>>"));
 
 #ifdef DEBUG_SOFTWARE_SERIAL
   dbgSerial.begin(9600); // speed up to 57600 once tested
@@ -125,8 +126,6 @@ void setup()
 }
 
 void writeStatus() {
-  if (!serialStarted) return;
-
   static char outputSerialBuffer[serialBufferSize];
   if (lampOn) {
     snprintf(outputSerialBuffer, serialBufferSize, "DMR1=%d\n", currentTriggerPoint);
@@ -183,14 +182,16 @@ void fireTriac() {
 void loop()
 {
   static bool stateReportNeeded = false;
-
-  if (serialStarted) {
-    // test with DMR1:?
     static bool recognising = false;
     static int serialBufferPosition = 0;
+
+  {
+    // test with DMR1:?
     // check if serial debugging commands are available
     static char inputSerialBuffer[serialBufferSize];
-    if (Serial.available()) {
+    static int serialCount = 20;
+    
+    while (Serial.available()&&serialCount--) {
       char c = Serial.read();
 
       if (recognising || c == 'D') {
@@ -205,7 +206,7 @@ void loop()
           DEBUG_OUT(inputSerialBuffer);
 
           interpretSerialCommand(inputSerialBuffer, &nextTriggerPoint, &stateReportNeeded);
-          
+
           serialBufferPosition = 0;
           recognising = false;
         }
@@ -214,6 +215,7 @@ void loop()
         DEBUG_OUT(c);
       }
     }
+    serialCount = 20;
   }
 
   {
@@ -265,12 +267,8 @@ void loop()
   }
 
   if (sentPulse) {
-
-    if (!serialStarted) {
-      Serial.begin(9600);
-      serialStarted = true;
-      DEBUG_OUT(F(">>Serial Started"));
-    }
+    recognising = false;
+    serialBufferPosition = 0;
 
     if (currentTriggerPoint != nextTriggerPoint) {
       currentTriggerPoint = nextTriggerPoint;
@@ -281,7 +279,7 @@ void loop()
 
     if (stateReportNeeded) {
       DEBUG_OUT(F("reporting status"));
-      
+
       writeStatus();
       stateReportNeeded = false;
     }
@@ -298,16 +296,15 @@ void loop()
 // then finally fire the triac, reset the zero_cross flag and counter, ready for the next zero cross.
 volatile static int i = 0; // count the number of interrupts fired by the timer since the last zero cross
 void timer_tick_function() {
-
-  if (!lampOn) return;
-
   if (!zero_cross) return; // waiting for zero cross
 
   if (i < currentTriggerPoint * brightnessMultiplier) {
     i++;
   } else {
     zero_cross = false; // disable until the next zero cross
-    fireTriac();
+    if (lampOn) {
+      fireTriac();
+    }
     sentPulse = true;
   }
 }
