@@ -56,8 +56,14 @@ debugging pins...
 
 
 // debug methods
+#ifdef DEBUG_SOFTWARE_SERIAL
+//SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
+#endif
+
+#ifdef DEBUG_TO_RING_BUFFER
 SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
-RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE);
+RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE,&dbgSerial);
+#endif
 
 //macros
 #define EEPROMUpdate(address,value) do {\
@@ -108,6 +114,8 @@ RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE);
   } while (false);
 
 #endif
+
+
 
 #ifndef DEBUG_OUT
 #define DEBUG_OUT(param)
@@ -276,15 +284,17 @@ void loop()
       lastEncoderSwitchPinValue = encoderSwitchPinValue;
     }
 
+#ifdef DEBUG_TO_RING_BUFFER
     if (!digitalRead(dumpRingBufferPin)) {
       // dump now
-      ringBuffer.dumpBuffer(&Serial);
+      ringBuffer.dumpBuffer();
     }
 
     if (dumpRingBuffer) {
-      ringBuffer.dumpBuffer(&Serial);
+      ringBuffer.dumpBuffer();
       dumpRingBuffer = false;
     }
+#endif
   }
 
   if (sentPulse) {
