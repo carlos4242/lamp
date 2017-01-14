@@ -1,9 +1,11 @@
+#define outputBufferSize 10
+
 void writeStatus() {
-  static char outputSerialBuffer[serialBufferSize];
+  static char outputSerialBuffer[outputBufferSize];
   if (lampOn) {
-    snprintf(outputSerialBuffer, serialBufferSize, "DMR1=%d\n", currentTriggerPoint);
+    snprintf(outputSerialBuffer, outputBufferSize, "DMR1=%02d\r\n", currentTriggerPoint);
   } else {
-    snprintf(outputSerialBuffer, serialBufferSize, "DMR1=_\n");
+    snprintf(outputSerialBuffer, outputBufferSize, "DMR1=__\r\n");
   }
   Serial.write(outputSerialBuffer);
 }
