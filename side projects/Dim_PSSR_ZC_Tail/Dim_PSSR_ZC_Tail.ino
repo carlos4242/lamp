@@ -191,7 +191,7 @@ void setup()
 
 void loop()
 {
-  static bool stateReportNeeded = false;
+  static bool stateReportNeeded = true; // report status immediately on startup
   static bool recognising = false;
   static int serialBufferPosition = 0;
   static bool dumpRingBuffer = false;
@@ -298,9 +298,6 @@ void loop()
   }
 
   if (sentPulse) {
-    // reset this read
-    //    recognising = false;
-    //    serialBufferPosition = 0;
 
     if (currentTriggerPoint != nextTriggerPoint) {
       currentTriggerPoint = nextTriggerPoint;

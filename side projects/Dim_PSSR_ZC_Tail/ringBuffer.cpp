@@ -54,6 +54,9 @@ void RingBuffer::dumpBuffer() {
     dumpDestination->write(ringBuffer, bufferSize);
   }
 
+  dumpDestination->println(F(""));
+  dumpDestination->println(F("===="));
+
   charactersLogged = 0;
   currentRingBufferPosition = 0;
 }
