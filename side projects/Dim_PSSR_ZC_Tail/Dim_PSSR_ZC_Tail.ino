@@ -1,23 +1,23 @@
 /*
- Dim_PSSR_ZC_Tail
+  Dim_PSSR_ZC_Tail
 
- This sketch is a sample sketch using the ZeroCross Tail(ZCT) to generate a sync
- pulse to drive a PowerSSR Tail(PSSRT) for dimming ac lights.
+  This sketch is a sample sketch using the ZeroCross Tail(ZCT) to generate a sync
+  pulse to drive a PowerSSR Tail(PSSRT) for dimming ac lights.
 
- Connections to an Arduino Duemilanove:
- 1. Connect the C terminal of the ZeroCross Tail to digital pin 2 with a 10K ohm pull up to Arduino 5V.
- 2. Connect the E terminal of the ZeroCross Tail to Arduino Gnd.
- 3. Connect the PowerSSR Tail +in terminal to digital pin 4 and the -in terminal to Gnd.
+  Connections to an Arduino Duemilanove:
+  1. Connect the C terminal of the ZeroCross Tail to digital pin 2 with a 10K ohm pull up to Arduino 5V.
+  2. Connect the E terminal of the ZeroCross Tail to Arduino Gnd.
+  3. Connect the PowerSSR Tail +in terminal to digital pin 4 and the -in terminal to Gnd.
    http://bildr.org/2012/08/rotary-encoder-arduino/
 
-debugging...
- store a log of all that went into the serial port, plus markers '/'
- compilation reports approx 1,713 bytes for local variables plus heap/malloc
- make the serial buffer 500 bytes. log as a ring buffer
+  debugging...
+  store a log of all that went into the serial port, plus markers '/'
+  compilation reports approx 1,713 bytes for local variables plus heap/malloc
+  make the serial buffer 500 bytes. log as a ring buffer
 
-debugging pins...
- 11 - dump debug ring buffer and reset (includes >>> after the last bytes to indicate the end
- 13 - recognising serial command
+  debugging pins...
+  11 - dump debug ring buffer and reset (includes >>> after the last bytes to indicate the end
+  13 - recognising serial command
 
 */
 
@@ -49,6 +49,10 @@ debugging pins...
 #define dumpRingBufferPin 11
 #define dbgInRecognizePin 13
 
+// faerie lights
+#define faerieLights1 5
+#define faerieLights2 6
+
 // debug settings (if any)
 //#define DEBUG_SOFTWARE_SERIAL 1
 //#define DEBUG_SERIAL 1
@@ -62,7 +66,7 @@ debugging pins...
 
 #ifdef DEBUG_TO_RING_BUFFER
 SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
-RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE,&dbgSerial);
+RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE, &dbgSerial);
 #endif
 
 //macros
@@ -144,6 +148,13 @@ void setup()
 
   // Set SSR1 pin as output
   pinMode(PSSR1, OUTPUT);
+  digitalWrite(PSSR1, LOW);
+
+  // faerie lights
+  pinMode(faerieLights1, OUTPUT);
+  pinMode(faerieLights2, OUTPUT);
+  digitalWrite(faerieLights1, LOW);
+  digitalWrite(faerieLights2, LOW);
 
   // set zero cross detect pin as input and engage the pullup resistor
   pinMode(PZCD1, INPUT);

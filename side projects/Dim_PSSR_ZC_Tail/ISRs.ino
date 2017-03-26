@@ -4,6 +4,28 @@ void fireTriac() {
   digitalWrite(PSSR1, LOW);
 }
 
+void fireTriacAndFaeries() {
+  digitalWrite(PSSR1, HIGH);
+  digitalWrite(faerieLights1, HIGH);
+  digitalWrite(faerieLights2, HIGH);
+  delayMicroseconds(500);
+  digitalWrite(PSSR1, LOW);
+  digitalWrite(faerieLights1, LOW);
+  digitalWrite(faerieLights2, LOW);
+}
+
+void fireFaerieSCR1() {
+  digitalWrite(faerieLights1, HIGH);
+  delayMicroseconds(50);
+  digitalWrite(faerieLights1, LOW);
+}
+
+void fireFaerieSCR2() {
+  digitalWrite(faerieLights2, HIGH);
+  delayMicroseconds(50);
+  digitalWrite(faerieLights2, LOW);
+}
+
 // ISRs
 // All these functions are ISRs, be wary of volatile variables, side effects and speed
 
@@ -22,7 +44,8 @@ void timer_tick_function() {
   } else {
     zero_cross = false; // disable until the next zero cross
     if (lampOn) {
-      fireTriac();
+//      fireTriac();
+      fireTriacAndFaeries();
     }
     sentPulse = true;
   }
