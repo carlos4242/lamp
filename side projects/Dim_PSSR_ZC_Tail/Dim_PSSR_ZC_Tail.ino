@@ -131,16 +131,22 @@ RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE, &dbgSerial);
 
 // key state variables
 volatile boolean lampOn = true;
-volatile bool sentPulse = true; // this should start false!
+volatile bool sentTriacPulse = true; // this should start false!
 volatile int currentTriggerPoint;
 static int nextTriggerPoint;
+
+//faeries
+volatile boolean fairy1On = true;
+volatile int currentFairy1TriggerPoint;
+volatile boolean fairy2On = true;
+volatile int currentFairy2TriggerPoint;
 
 
 void setup()
 {
   // trigger an interrupt after a zero cross has been detected
   // Attach an Interupt to the digital pin that reads zero cross pulses
-  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detect, RISING);
+  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detected, RISING);
 
   // fire a timer to count up after zero cross detected until the time when the triac should be fired
   Timer1.initialize(freqStep);
@@ -308,10 +314,15 @@ void loop()
 #endif
   }
 
-  if (sentPulse) {
+  if (sentTriacPulse) {
 
     if (currentTriggerPoint != nextTriggerPoint) {
       currentTriggerPoint = nextTriggerPoint;
+
+      // for now, faeries match main lamp
+      currentFairy1TriggerPoint = nextTriggerPoint;
+      currentFairy2TriggerPoint = nextTriggerPoint;
+
       // save the eeprom update on the "main thread", in due course
       EEPROMUpdate(saveLastTriggerPointAt, nextTriggerPoint);
       stateReportNeeded = true;
@@ -324,7 +335,7 @@ void loop()
       stateReportNeeded = false;
     }
 
-    sentPulse = false; // this must reset to false!
+    sentTriacPulse = false; // this must reset to false!
   }
 }
 
