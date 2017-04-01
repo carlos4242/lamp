@@ -1,6 +1,6 @@
 void fireTriac() {
   digitalWrite(PSSR1, HIGH);
-  delayMicroseconds(500);
+  delayMicroseconds(100); // was 500, try a shorter pulse...
   digitalWrite(PSSR1, LOW);
 }
 
@@ -9,24 +9,17 @@ void resetFaeries() {
   digitalWrite(faerieLights2, LOW);
 }
 
-//void fireFaeries() {
-//  digitalWrite(faerieLights1, HIGH);
-//  digitalWrite(faerieLights2, HIGH);
-//  //  delayMicroseconds(50);
-//  //  digitalWrite(faerieLights1, LOW);
-//  //  digitalWrite(faerieLights2, LOW);
-//}
+void fireFaeries() {
+  digitalWrite(faerieLights1, HIGH);
+  digitalWrite(faerieLights2, HIGH);
+}
 
 void fireFaerieSCR1() {
   digitalWrite(faerieLights1, HIGH);
-  //  delayMicroseconds(50);
-  //  digitalWrite(faerieLights1, LOW);
 }
 
 void fireFaerieSCR2() {
   digitalWrite(faerieLights2, HIGH);
-  //  delayMicroseconds(50);
-  //  digitalWrite(faerieLights2, LOW);
 }
 
 // ISRs
@@ -45,6 +38,7 @@ volatile static int fairy1TickCount = 0;
 volatile static int fairy2TickCount = 0;
 
 void timer_tick_function() {
+  digitalWrite(dbgInTimerISR, HIGH);
 
   if (triac_pulse_due) {
     // count the number of interrupts fired by the timer since the last zero cross
@@ -54,9 +48,20 @@ void timer_tick_function() {
       triac_pulse_due = false; // disable until the next zero cross
       if (lampOn) {
         fireTriac();
-        //      fireFaeries();
+        //        fireFaeries();
       }
       sentTriacPulse = true;
+    }
+  }
+
+  if (faery_2_enable_due) {
+    if (fairy2TickCount < currentFairy2TriggerPoint * brightnessMultiplier) {
+      fairy2TickCount++;
+    } else {
+      faery_2_enable_due = false;
+      if (fairy2On) {
+        fireFaerieSCR2();
+      }
     }
   }
 
@@ -71,16 +76,7 @@ void timer_tick_function() {
     }
   }
 
-  if (faery_2_enable_due) {
-    if (fairy2TickCount < currentFairy2TriggerPoint * brightnessMultiplier) {
-      fairy2TickCount++;
-    } else {
-      faery_2_enable_due = false;
-      if (fairy2On) {
-        fireFaerieSCR2();
-      }
-    }
-  }
+  digitalWrite(dbgInTimerISR, LOW);
 }
 
 void zero_cross_detected()
