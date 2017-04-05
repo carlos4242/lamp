@@ -38,18 +38,7 @@ void setup()
   Serial.begin(9600);
   Serial.println(F("Serial started>>"));
 
-  // read most recent dimming level from EEPROM if available (virgin EEPROM address will read as 0xff)
-  int triggerPointRead = EEPROM.read(saveLastTriggerPointAt);
-  Serial.print(F("Loaded brightness:"));
-  Serial.println(triggerPointRead);
-
-  if (triggerPointRead > maxTriggerPoint || triggerPointRead < minTriggerPoint) {
-    triggerPointRead = maxTriggerPoint;
-  }
-
-  for (int i = 0; i < numberLamps; i++) {
-    nextTriggerPoint[i] = triggerPointRead;
-  }
+readTriggerPoints();
 
   lampOn = EEPROM.read(saveLampOnAt);
 

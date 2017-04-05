@@ -105,17 +105,14 @@ void loop()
   }
 
   if (sentTriacPulse) {
-
     if (valuesNeedSave) {
-      // save the eeprom update on the "main thread"
-      EEPROMUpdate(saveLastTriggerPointAt, nextTriggerPoint[0]); // for now we are only saving the main lamp value
-      stateReportNeeded = true;
+      saveTriggerPoints();
       valuesNeedSave = false;
+      stateReportNeeded = true;
     }
 
     if (stateReportNeeded) {
       DEBUG_OUT(F("reporting status"));
-
       writeStatus();
       stateReportNeeded = false;
     }

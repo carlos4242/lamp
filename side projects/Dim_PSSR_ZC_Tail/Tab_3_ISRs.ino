@@ -36,7 +36,7 @@ volatile static int fairy2TickCount = 0;
 volatile int currentTriggerPoint[numberLamps];
 
 void timer_tick_function() {
-  PORTB |= B10000; // using a fast port write to save time, but isn't very safe... equivalent to... digitalWrite(dbgInTimerISR, HIGH);
+//  PORTB |= B10000; // using a fast port write to save time, but isn't very safe... equivalent to... digitalWrite(dbgInTimerISR, HIGH);
 
   if (triac_pulse_due) {
     // count the number of interrupts fired by the timer since the last zero cross
@@ -74,7 +74,7 @@ void timer_tick_function() {
     }
   }
 
-  PORTB &= ~B10000; // equivalent to... digitalWrite(dbgInTimerISR, LOW);
+//  PORTB &= ~B10000; // equivalent to... digitalWrite(dbgInTimerISR, LOW);
 }
 
 void zero_cross_detected()
