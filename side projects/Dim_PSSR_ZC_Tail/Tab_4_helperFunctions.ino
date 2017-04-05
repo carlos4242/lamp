@@ -43,7 +43,9 @@ void interpretSerialCommand(
   bool * stateReportNeeded,
   bool * dumpRingBuffer)
 {
-  if (strncmp(serialBuffer, "DMR1:", 5) == 0) {
+  if (strnlen(serialBuffer,serialBufferSize)<6) return; // prevent any possibility of buffer bounds breach
+  
+  if (strncmp(serialBuffer, "DMR", 3) == 0 && serialBuffer[4] == ':') {
     char * command = serialBuffer + 5;
     if (*command == '?') {
       *stateReportNeeded = true;
