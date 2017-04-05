@@ -127,18 +127,13 @@ RingBuffer ringBuffer = RingBuffer(RING_BUFFER_SIZE, &dbgSerial);
 #define DEBUG_OUT_INLINE(param)
 #endif
 
+#define numberLamps 3
 
 
 
 // key state variables
-volatile boolean lampOn = true;
+// note that any that can be read/written to by an ISR is marked volatile to avoid compiler making assumptions
+volatile boolean lampOn; // for the main lamp we have an on/off, for the fairy lights, we just set them to <maxTriggerPoint> to turn them off
 volatile bool sentTriacPulse = true; // this should start false!
-volatile int currentTriggerPoint;
-static int nextTriggerPoint;
-
-//faeries
-volatile boolean fairy1On = true;
-volatile int currentFairy1TriggerPoint;
-volatile boolean fairy2On = true;
-volatile int currentFairy2TriggerPoint;
-
+// these are temporary holding places for updating the trigger points on the next cycle, it's done after the triac/scr pulses because we don't want a glitch
+volatile static int nextTriggerPoint[numberLamps];

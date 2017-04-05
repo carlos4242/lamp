@@ -3,54 +3,72 @@
 void writeStatus() {
   static char outputSerialBuffer[outputBufferSize];
   if (lampOn) {
-    snprintf(outputSerialBuffer, outputBufferSize, "DMR1=%02d\r\n", currentTriggerPoint);
+    snprintf(outputSerialBuffer, outputBufferSize, "DMR1=%02d\r\n", nextTriggerPoint[0]);
   } else {
     snprintf(outputSerialBuffer, outputBufferSize, "DMR1=__\r\n");
   }
   Serial.write(outputSerialBuffer);
 }
 
-void turnOff(bool * stateReportNeeded) {
+void changeTriggerPoint(int triggerNumber, int increment) {
+  int triggerPoint = nextTriggerPoint[triggerNumber];
+  triggerPoint += increment;
+
+  if (triggerPoint > maxTriggerPoint) {
+    triggerPoint = maxTriggerPoint;
+  } else if (triggerPoint < minTriggerPoint) {
+    triggerPoint = minTriggerPoint;
+  }
+
+  nextTriggerPoint[triggerNumber] = triggerPoint;
+}
+
+void turnOff() {
   if (lampOn) {
     lampOn = false;
-    *stateReportNeeded = true;
     EEPROMUpdate(saveLampOnAt, lampOn);
   }
 }
 
-void turnOn(bool * stateReportNeeded) {
+void turnOn() {
   if (!lampOn) {
     lampOn = true;
-    *stateReportNeeded = true;
     EEPROMUpdate(saveLampOnAt, lampOn);
   }
 }
 
 void interpretSerialCommand(
-char * serialBuffer,
-int * triggerPointPtr,
-bool * stateReportNeeded,
-bool * dumpRingBuffer)
+  char * serialBuffer,
+  bool * valuesNeedSave,
+  bool * stateReportNeeded,
+  bool * dumpRingBuffer)
 {
   if (strncmp(serialBuffer, "DMR1:", 5) == 0) {
     char * command = serialBuffer + 5;
     if (*command == '?') {
       *stateReportNeeded = true;
     } else if (*command == '_') {
-      turnOff(stateReportNeeded);
+      turnOff();
+      *stateReportNeeded = true;
     } else if (*command == 'O') {
-      turnOn(stateReportNeeded);
+      turnOn();
+      *stateReportNeeded = true;
     } else if (*command == 'X') {
       *dumpRingBuffer = true;
     } else {
-      turnOn(stateReportNeeded);
+      turnOn();
       int newTriggerPointVal = atoi(command);
-      if (newTriggerPointVal > maxTriggerPoint) {
-        newTriggerPointVal = maxTriggerPoint;
-      } else if (newTriggerPointVal < minTriggerPoint) {
-        newTriggerPointVal = minTriggerPoint;
+
+      if (newTriggerPointVal) {
+        if (newTriggerPointVal > maxTriggerPoint) {
+          newTriggerPointVal = maxTriggerPoint;
+        } else if (newTriggerPointVal < minTriggerPoint) {
+          newTriggerPointVal = minTriggerPoint;
+        }
+        
+        nextTriggerPoint[0] = newTriggerPointVal;
+        *valuesNeedSave = true;
       }
-      *triggerPointPtr = newTriggerPointVal;
     }
   }
 }

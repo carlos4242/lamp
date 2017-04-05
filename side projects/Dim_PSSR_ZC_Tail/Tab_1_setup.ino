@@ -25,7 +25,7 @@ void setup()
   pinMode(dbgInRecognizePin, OUTPUT);
   digitalWrite(dbgInRecognizePin, LOW);
   pinMode(dbgInTimerISR, OUTPUT);
-  digitalWrite(dbgInTimerISR,HIGH);
+  digitalWrite(dbgInTimerISR, HIGH);
 
   // rotary encoder
   pinMode(encoderPin1, INPUT);
@@ -35,19 +35,23 @@ void setup()
   digitalWrite(encoderPin2, HIGH); //turn pullup resistor on
   digitalWrite(encoderSwitchPin, HIGH);
 
+  Serial.begin(9600);
+  Serial.println(F("Serial started>>"));
+
   // read most recent dimming level from EEPROM if available (virgin EEPROM address will read as 0xff)
   int triggerPointRead = EEPROM.read(saveLastTriggerPointAt);
+  Serial.print(F("Loaded brightness:"));
+  Serial.println(triggerPointRead);
 
   if (triggerPointRead > maxTriggerPoint || triggerPointRead < minTriggerPoint) {
     triggerPointRead = maxTriggerPoint;
   }
 
-  nextTriggerPoint = triggerPointRead;
-  currentTriggerPoint = triggerPointRead;
+  for (int i = 0; i < numberLamps; i++) {
+    nextTriggerPoint[i] = triggerPointRead;
+  }
 
   lampOn = EEPROM.read(saveLampOnAt);
-  Serial.begin(9600);
-  Serial.println(F("Serial started>>"));
 
 #ifdef DEBUG_SOFTWARE_SERIAL
   dbgSerial.begin(9600); // speed up to 57600 once tested

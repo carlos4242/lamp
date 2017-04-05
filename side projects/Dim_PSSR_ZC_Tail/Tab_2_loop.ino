@@ -4,6 +4,7 @@ void loop()
   static bool recognising = false;
   static int serialBufferPosition = 0;
   static bool dumpRingBuffer = false;
+  static bool valuesNeedSave = false;
 
   {
     // test with DMR1:?
@@ -29,7 +30,7 @@ void loop()
 
             interpretSerialCommand(
               inputSerialBuffer,
-              &nextTriggerPoint,
+              &valuesNeedSave,
               &stateReportNeeded,
               &dumpRingBuffer);
 
@@ -56,21 +57,17 @@ void loop()
     int sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
 
     if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) {
-
-      nextTriggerPoint += brightnessStep;
-
-      if (nextTriggerPoint > maxTriggerPoint) {
-        nextTriggerPoint = maxTriggerPoint;
-      }
+      changeTriggerPoint(0, brightnessStep);
+      changeTriggerPoint(1, brightnessStep);
+      changeTriggerPoint(2, brightnessStep);
+      valuesNeedSave = true;
     }
 
     if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
-
-      nextTriggerPoint -= brightnessStep;
-
-      if (nextTriggerPoint < minTriggerPoint) {
-        nextTriggerPoint = minTriggerPoint;
-      }
+      changeTriggerPoint(0, -brightnessStep);
+      changeTriggerPoint(1, -brightnessStep);
+      changeTriggerPoint(2, -brightnessStep);
+      valuesNeedSave = true;
     }
 
     lastEncoded = encoded; //store this value for next time
@@ -85,10 +82,11 @@ void loop()
       if (!encoderSwitchPinValue) {
         // button is depressed
         if (lampOn) {
-          turnOff(&stateReportNeeded);
+          turnOff();
         } else {
-          turnOn(&stateReportNeeded);
+          turnOn();
         }
+        stateReportNeeded = true;
       }
       lastEncoderSwitchPinValue = encoderSwitchPinValue;
     }
@@ -108,16 +106,11 @@ void loop()
 
   if (sentTriacPulse) {
 
-    if (currentTriggerPoint != nextTriggerPoint) {
-      currentTriggerPoint = nextTriggerPoint;
-
-      // for now, faeries match main lamp
-      currentFairy1TriggerPoint = nextTriggerPoint;
-      currentFairy2TriggerPoint = nextTriggerPoint;
-
-      // save the eeprom update on the "main thread", in due course
-      EEPROMUpdate(saveLastTriggerPointAt, nextTriggerPoint);
+    if (valuesNeedSave) {
+      // save the eeprom update on the "main thread"
+      EEPROMUpdate(saveLastTriggerPointAt, nextTriggerPoint[0]); // for now we are only saving the main lamp value
       stateReportNeeded = true;
+      valuesNeedSave = false;
     }
 
     if (stateReportNeeded) {

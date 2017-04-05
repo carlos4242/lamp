@@ -1,17 +1,12 @@
 void fireTriac() {
   digitalWrite(PSSR1, HIGH);
-  delayMicroseconds(100); // was 500, try a shorter pulse...
+  delayMicroseconds(200); // was 500, try a shorter pulse...
   digitalWrite(PSSR1, LOW);
 }
 
 void resetFaeries() {
   digitalWrite(faerieLights1, LOW);
   digitalWrite(faerieLights2, LOW);
-}
-
-void fireFaeries() {
-  digitalWrite(faerieLights1, HIGH);
-  digitalWrite(faerieLights2, HIGH);
 }
 
 void fireFaerieSCR1() {
@@ -21,6 +16,7 @@ void fireFaerieSCR1() {
 void fireFaerieSCR2() {
   digitalWrite(faerieLights2, HIGH);
 }
+
 
 // ISRs
 // All these functions are ISRs, be wary of volatile variables, side effects and speed
@@ -37,50 +33,54 @@ volatile static int triacTickCount = 0;
 volatile static int fairy1TickCount = 0;
 volatile static int fairy2TickCount = 0;
 
+volatile int currentTriggerPoint[numberLamps];
+
 void timer_tick_function() {
-  digitalWrite(dbgInTimerISR, HIGH);
+  PORTB |= B10000; // using a fast port write to save time, but isn't very safe... equivalent to... digitalWrite(dbgInTimerISR, HIGH);
 
   if (triac_pulse_due) {
     // count the number of interrupts fired by the timer since the last zero cross
-    if (triacTickCount < currentTriggerPoint * brightnessMultiplier) {
+    if (triacTickCount < currentTriggerPoint[0] * brightnessMultiplier) {
       triacTickCount++;
     } else {
       triac_pulse_due = false; // disable until the next zero cross
+
       if (lampOn) {
         fireTriac();
-        //        fireFaeries();
       }
+
+      currentTriggerPoint[0] = nextTriggerPoint[0];
       sentTriacPulse = true;
     }
   }
 
-  if (faery_2_enable_due) {
-    if (fairy2TickCount < currentFairy2TriggerPoint * brightnessMultiplier) {
-      fairy2TickCount++;
-    } else {
-      faery_2_enable_due = false;
-      if (fairy2On) {
-        fireFaerieSCR2();
-      }
-    }
-  }
-
   if (faery_1_enable_due) {
-    if (fairy1TickCount < currentFairy1TriggerPoint * brightnessMultiplier) {
+    if (fairy1TickCount < currentTriggerPoint[1] * brightnessMultiplier) {
       fairy1TickCount++;
     } else {
       faery_1_enable_due = false;
-      if (fairy1On) {
-        fireFaerieSCR1();
-      }
+      fireFaerieSCR1();
+      currentTriggerPoint[1] = nextTriggerPoint[1];
     }
   }
 
-  digitalWrite(dbgInTimerISR, LOW);
+  if (faery_2_enable_due) {
+    if (fairy2TickCount < currentTriggerPoint[2] * brightnessMultiplier) {
+      fairy2TickCount++;
+    } else {
+      faery_2_enable_due = false;
+      fireFaerieSCR2();
+      currentTriggerPoint[2] = nextTriggerPoint[2];
+    }
+  }
+
+  PORTB &= ~B10000; // equivalent to... digitalWrite(dbgInTimerISR, LOW);
 }
 
 void zero_cross_detected()
 {
+  // PORTB |= B100000;
+  
   triacTickCount = 0;
   fairy1TickCount = 0;
   fairy2TickCount = 0;
@@ -96,4 +96,6 @@ void zero_cross_detected()
   // that's less important for faery stuff as any jitter is far less noticeable
   sentTriacPulse = false;
   resetFaeries();
+  
+  // PORTB &= ~B100000;
 }
