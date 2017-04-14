@@ -18,7 +18,7 @@ void loop()
 
         if (recognising || c == 'D') {
           recognising = true;
-//          digitalWrite(dbgInRecognizePin, HIGH);
+          //          digitalWrite(dbgInRecognizePin, HIGH);
           inputSerialBuffer[serialBufferPosition] = c;
           serialBufferPosition++;
           if ((serialBufferPosition >= serialBufferSize) || (c == '\r') || (c == '\n')) {
@@ -36,7 +36,7 @@ void loop()
 
             serialBufferPosition = 0;
             recognising = false;
-//            digitalWrite(dbgInRecognizePin, LOW);
+            //            digitalWrite(dbgInRecognizePin, LOW);
           }
         } else {
           DEBUG_OUT_INLINE(F("x:"));
@@ -61,6 +61,7 @@ void loop()
       changeTriggerPoint(1, brightnessStep);
       changeTriggerPoint(2, brightnessStep);
       valuesNeedSave = true;
+      stateReportNeeded = true;
     }
 
     if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) {
@@ -68,6 +69,7 @@ void loop()
       changeTriggerPoint(1, -brightnessStep);
       changeTriggerPoint(2, -brightnessStep);
       valuesNeedSave = true;
+      stateReportNeeded = true;
     }
 
     lastEncoded = encoded; //store this value for next time
@@ -108,7 +110,6 @@ void loop()
     if (valuesNeedSave) {
       saveTriggerPoints();
       valuesNeedSave = false;
-      stateReportNeeded = true;
     }
 
     if (stateReportNeeded) {

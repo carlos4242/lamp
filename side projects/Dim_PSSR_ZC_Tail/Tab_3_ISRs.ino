@@ -97,8 +97,6 @@ void zero_cross_detected()
     // that's less important for faery stuff as any jitter is far less noticeable
     sentTriacPulse = false;
     resetFaeries();
-
-    delayMicroseconds(70);
   }
 
 #ifdef DEBUG_IN_ZERO_X_ISR

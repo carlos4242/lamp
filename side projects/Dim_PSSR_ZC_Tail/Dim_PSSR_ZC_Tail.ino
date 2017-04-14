@@ -32,8 +32,8 @@
 //#define DEBUG_SERIAL 1
 //#define DEBUG_TO_RING_BUFFER 1
 //#define DEBUG_IN_RECOGNIZE 1
-#define DEBUG_IN_ZERO_X_ISR 1
-#define DEBUG_IN_TIMER_ISR 1
+//#define DEBUG_IN_ZERO_X_ISR 1
+//#define DEBUG_IN_TIMER_ISR 1
 
 // constants
 #define RING_BUFFER_SIZE 500

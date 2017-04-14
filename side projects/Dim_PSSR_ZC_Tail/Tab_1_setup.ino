@@ -5,21 +5,15 @@ void setup()
 
   // Set SSR1 pin as output
   pinMode(PSSR1, OUTPUT);
-  digitalWrite(PSSR1, LOW);
 
   // faerie lights
   pinMode(faerieLights1, OUTPUT);
   pinMode(faerieLights2, OUTPUT);
-  digitalWrite(faerieLights1, LOW);
-  digitalWrite(faerieLights2, LOW);
 
   // rotary encoder
   pinMode(encoderPin1, INPUT_PULLUP);
   pinMode(encoderPin2, INPUT_PULLUP);
   pinMode(encoderSwitchPin, INPUT_PULLUP);
-  digitalWrite(encoderPin1, HIGH); //turn pullup resistor on
-  digitalWrite(encoderPin2, HIGH); //turn pullup resistor on
-  digitalWrite(encoderSwitchPin, HIGH);
 
 #ifdef DEBUG_TO_RING_BUFFER
   pinMode(dumpRingBufferPin, INPUT_PULLUP);
@@ -27,17 +21,14 @@ void setup()
 
 #ifdef DEBUG_IN_RECOGNIZE
   pinMode(dbgInRecognizePin, OUTPUT);
-  digitalWrite(dbgInRecognizePin, LOW);
 #endif
 
 #ifdef DEBUG_IN_TIMER_ISR
   pinMode(dbgInTimerISR, OUTPUT);
-  digitalWrite(dbgInTimerISR, HIGH);
 #endif
 
 #ifdef DEBUG_IN_ZERO_X_ISR
   pinMode(dbgInZeroCrossISR, OUTPUT);
-  digitalWrite(dbgInZeroCrossISR, LOW);
 #endif
 
   // Initialise serial ports

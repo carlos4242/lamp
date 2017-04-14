@@ -94,12 +94,10 @@ void interpretSerialCommand(
     } else if (*command == '_') {
       if (dimmerNumber == 1) {
         turnOff();
-        *stateReportNeeded = true;
       }
     } else if (*command == 'O') {
       if (dimmerNumber == 1) {
         turnOn();
-        *stateReportNeeded = true;
       }
     } else if (*command == 'X') {
       *dumpRingBuffer = true;
