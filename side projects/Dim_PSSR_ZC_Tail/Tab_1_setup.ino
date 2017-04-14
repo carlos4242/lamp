@@ -1,12 +1,7 @@
 void setup()
 {
-  // trigger an interrupt after a zero cross has been detected
-  // Attach an Interupt to the digital pin that reads zero cross pulses
-  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detected, RISING);
-
-  // fire a timer to count up after zero cross detected until the time when the triac should be fired
-  Timer1.initialize(freqStep);
-  Timer1.attachInterrupt(timer_tick_function, freqStep);
+  // set zero cross detect pin as input and engage the pullup resistor
+  pinMode(PZCD1, INPUT_PULLUP);
 
   // Set SSR1 pin as output
   pinMode(PSSR1, OUTPUT);
@@ -18,27 +13,41 @@ void setup()
   digitalWrite(faerieLights1, LOW);
   digitalWrite(faerieLights2, LOW);
 
-  // set zero cross detect pin as input and engage the pullup resistor
-  pinMode(PZCD1, INPUT);
-
-  pinMode(dumpRingBufferPin, INPUT_PULLUP);
-  pinMode(dbgInRecognizePin, OUTPUT);
-  digitalWrite(dbgInRecognizePin, LOW);
-  pinMode(dbgInTimerISR, OUTPUT);
-  digitalWrite(dbgInTimerISR, HIGH);
-
   // rotary encoder
-  pinMode(encoderPin1, INPUT);
-  pinMode(encoderPin2, INPUT);
-  pinMode(encoderSwitchPin, INPUT);
+  pinMode(encoderPin1, INPUT_PULLUP);
+  pinMode(encoderPin2, INPUT_PULLUP);
+  pinMode(encoderSwitchPin, INPUT_PULLUP);
   digitalWrite(encoderPin1, HIGH); //turn pullup resistor on
   digitalWrite(encoderPin2, HIGH); //turn pullup resistor on
   digitalWrite(encoderSwitchPin, HIGH);
 
+#ifdef DEBUG_TO_RING_BUFFER
+  pinMode(dumpRingBufferPin, INPUT_PULLUP);
+#endif
+
+#ifdef DEBUG_IN_RECOGNIZE
+  pinMode(dbgInRecognizePin, OUTPUT);
+  digitalWrite(dbgInRecognizePin, LOW);
+#endif
+
+#ifdef DEBUG_IN_TIMER_ISR
+  pinMode(dbgInTimerISR, OUTPUT);
+  digitalWrite(dbgInTimerISR, HIGH);
+#endif
+
+#ifdef DEBUG_IN_ZERO_X_ISR
+  pinMode(dbgInZeroCrossISR, OUTPUT);
+  digitalWrite(dbgInZeroCrossISR, LOW);
+#endif
+
+  // Initialise serial ports
+
   Serial.begin(9600);
   Serial.println(F("Serial started>>"));
 
-readTriggerPoints();
+  // read stored values
+  
+  readTriggerPoints();
 
   lampOn = EEPROM.read(saveLampOnAt);
 
@@ -53,4 +62,15 @@ readTriggerPoints();
 #endif
 
   DEBUG_OUT(F("debug session"));
+
+
+  /* START TIMERS AND INTERRUPT HANDLERS */
+
+  // trigger an interrupt after a zero cross has been detected
+  // Attach an Interupt to the digital pin that reads zero cross pulses
+  attachInterrupt(digitalPinToInterrupt(PZCD1), zero_cross_detected, RISING);
+
+  // fire a timer to count up after zero cross detected until the time when the triac should be fired
+  Timer1.initialize(tickTimerPeriod);
+  Timer1.attachInterrupt(timer_tick_function, tickTimerPeriod);
 }

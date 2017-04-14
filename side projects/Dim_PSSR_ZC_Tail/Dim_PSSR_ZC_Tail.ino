@@ -27,42 +27,82 @@
 #include <SoftwareSerial.h>
 #include "RingBuffer.h"
 
+// debug settings (if any)
+//#define DEBUG_SOFTWARE_SERIAL 1
+//#define DEBUG_SERIAL 1
+//#define DEBUG_TO_RING_BUFFER 1
+//#define DEBUG_IN_RECOGNIZE 1
+#define DEBUG_IN_ZERO_X_ISR 1
+#define DEBUG_IN_TIMER_ISR 1
+
 // constants
 #define RING_BUFFER_SIZE 500
 #define saveLastTriggerPointAt 0x31
 #define saveLampOnAt 0x32
+
+// brightness works by waiting a specific period after zero cross then triggering the triac or SCR
+// the period is defined as a number of brightness steps, from minTriggerPoint (brightest) to maxTriggerPoint (dimmest)
+// each step is approximately 0.1ms, (100us)
 #define minTriggerPoint 5
 #define maxTriggerPoint 90
 #define brightnessStep 1
-#define brightnessMultiplier 3
+#define ticksPerBrightnessStep 3
+#define minimumTickCount 40
 #define serialBufferSize 9 // the maximum length of the serial input/output
-#define freqStep 33 // Set to 50hz mains
+#define tickTimerPeriod 33 // run the timer interrupt every 33 us
 
-// pins
+// PORTD pins
+// note 0 and 1 are the rx and tx from the UART and are used to communicate with the xbee so
+// must be left untouched
 #define PZCD1 2 // PowerSwitch Zero detect on this pin (must be interrupt capable)
-#define encoderSwitchPin 3 // rotary encoder push switch
-#define PSSR1 4 // PowerSSR Tail connected to this digital pin to control power
-#define encoderPin1 7 // rotary encoder pin1
-#define encoderPin2 8 // rotary encoder pin2
-#define dbgrxpin 9
-#define dbgtxpin 10
-#define dumpRingBufferPin 11
-#define dbgInRecognizePin 13
-#define dbgInTimerISR 12
 
-// faerie lights
+#define encoderSwitchPin 3 // rotary encoder push switch
+
+#define PSSR1 4 // PowerSSR Tail connected to this digital pin to control power
+
+// faerie lights - VERY IMPORTANT!! .. the ISRs change these by direct port write
+// be very careful with this code and make sure it all matches!
+// for example, currently the ISR is written to manipulate PORTD, meaning that these
+// pins can only take values from 0-7.  And 0 or 1 would be mad as those are rx/tx on the
+// serial UART, connected to the Xbee
+// Also, these pins must be set in setup to be OUTPUT pins.  And ideally initialised there using a
+// regular digitalWrite function, just for safety
 #define faerieLights1 5
 #define faerieLights2 6
 
-// debug settings (if any)
-//#define DEBUG_SOFTWARE_SERIAL 1
-//#define DEBUG_SERIAL 1
-#define DEBUG_TO_RING_BUFFER 1
+#define encoderPin1 7 // rotary encoder pin1
+
+
+// PORTB pins
+#define PORT_B_BASE 8
+
+#define encoderPin2 8 // rotary encoder pin2
+
+#ifdef DEBUG_TO_RING_BUFFER
+#define dbgrxpin 9
+#define dbgtxpin 10
+#define dumpRingBufferPin 11
+#endif
+
+
+#ifdef DEBUG_IN_TIMER_ISR
+#define dbgInTimerISR 12
+#endif
+
+#ifdef DEBUG_IN_ZERO_X_ISR
+#define dbgInZeroCrossISR 13
+#endif
+
+#ifdef DEBUG_IN_RECOGNIZE
+#define dbgInRecognizePin 13
+#endif
+
+
 
 
 // debug methods
 #ifdef DEBUG_SOFTWARE_SERIAL
-//SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
+SoftwareSerial dbgSerial =  SoftwareSerial(dbgrxpin, dbgtxpin);
 #endif
 
 #ifdef DEBUG_TO_RING_BUFFER

@@ -80,9 +80,13 @@ void interpretSerialCommand(
 
   if (strncmp(serialBuffer, "DMR", 3) == 0 && serialBuffer[4] == ':') {
     char dimmerNumberBuf[2];
-    strncpy(dimmerNumberBuf, serialBuffer[3], 1);
+    dimmerNumberBuf[0] = serialBuffer[3];
     dimmerNumberBuf[1] = 0;
+    DEBUG_OUT_INLINE(F("dimmerNumberBuf:"));
+    DEBUG_OUT(dimmerNumberBuf);
     int dimmerNumber = atoi(dimmerNumberBuf);
+    DEBUG_OUT_INLINE(F("dimmerNumber:"));
+    DEBUG_OUT(dimmerNumber);
 
     char * command = serialBuffer + 5;
     if (*command == '?') {
@@ -102,7 +106,9 @@ void interpretSerialCommand(
     } else {
       int newTriggerPointVal = atoi(command);
 
-      if (newTriggerPointVal&&dimmerNumber&&dimmerNumber<4) {
+      if (newTriggerPointVal && dimmerNumber && dimmerNumber < 4) {
+        DEBUG_OUT_INLINE(F("newTriggerPointVal:"));
+        DEBUG_OUT(newTriggerPointVal);
         if (dimmerNumber == 1) {
           turnOn();
         }
@@ -113,7 +119,7 @@ void interpretSerialCommand(
           newTriggerPointVal = minTriggerPoint;
         }
 
-        nextTriggerPoint[dimmerNumber-1] = newTriggerPointVal;
+        nextTriggerPoint[dimmerNumber - 1] = newTriggerPointVal;
         *valuesNeedSave = true;
       }
     }

@@ -1,22 +1,20 @@
-void fireTriac() {
-  digitalWrite(PSSR1, HIGH);
+inline void fireTriac() {
+  PORTD |= _BV(PSSR1);
   delayMicroseconds(200); // was 500, try a shorter pulse...
-  digitalWrite(PSSR1, LOW);
+  PORTD &= ~_BV(PSSR1);
 }
 
-void resetFaeries() {
-  digitalWrite(faerieLights1, LOW);
-  digitalWrite(faerieLights2, LOW);
+inline void resetFaeries() {
+  PORTD &= ~_BV(faerieLights1) & ~_BV(faerieLights2);
 }
 
-void fireFaerieSCR1() {
-  digitalWrite(faerieLights1, HIGH);
+inline void fireFaerieSCR1() {
+  PORTD |= _BV(faerieLights1);
 }
 
-void fireFaerieSCR2() {
-  digitalWrite(faerieLights2, HIGH);
+inline void fireFaerieSCR2() {
+  PORTD |= _BV(faerieLights2);
 }
-
 
 // ISRs
 // All these functions are ISRs, be wary of volatile variables, side effects and speed
@@ -29,20 +27,38 @@ volatile boolean triac_pulse_due = false; // Boolean to store a "switch" to tell
 volatile boolean faery_1_enable_due = false; // Boolean to store a "switch" to tell us if we have crossed zero
 volatile boolean faery_2_enable_due = false; // Boolean to store a "switch" to tell us if we have crossed zero
 
-volatile static int triacTickCount = 0;
-volatile static int fairy1TickCount = 0;
-volatile static int fairy2TickCount = 0;
+// count of ticks since last zero cross
+volatile static int tickCount = 0;
 
 volatile int currentTriggerPoint[numberLamps];
 
 void timer_tick_function() {
-//  PORTB |= B10000; // using a fast port write to save time, but isn't very safe... equivalent to... digitalWrite(dbgInTimerISR, HIGH);
+#ifdef DEBUG_IN_TIMER_ISR
+  // using a fast port write to save time, but isn't very safe... equivalent to... digitalWrite(dbgInTimerISR, HIGH); // B10000
+  PORTB |= _BV(dbgInTimerISR - PORT_B_BASE);
+#endif
+
+  tickCount++;
+
+  if (faery_1_enable_due) {
+    if (tickCount >= currentTriggerPoint[1] * ticksPerBrightnessStep) {
+      faery_1_enable_due = false;
+      fireFaerieSCR1();
+      currentTriggerPoint[1] = nextTriggerPoint[1];
+    }
+  }
+
+  if (faery_2_enable_due) {
+    if (tickCount >= currentTriggerPoint[2] * ticksPerBrightnessStep) {
+      faery_2_enable_due = false;
+      fireFaerieSCR2();
+      currentTriggerPoint[2] = nextTriggerPoint[2];
+    }
+  }
 
   if (triac_pulse_due) {
     // count the number of interrupts fired by the timer since the last zero cross
-    if (triacTickCount < currentTriggerPoint[0] * brightnessMultiplier) {
-      triacTickCount++;
-    } else {
+    if (tickCount >= currentTriggerPoint[0] * ticksPerBrightnessStep) {
       triac_pulse_due = false; // disable until the next zero cross
 
       if (lampOn) {
@@ -54,48 +70,38 @@ void timer_tick_function() {
     }
   }
 
-  if (faery_1_enable_due) {
-    if (fairy1TickCount < currentTriggerPoint[1] * brightnessMultiplier) {
-      fairy1TickCount++;
-    } else {
-      faery_1_enable_due = false;
-      fireFaerieSCR1();
-      currentTriggerPoint[1] = nextTriggerPoint[1];
-    }
-  }
-
-  if (faery_2_enable_due) {
-    if (fairy2TickCount < currentTriggerPoint[2] * brightnessMultiplier) {
-      fairy2TickCount++;
-    } else {
-      faery_2_enable_due = false;
-      fireFaerieSCR2();
-      currentTriggerPoint[2] = nextTriggerPoint[2];
-    }
-  }
-
-//  PORTB &= ~B10000; // equivalent to... digitalWrite(dbgInTimerISR, LOW);
+#ifdef DEBUG_IN_TIMER_ISR
+  PORTB &= ~_BV(dbgInTimerISR - PORT_B_BASE);
+  // equivalent to... digitalWrite(dbgInTimerISR, LOW); // B10000
+#endif
 }
 
 void zero_cross_detected()
 {
-  // PORTB |= B100000;
-  
-  triacTickCount = 0;
-  fairy1TickCount = 0;
-  fairy2TickCount = 0;
+#ifdef DEBUG_IN_ZERO_X_ISR
+  PORTB |= _BV(dbgInZeroCrossISR - PORT_B_BASE);
+#endif
 
-  triac_pulse_due = true;
-  faery_1_enable_due = true;
-  faery_2_enable_due = true;
+  if (tickCount >= minimumTickCount) { // avoid glitches
+    // zero cross is good, not a glitch
+    tickCount = 0;
 
-  // prevent main loop action from occurring until after next zero cross cycle is complete
-  // the reason for this is the main loop processing can be heavy and tie up the processor somewhat
-  // so it's important we leave it until after the triac pulse has been cleanly sent at exactly
-  // the right time
-  // that's less important for faery stuff as any jitter is far less noticeable
-  sentTriacPulse = false;
-  resetFaeries();
-  
-  // PORTB &= ~B100000;
+    triac_pulse_due = true;
+    faery_1_enable_due = true;
+    faery_2_enable_due = true;
+
+    // prevent main loop action from occurring until after next zero cross cycle is complete
+    // the reason for this is the main loop processing can be heavy and tie up the processor somewhat
+    // so it's important we leave it until after the triac pulse has been cleanly sent at exactly
+    // the right time
+    // that's less important for faery stuff as any jitter is far less noticeable
+    sentTriacPulse = false;
+    resetFaeries();
+
+    delayMicroseconds(70);
+  }
+
+#ifdef DEBUG_IN_ZERO_X_ISR
+  PORTB &= ~_BV(dbgInZeroCrossISR - PORT_B_BASE);
+#endif
 }
